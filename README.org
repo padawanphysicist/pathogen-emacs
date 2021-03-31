@@ -1,0 +1,25 @@
+* Pathogen Emacs
+
+I use Emacs constantly since 2010 and I really like the idea of starter kits. I've used distributions like [[https://www.spacemacs.org/][Spacemacs]] and [[https://github.com/hlissner/doom-emacs][Doom Emacs]] until I conclude that they usually make a lot assumptions that are not fit for what I need.
+
+Of course you can try fork some of those kits in the wild and try to trim the pieces you don't want, but I found this to be too time consuming. So I decided to rewrite my own configuration as a starter-kit, to slowly organize the code I have and maybe make it useful for someone else besides me.
+
+Since I'm starting doing this effectively during the social distancing measures taken after COVID-19 world pandemic I decided to call =Pathogen=.
+
+The philosophy is to be:
+1. stable,
+2. simple,
+3. easy to understand (and therefore extend).
+
+This means that by default it won't have all the fanciness of Spacemacs or Doom. Unless you are willing to accept a huge amount of code/packages without understanding them well (which makes you pass through hell when something go astray), as an Emacs user you're going to have to get minimally comfortable seeking out new pieces of elisp code, bringing them in and configuring them. The Starter Kit should serve mainly as a guidance in this process by giving hints as to where to start and what to look for.
+
+Let me know you find this useful and/or have any suggestions.
+
+** TODO Pathogen core files
+  
+- [[file:early-init.el][early-init.el]] :: Pre-initializalization
+- [[file:init.el][init.el]] :: Main initialization file 
+
+** TODO Configuration variables
+  =PATHOGEN_CACHE_DIR=
+  =PATHOGEN_CONFIG_FILE=
