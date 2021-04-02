@@ -18,7 +18,8 @@
 
 (add-hook 'pathogen-user-config-hook
 	  (lambda ()
-            (load pathogen/user-config nil 'nomessage)))
+            (when (file-exists-p pathogen/user-config)
+                (load pathogen/user-config nil 'nomessage))))
 
 (provide 'pathogen-user-config.el)
 ;;; pathogen-user-config.el ends here
