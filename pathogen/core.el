@@ -15,6 +15,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'package)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Pathogen directory variables
@@ -68,9 +69,10 @@ Use this for files that change often, like cache files. Must end with a slash.")
 ;;     - Load `~/.emacs.d/early-init.el'
 ;;     - Run  `before-init-hook'
 ;;     - Load `~/.emacs.d/init.el'
-;;     - Run  `pathogen-init-ui-hook'     -----
-;;     - Run  `pathogen-editor-hook'          | --> Pathogen hooks
-;;     - Run  `pathogen-user-config-hook' -----
+;;     - Run  `pathogen-init-ui-hook'
+;;     - Run  `pathogen-editor-hook'
+;;     - Run  `pathogen-package-management-hook'
+;;     - Run  `pathogen-user-config-hook'
 ;;     - Run  `after-init-hook'
 ;;     - Run  `emacs-startup-hook'
 ;;     - Run  `window-setup-hook'
@@ -81,6 +83,7 @@ Use this for files that change often, like cache files. Must end with a slash.")
 ;;
 (run-hooks 'pathogen-init-ui-hook)
 (run-hooks 'pathogen-editor-hook)
+(run-hooks 'pathogen-package-management-hook)
 (run-hooks 'pathogen-user-config-hook)
 
 (add-hook
