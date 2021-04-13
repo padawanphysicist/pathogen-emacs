@@ -38,8 +38,9 @@ Use this for files that change often, like cache files. Must end with a slash.")
 
 (defvar pathogen/user-config
  (let ((user-config (getenv "PATHOGEN_USER_CONFIG")))
-    (if user-config
-        (expand-file-name user-config)
+   (if user-config
+       (when (> (length user-config) 0)
+           user-config)
       "~/.pathogen.el"))
   "Path for user additional configuration.")
 
