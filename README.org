@@ -15,11 +15,21 @@ This means that by default it won't have all the fanciness of Spacemacs or Doom.
 
 Let me know you find this useful and/or have any suggestions.
 
-** TODO Pathogen core files
+** Core packages
+
+- [[https://github.com/justbur/emacs-which-key][which-key]]
+- [[https://github.com/emacs-helm/helm][helm]]
+- [[https://github.com/emacs-evil/evil][evil]]
+- [[https://github.com/emacs-evil/evil-collection][evil-collection]]
+- [[https://github.com/noctuid/general.el][general]] 
+- [[https://github.com/deb0ch/emacs-winum][winum]]
+- [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
+- [[https://github.com/emacsorphanage/popwin][popwin]]
+- [[https://github.com/abo-abo/avy][avy]]
   
-- [[file:early-init.el][early-init.el]] :: Pre-initializalization
+** Main files
+
+- [[file:early-init.el][early-init.el]] :: Pre-initializalization file
 - [[file:init.el][init.el]] :: Main initialization file 
 
-** TODO Configuration variables
-  =PATHOGEN_CACHE_DIR=
-  =PATHOGEN_CONFIG_FILE=
+

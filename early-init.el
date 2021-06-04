@@ -102,5 +102,6 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 ;; `early-init-file'. This prevent Emacs from doing it early:
 (setq package-enable-at-startup nil)
 
+
 (provide 'early-init)
 ;;; early-init.el ends here

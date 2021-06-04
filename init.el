@@ -15,12 +15,41 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Load Pathogen
+;;; Ubiquitous packages
 ;;
+;; These packages are bundled with GNU Emacs and should be loaded on startup
+;; rather than autoloaded on demand since they are likely to be used in every
+;; session.
 ;;
-;; `pathogen/core.el' file is the starting point if you want to fiddle the
-;; configuration.
-(load (concat user-emacs-directory "pathogen/core") nil 'nomessage)
+;; For a detailed explanation of each one, look at the URLs:
+;;
+;; https://www.gnu.org/software/emacs/manual/html_mono/cl.html
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Uniquify.html
+;; https://www.emacswiki.org/emacs/AnsiColor
+;; https://www.emacswiki.org/emacs/InstallingPackages
+;;
+(require 'cl-lib) ;; Common Lisp facilities within Emacs
+(require 'ansi-color) ;; Translate ansi color codes to Emacs colors
+(require 'package) ;; Package manager
 
-(provide 'init.el)
+;; Main variables
+(defvar pathogen-cache-directory (concat user-emacs-directory "cache/"))
+(defvar pathogen-config-directory (substitute-in-file-name "$HOME/.pathogen.d/"))
+(defvar pathogen-custom-config-file (concat pathogen-config-directory "config.el"))
+
+(add-to-list 'load-path (concat user-emacs-directory "pathogen/"))
+(add-to-list 'load-path pathogen-config-directory)
+
+(require '00-user-interface)
+(require '01-editor)
+(require '02-package-manager)
+(require '03-setup-packages)
+(require '04-setup-keybindings)
+
+;; Load additional settings
+(when (file-exists-p pathogen-custom-config-file)
+  (load pathogen-custom-config-file))
+
+(provide 'init)
 ;;; init.el ends here
+
