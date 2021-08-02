@@ -27,6 +27,20 @@
          `(list ,func ,@rest)
        func)))
 
+(defmacro pathogen|declare-local-prefix (kmap prefix name)
+  "Convenience macro for defining/modifying prefixes."
+  `(pathogen-local-leader-def
+    :keymaps ,kmap
+    ,prefix (list :ignore t :which-key ,name)))
+
+(defmacro pathogen|set-local-key (kmap binding func &rest rest)
+  `(pathogen-local-leader-def
+    :keymaps ,kmap
+    ,binding
+    ,(if rest
+         `(list ,func ,@rest)
+       func)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Main prefixes
 
@@ -49,7 +63,7 @@
 ;; buffer
 (pathogen|declare-prefix "b" "buffer")
 (pathogen|set-key "bb" 'helm-mini :wk "switch")
-(pathogen|set-key "bd" 'kill-buffer-and-window :wk "delete")
+(pathogen|set-key "bd" 'kill-this-buffer :wk "delete")
 
 ;; window
 (pathogen|declare-prefix "w" "window")

@@ -50,7 +50,7 @@
 ;; easily installed from the Emacs package manager.
 (use-package
   helm
-  ;;:defer t
+  :demand
   :bind
   ;; Overwrite some comands with their helm counterparts
   ("M-x" . helm-M-x)
@@ -129,6 +129,11 @@
     :keymaps 'override
     :states '(insert emacs normal hybrid motion visual operator)
     :prefix pathogen-leader-key
+    :non-normal-prefix pathogen-leader-alt-key)
+  (general-create-definer pathogen-local-leader-def
+    :keymaps 'override
+    :states '(insert emacs normal hybrid motion visual operator)
+    :prefix "SPC m"
     :non-normal-prefix pathogen-leader-alt-key))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
