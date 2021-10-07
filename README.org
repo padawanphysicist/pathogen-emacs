@@ -18,12 +18,13 @@ Let me know you find this useful and/or have any suggestions.
 ** Core packages
 
 - [[https://github.com/justbur/emacs-which-key][which-key]]
-- [[https://github.com/emacs-helm/helm][helm]]
-- [[https://github.com/emacs-evil/evil][evil]]
-- [[https://github.com/emacs-evil/evil-collection][evil-collection]]
-- [[https://github.com/noctuid/general.el][general]] 
+- [[https://github.com/minad/vertico][vertico]]
+- [[https://github.com/minad/marginalia][marginalia]]
+- [[https://github.com/minad/consult.git][consult]]
+- [[https://github.com/oantolin/embark][embark]]
+- [[https://github.com/oantolin/orderless][orderless]]
+- [[https://github.com/noctuid/general.el][general]]
 - [[https://github.com/deb0ch/emacs-winum][winum]]
-- [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
 - [[https://github.com/emacsorphanage/popwin][popwin]]
 - [[https://github.com/abo-abo/avy][avy]]
   

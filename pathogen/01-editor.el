@@ -59,8 +59,8 @@
 ;; Allow UTF or composed text from the clipboard, even
 ;; in the terminal or on non-X systems (like Windows or
 ;; macOS), where only `STRING' is used.
-(setq x-select-request-type
-    '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+(setq
+ x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Minor tweaks
@@ -83,11 +83,11 @@
 ;; Delete whatever is selected if typing starts This reflects the behavior
 ;; of other editors.
 (delete-selection-mode 1)
+;; Display current column in modeline
+(setq column-number-mode t)
 ;; Store all backup and autosave files in the tmp dir
-(setq backup-directory-alist
-    `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-    `((".*" ,temporary-file-directory t)))
+(setq backup-directory-alist `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Built-in plugins
@@ -103,25 +103,68 @@
 (setq savehist-file (concat pathogen-cache-directory "savehist"))
 (savehist-mode 1)
 (setq
-    savehist-save-minibuffer-history t
-    ;; save on kill only
-    savehist-autosave-interval nil    
-    savehist-additional-variables
-    '(
-         ;; persist clipboard
-         kill-ring  
-	 ;; persist macros
-	 register-alist
-	 ;; persist marks
-	 mark-ring global-mark-ring       
-	 ;; persist searches
-	 search-ring regexp-search-ring))
+ savehist-save-minibuffer-history t
+ ;; save on kill only
+ savehist-autosave-interval nil    
+ savehist-additional-variables
+ '(
+   ;; persist clipboard
+   kill-ring  
+   ;; persist macros
+   register-alist
+   ;; persist marks
+   mark-ring global-mark-ring       
+   ;; persist searches
+   search-ring regexp-search-ring))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Undo/Redo window configuration
 ;;
 ;;
 (winner-mode 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Recent files
+;;
+;;
+(recentf-mode 1)
+(setq recentf-max-menu-items 50)
+(setq recentf-max-saved-items 50)
+
+;; Show matching parenthesis
+(show-paren-mode 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Custom hooks
+;;
+;;
+;; Define hook run after font resize
+(defvar after-text-scale-hook nil "Hook run after text is rescaled.")
+
+;; Define hook run after theme loading
+(defvar after-load-theme-hook nil
+  "Hook run after a color theme is loaded using `load-theme'.")
+(defadvice load-theme (after run-after-load-theme-hook activate)
+  "Run `after-load-theme-hook'."
+  (run-hooks 'after-load-theme-hook))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Sticky keys
+;;
+;;
+;; https://www.emacswiki.org/emacs/StickyModifiers
+;;
+(setq modifier-keys-are-sticky t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Custom init file
+;; By default, Emacs stores any configuration you make through its UI by writing
+;; custom-set-variables invocations to your init file, or to the file specified
+;; by custom-file. Though this is convenient, it’s also an excellent way to
+;; cause aggravation when the variable you keep trying to modify is being set in
+;; some custom-set-variables invocation. We can disable this by mapping it to
+;; the null device.
+(setq custom-file "~/.emacs.d/transient/emacs-custom.el")
 
 (provide '01-editor)
 ;;; 01-editor.el ends here

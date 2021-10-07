@@ -6,3 +6,12 @@ transient/
 recentf/
 recentf
 elpy/
+*.bkp
+*.db
+*.eld
+snippets/
+*.dat
+bookmarks
+url/
+.org-id-locations
+*.desktop

@@ -31,9 +31,9 @@
 ;;
 ;; Therefore we need to unset their variables too:
 (setq
-    menu-bar-mode nil
-    tool-bar-mode nil
-    scroll-bar-mode nil)
+ menu-bar-mode nil
+ tool-bar-mode nil
+ scroll-bar-mode nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Disable startup screen
@@ -48,26 +48,26 @@
 ;;
 ;;
 (setq
-    ;; Ensure that the mouse wheel scroll the window the mouse is over.
-    mouse-wheel-follow-mouse t
-    ;; Scroll one line at a time when using mouse
-    ;; This is less "jumpy" than the default behaviour.
-    mouse-wheel-scroll-amount '(1 ((shift) . 1))
-    ;; Horizontal scrolling
-    mouse-wheel-scroll-amount-horizontal 2
-    ;; Don't accelerate scrolling
-    ;; The original behaviour is to scroll as fast as the user moves the wheel.
-    mouse-wheel-progressive-speed nil
-    ;; Keyboard scroll one line at a time
-    scroll-step 1
-    ;; Emacs spends too much effort recentering the screen if you scroll the
-    ;; cursor more than N lines past window edges (where N is the settings of
-    ;; `scroll-conservatively'). This is especially slow in larger files during
-    ;; large-scale scrolling commands. If kept over 100, the window is never
-    ;; automatically recentered.
-    scroll-conservatively 101
-    scroll-margin 0
-    scroll-preserve-screen-position t)
+ ;; Ensure that the mouse wheel scroll the window the mouse is over.
+ mouse-wheel-follow-mouse t
+ ;; Scroll one line at a time when using mouse
+ ;; This is less "jumpy" than the default behaviour.
+ mouse-wheel-scroll-amount '(1 ((shift) . 1))
+ ;; Horizontal scrolling
+ mouse-wheel-scroll-amount-horizontal 2
+ ;; Don't accelerate scrolling
+ ;; The original behaviour is to scroll as fast as the user moves the wheel.
+ mouse-wheel-progressive-speed nil
+ ;; Keyboard scroll one line at a time
+ scroll-step 1
+ ;; Emacs spends too much effort recentering the screen if you scroll the
+ ;; cursor more than N lines past window edges (where N is the settings of
+ ;; `scroll-conservatively'). This is especially slow in larger files during
+ ;; large-scale scrolling commands. If kept over 100, the window is never
+ ;; automatically recentered.
+ scroll-conservatively 101
+ scroll-margin 0
+ scroll-preserve-screen-position t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Minor tweaks
@@ -91,6 +91,11 @@
 ;; Expand the minibuffer to fit multi-line text
 ;; displayed in the echo-area
 (setq resize-mini-windows 'grow-only)
+
+;; Enable visual line mode
+(global-visual-line-mode 1)
+(fringe-mode 20)
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 (provide '00-user-interface)
 ;;; 00-user-interface.el ends here
