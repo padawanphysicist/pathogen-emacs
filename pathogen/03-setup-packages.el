@@ -287,7 +287,7 @@
 ;;
 ;; A Git Porcelain inside Emacs
 (use-package magit
-  :bind (("<f12>" . magit-status)))
+  :bind (("C-x g" . magit-status)))
 
 ;; Walk through git revisions of a file
 (use-package git-timemachine
