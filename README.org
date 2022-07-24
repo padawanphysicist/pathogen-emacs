@@ -17,8 +17,8 @@ Let me know you find this useful and/or have any suggestions.
 
 ** Installation
 
-1. Install [[https://www.gnu.org/software/emacs/][GNU Emacs]];
-2. Clone this repo using [[https://git-scm.com/][Git]]:
+- Install [[https://www.gnu.org/software/emacs/][GNU Emacs]];
+- Clone this repo using [[https://git-scm.com/][Git]]:
 #+begin_src bash
 git clone https://gitlab.com/padawanphysicist/pathogen-emacs.git ~/.emacs.d
 #+end_src
@@ -26,7 +26,7 @@ or, if you are looking for the [[https://github.com/padawanphysicist/pathogen-em
 #+begin_src bash
 git clone https://github.com/padawanphysicist/pathogen-emacs.git ~/.emacs.d
 #+end_src
-3. Launch Emacs!
+- Launch Emacs!
 
 ** Core packages
 
