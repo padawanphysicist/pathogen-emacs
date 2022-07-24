@@ -45,7 +45,7 @@
 ;; current line, and if the line was already indented, then try to complete the
 ;; thing at point.
 (setq-default indent-tabs-mode nil)
-(setq-default tab-width 8)
+(setq-default tab-width 4)
 (setq tab-always-indent 'complete)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -77,9 +77,6 @@
 ;; Windows), but we should, since programmers' tools tend to be POSIX
 ;; compliant (and no big deal if not).
 (setq require-final-newline t)
-;; Default to soft line-wrapping in text modes. It is more sensibile for
-;; text modes, even if hard wrapping is more performant.
-(visual-line-mode 1)
 ;; Delete whatever is selected if typing starts This reflects the behavior
 ;; of other editors.
 (delete-selection-mode 1)

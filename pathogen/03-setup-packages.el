@@ -27,11 +27,9 @@
 ;; which-key is a minor mode for Emacs that displays the key bindings following
 ;; your currently entered incomplete command (a prefix) in a popup. This
 ;; provides a way to discover shortcuts globally.
-(use-package
-  which-key
-  :init
-  ;; Don't wait too much for help buffer popup
-  (setq which-key-idle-delay 0.1)
+(use-package which-key
+  :custom
+  (which-key-idle-delay 0.1 "Don't wait too much for help buffer popup")
   :config
   (which-key-mode 1))
 
@@ -53,21 +51,18 @@
 ;;   - Embark: Minibuffer actions and context menu
 ;;   - Orderless: Advanced completion style
 (use-package vertico
-  :init
-  (setq completion-in-region-function
+  :custom
+  (completion-in-region-function
           (lambda (&rest args)
             (apply (if vertico-mode
                        #'consult-completion-in-region
                      #'completion--in-region)
-                   args)))
-  (vertico-mode)
-  :custom
-  ;; Enable cycling for `vertico-next' and `vertico-previous'.
-  (vertico-cycle t)
+                   args)) "Use Consult package for completion-at-point and completion-in-region.")
+  (vertico-cycle t "Enable cycling for `vertico-next' and `vertico-previous'")
+  (read-file-name-completion-ignore-case t "Ignores case during file name completion")
+  (read-buffer-completion-ignore-case t "Ignores case during buffer name completion")
   :config
-  (setq completion-styles '(substring orderless)
-          read-file-name-completion-ignore-case t
-          read-buffer-completion-ignore-case t))
+  (vertico-mode 1))
 
 ;; Enable richer annotations using the Marginalia package
 (use-package marginalia
@@ -82,7 +77,7 @@
   ;; enabled right away. Note that this forces loading the package.
   (marginalia-mode))
 
-(use-package consult;; :quelpa (consult :fetcher github :repo "minad/consult")
+(use-package consult
   :bind
   (("C-x r x" . consult-register)
    ("C-x r b" . consult-bookmark)
@@ -99,7 +94,7 @@
    ("M-g m" . consult-mark)
    ("C-x b" . consult-buffer)
    ("<help> a" . consult-apropos)            ;; orig. apropos-command
-   ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+   ("M-g M-l" . consult-goto-line)           ;; orig. goto-line
    ("M-g o" . consult-outline)
    ("M-g m" . consult-mark)
    ("M-g k" . consult-global-mark)
@@ -130,16 +125,8 @@
   (setq register-preview-delay 0
         register-preview-function #'consult-register-format)
   :config
-  (setq consult-project-root-function #'projectile-project-root)
-  (setq consult-narrow-key "<")
-;; Use `consult-completion-in-region' if Vertico is enabled.
-(add-hook 'vertico-mode-hook (lambda ()
-                           (setq completion-in-region-function
-                                 (if vertico-mode
-                                     #'consult-completion-in-region
-                                   #'completion--in-region))))
-
-  )
+  (setq consult-project-function #'projectile-project-root)
+  (setq consult-narrow-key "<"))
 
 (use-package embark
   :bind
@@ -169,18 +156,13 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-;; (use-package orderless
-;;   :init (icomplete-mode)
-;;   :custom
-;;   (completion-styles '(orderless))
-;;   (completion-category-defaults nil)
-;;   (completion-category-overrides '((file (styles partial-completion))))
-;;   (orderless-matching-styles '(orderless-initialism orderless-flex orderless-literal)))
 (use-package orderless
   :init (icomplete-mode)
   :custom
   (completion-styles '(orderless))
-  (orderless-matching-styles '(orderless-strict-full-initialism orderless-regexp)))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion))))
+  (orderless-matching-styles '(orderless-initialism orderless-regexp)))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
@@ -203,8 +185,8 @@
 
   ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
   ;; Vertico commands are hidden in normal buffers.
-  ;; (setq read-extended-command-predicate
-  ;;       #'command-completion-default-include-p)
+  (setq read-extended-command-predicate
+        #'command-completion-default-include-p)
 
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t))
@@ -275,9 +257,11 @@
 (use-package avy
   :custom
   (avy-timeout-seconds 1)
+  (avy-case-fold-search nil) ;; Case sensitive search
   :config
   (global-set-key (kbd "C-;") 'avy-goto-char-timer)
-  (global-set-key (kbd "M-g f") 'avy-goto-line))
+  (global-set-key (kbd "M-g g") 'avy-goto-line)
+  (global-set-key (kbd "M-g M-g") 'avy-goto-line))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; magit
@@ -300,7 +284,7 @@
 ;; https://github.com/benma/visual-regexp-steroids.el
 (use-package visual-regexp-steroids
   :bind
-  (("C-c r" . vr/replace)
+  (;;("C-c r" . vr/replace)
    ("C-c q" . vr/query-replace)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -310,29 +294,20 @@
 (use-package transpose-frame)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Theming
-;;
-;;
-;; Install themes
-(use-package atom-one-dark-theme)
-;;(use-package dracula-theme)
-(use-package monokai-pro-theme
-  :config
-  (load-theme 'monokai-pro t))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Template system
 ;;
 ;;
 ;; https://github.com/joaotavora/yasnippet
 ;;
 (use-package yasnippet
-  :init       (yas-global-mode 1)
+  :bind
+  ("C-c y s" . yas-insert-snippet)
+  ("C-c y v" . yas-visit-snippet-file)
+  ("C-c y n" . yas-new-snippet)
   :config  
-  (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets")))
-
-(use-package yasnippet-snippets
-  :after yasnippet)
+  (use-package yasnippet-snippets)
+  (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets"))
+  (yas-global-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Document Viewing
@@ -341,7 +316,6 @@
 ;; https://github.com/politza/pdf-tools
 ;;
 (use-package pdf-tools
-  ;;:pin manual
   :config
   (pdf-tools-install)
   (setq-default pdf-view-display-size 'fit-width)

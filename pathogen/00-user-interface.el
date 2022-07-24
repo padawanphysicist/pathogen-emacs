@@ -73,8 +73,6 @@
 ;;; Minor tweaks
 ;;
 ;;
-;; The blinking cursor is distracting
-(blink-cursor-mode -1)
 ;; Don't stretch the cursor to fit wide characters
 (setq x-stretch-cursor nil)
 ;; Lazy people like me never want to type "yes" when "y"
@@ -90,12 +88,8 @@
 (setq echo-keystrokes 0.02)
 ;; Expand the minibuffer to fit multi-line text
 ;; displayed in the echo-area
-(setq resize-mini-windows 'grow-only)
-
-;; Enable visual line mode
-(global-visual-line-mode 1)
-(fringe-mode 20)
-(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+;;(setq resize-mini-windows 'grow-only)
+(setq resize-mini-windows nil)
 
 (provide '00-user-interface)
 ;;; 00-user-interface.el ends here

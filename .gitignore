@@ -15,3 +15,5 @@ bookmarks
 url/
 .org-id-locations
 *.desktop
+tramp
+projectile.cache
