@@ -161,7 +161,7 @@
 ;; cause aggravation when the variable you keep trying to modify is being set in
 ;; some custom-set-variables invocation. We can disable this by mapping it to
 ;; the null device.
-(setq custom-file "~/.emacs.d/transient/emacs-custom.el")
+(setq custom-file "~/.config/emacs/custom.el")
 
 (provide '01-editor)
 ;;; 01-editor.el ends here

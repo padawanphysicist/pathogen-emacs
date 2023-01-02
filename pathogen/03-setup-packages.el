@@ -274,7 +274,7 @@
   :bind (("C-x g" . magit-status)))
 
 ;; Walk through git revisions of a file
-(use-package git-timemachine
+(use-package git-time-machine
   :after magit)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
