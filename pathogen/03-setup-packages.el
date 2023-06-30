@@ -13,6 +13,18 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; org
+;;
+;;
+;; https://orgmode.org/
+;;
+;; A GNU Emacs major mode for keeping notes, authoring documents, computational
+;; notebooks, literate programming, maintaining to-do lists, planning projects,
+;; and more — in a fast and effective plain text system.
+;;(straight-use-package 'org)
+(use-package org)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; which-key
 ;;
 ;;
