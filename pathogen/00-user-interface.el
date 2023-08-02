@@ -10,7 +10,7 @@
 ;;; Commentary:
 ;;
 ;; Since I strive for a keyboard centric experience, I disable most of the
-;; point-and-click UI. The settings here should provide some saner defaults, but
+;; point-and-click UI.  The settings here should provide some saner defaults, but
 ;; not too opiniated.
 ;;
 ;;; Code:

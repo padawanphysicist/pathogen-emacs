@@ -17,3 +17,4 @@ url/
 *.desktop
 tramp
 projectile.cache
+anaconda-mode/

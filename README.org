@@ -1,4 +1,5 @@
-* Pathogen Emacs
+#+html: <p align="center"><img src="/logo/pathogen-emacs.png" align="center" width="150" alt="Pathogen Emacs"></p>
+#+html: <h1 align="center">Pathogen Emacs</h1>
 
 I use Emacs constantly since 2010 and I really like the idea of starter kits. I've used distributions like [[https://www.spacemacs.org/][Spacemacs]] and [[https://github.com/hlissner/doom-emacs][Doom Emacs]] until I conclude that they usually make a lot assumptions that are not fit for what I need.
 
@@ -15,20 +16,16 @@ This means that by default it won't have all the fanciness of Spacemacs or Doom.
 
 Let me know you find this useful and/or have any suggestions.
 
-** Installation
+* Installation
 
 - Install [[https://www.gnu.org/software/emacs/][GNU Emacs]];
 - Clone this repo using [[https://git-scm.com/][Git]]:
 #+begin_src bash
 git clone https://gitlab.com/padawanphysicist/pathogen-emacs.git ~/.emacs.d
 #+end_src
-or, if you are looking for the [[https://github.com/padawanphysicist/pathogen-emacs][GitHub]] repository:
-#+begin_src bash
-git clone https://github.com/padawanphysicist/pathogen-emacs.git ~/.emacs.d
-#+end_src
 - Launch Emacs!
 
-** Core packages
+* Core packages
 
 - [[https://github.com/justbur/emacs-which-key][which-key]]
 - [[https://github.com/minad/vertico][vertico]]
@@ -40,8 +37,10 @@ git clone https://github.com/padawanphysicist/pathogen-emacs.git ~/.emacs.d
 - [[https://github.com/deb0ch/emacs-winum][winum]]
 - [[https://github.com/emacsorphanage/popwin][popwin]]
 - [[https://github.com/abo-abo/avy][avy]]
+- [[https://orgmode.org/][Org]]
+- [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
   
-** Main files
+* Main files
 
 - [[file:early-init.el][early-init.el]] :: Pre-initializalization file
 - [[file:init.el][init.el]] :: Main initialization file 

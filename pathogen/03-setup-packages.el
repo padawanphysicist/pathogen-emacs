@@ -13,6 +13,24 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; dashboard
+;;
+;;
+;; https://github.com/emacs-dashboard/emacs-dashboard
+;;
+;;  An extensible emacs dashboard.
+(use-package dashboard
+  :custom
+  ;; Set the title
+  (dashboard-banner-logo-title "Pathogen Emacs")
+  ;; Set the banner
+  (dashboard-startup-banner (concat user-emacs-directory "logo/pathogen-emacs.png"))
+  ;; Content is not centered by default. To center, set
+  (dashboard-center-content t)
+  :init
+  (dashboard-setup-startup-hook))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org
 ;;
 ;;
@@ -21,8 +39,8 @@
 ;; A GNU Emacs major mode for keeping notes, authoring documents, computational
 ;; notebooks, literate programming, maintaining to-do lists, planning projects,
 ;; and more — in a fast and effective plain text system.
-;;(straight-use-package 'org)
 (use-package org)
+(use-package org-contrib)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; which-key
