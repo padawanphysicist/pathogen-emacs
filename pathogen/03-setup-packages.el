@@ -252,9 +252,17 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
 )
 
-(use-package prescient)
-(use-package corfu-prescient)
-(use-package vertico-prescient)
+(use-package prescient
+  :config
+  (prescient-persist-mode 1))
+
+(use-package corfu-prescient
+  :config
+  (corfu-prescient-mode 1))
+
+(use-package vertico-prescient
+  :config
+  (vertico-prescient-mode 1))
 
 (use-package orderless
   :init (icomplete-mode)
