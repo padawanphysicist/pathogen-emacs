@@ -43,6 +43,15 @@
 (use-package org-contrib)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; diminish
+;;
+;;
+;; https://github.com/emacsmirror/diminish
+;;
+;; Hide or abbreviate of the mode line displays (lighters) of minor-modes.
+(use-package diminish)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; which-key
 ;;
 ;;
@@ -58,6 +67,7 @@
 ;; your currently entered incomplete command (a prefix) in a popup. This
 ;; provides a way to discover shortcuts globally.
 (use-package which-key
+  :diminish which-key-mode
   :custom
   (which-key-idle-delay 0.1 "Don't wait too much for help buffer popup")
   :config
@@ -186,6 +196,84 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
+;; Corfu enhances in-buffer completion with a small completion popup
+(use-package corfu
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.0)
+  (corfu-quit-at-boundary 'separator)
+  (corfu-echo-documentation 0.25)
+  (corfu-preselect-first nil)
+  :bind (:map corfu-map
+	      ("M-SPC" . corfu-insert-separator)
+	      ("RET" . nil)
+	      ("TAB" . corfu-next)
+	      ([tab] . corfu-next)
+	      ("S-TAB" . corfu-previous)
+	      ([backtab] . corfu-previous)
+	      ("S-<return>" . corfu-insert))
+  :init
+  (global-corfu-mode))
+
+;; Enable Corfu completion UI
+;; See the Corfu README for more configuration tips.
+(use-package corfu
+  :init
+  (global-corfu-mode))
+
+;; Add extensions
+(use-package cape
+  ;; Bind dedicated completion commands
+  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p h" . cape-history)
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-elisp-symbol)
+         ("C-c p e" . cape-elisp-block)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict)
+         ("C-c p \\" . cape-tex)
+         ("C-c p _" . cape-tex)
+         ("C-c p ^" . cape-tex)
+         ("C-c p &" . cape-sgml)
+         ("C-c p r" . cape-rfc1345))
+  :init
+  ;; Add to the global default value of `completion-at-point-functions' which is
+  ;; used by `completion-at-point'.  The order of the functions matters, the
+  ;; first function returning a result wins.  Note that the list of buffer-local
+  ;; completion functions takes precedence over the global list.
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  ;;(add-to-list 'completion-at-point-functions #'cape-history)
+  ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
+  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
+  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  ;;(add-to-list 'completion-at-point-functions #'cape-dict)
+  ;;(add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+)
+
+(use-package prescient
+  :config
+  (prescient-persist-mode 1))
+
+(use-package corfu-prescient
+  :config
+  (corfu-prescient-mode 1))
+
+(use-package vertico-prescient
+  :config
+  (vertico-prescient-mode 1))
+
 (use-package orderless
   :init (icomplete-mode)
   :custom
@@ -219,7 +307,22 @@
         #'command-completion-default-include-p)
 
   ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t))
+  (setq enable-recursive-minibuffers t)
+  ;; TAB cycle if there are only few candidates
+  (setq completion-cycle-threshold 3)
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  ;(setq tab-always-indent 'complete)
+  )
+
+;; Use Dabbrev with Corfu!
+(use-package dabbrev
+  ;; Swap M-/ and C-M-/
+  :bind (("M-/" . dabbrev-completion)
+         ("C-M-/" . dabbrev-expand))
+  ;; Other useful Dabbrev configurations.
+  :custom
+  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; general
@@ -370,7 +473,7 @@
   :config
   (projectile-mode +1)
   ;; Recommended keymap prefix on Windows/Linux
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+  (define-key projectile-mode-map (kbd "C-c P") 'projectile-command-map))
 
 (provide '03-setup-packages)
 ;;; 03-setup-packages.el ends here
