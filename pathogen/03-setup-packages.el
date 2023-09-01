@@ -43,6 +43,15 @@
 (use-package org-contrib)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; diminish
+;;
+;;
+;; https://github.com/emacsmirror/diminish
+;;
+;; Hide or abbreviate of the mode line displays (lighters) of minor-modes.
+(use-package diminish)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; which-key
 ;;
 ;;
@@ -58,6 +67,7 @@
 ;; your currently entered incomplete command (a prefix) in a popup. This
 ;; provides a way to discover shortcuts globally.
 (use-package which-key
+  :diminish which-key-mode
   :custom
   (which-key-idle-delay 0.1 "Don't wait too much for help buffer popup")
   :config
