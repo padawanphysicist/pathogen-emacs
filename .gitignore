@@ -18,3 +18,5 @@ url/
 tramp
 projectile.cache
 anaconda-mode/
+.lsp-session*
+var/
