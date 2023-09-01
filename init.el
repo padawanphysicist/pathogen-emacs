@@ -28,7 +28,6 @@
 ;; https://www.emacswiki.org/emacs/AnsiColor
 ;; https://www.emacswiki.org/emacs/InstallingPackages
 ;;
-(require 'cl) ;; Common Lisp facilities within Emacs
 (require 'cl-lib) ;; Common Lisp facilities within Emacs
 (require 'ansi-color) ;; Translate ansi color codes to Emacs colors
 (require 'package) ;; Package manager
@@ -40,6 +39,7 @@
 
 (add-to-list 'load-path (concat user-emacs-directory "pathogen/"))
 (add-to-list 'load-path pathogen-config-directory)
+(add-to-list 'load-path (concat pathogen-config-directory "modules/"))
 
 (require '00-user-interface)
 (require '01-editor)
