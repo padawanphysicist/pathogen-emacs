@@ -70,64 +70,6 @@
  scroll-preserve-screen-position t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Modeline
-;;
-;;
-;; Use setq-default to set it for /all/ modes
-(setq-default mode-line-format
-              (list
-               '(:eval (propertize "[%*] " 'face 'font-lock-keyword-face))
-
-                '(:eval (propertize (substring vc-mode 5)
-                                   'face 'font-lock-comment-face))
-
-               ;; the buffer name; the file name as a tool tip
-               '(:eval (propertize " %b "
-                                   'face
-                                   (let ((face (buffer-modified-p)))
-                                     (if face 'font-lock-warning-face
-                                       'font-lock-type-face))
-                                   'help-echo (buffer-file-name)))
-
-               ;; line and column
-               " (" ;; '%02' to set to 2 chars at least; prevents flickering
-               (propertize "%02l" 'face 'font-lock-keyword-face) ","
-               (propertize "%02c" 'face 'font-lock-keyword-face)
-               ") "
-
-               ;; relative position, size of file
-               " ["
-               (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
-               "/"
-               (propertize "%I" 'face 'font-lock-constant-face) ;; size
-               "] "
-
-               ;; ansi-term's line or char mode
-               ":"
-               'mode-line-process
-               ": "
-               'mode-line-modes
-
-               ;; spaces to align right
-               ;; '(:eval (propertize
-               ;;  " " 'display
-               ;;  `((space :align-to (- (+ right right-fringe right-margin)
-               ;;                        ,(+ 3 (string-width (if (listp mode-name) (car mode-name) mode-name))))))))
-
-               ;; the current major mode
-               ;;(propertize (format "%s" (car mode-name)) 'face 'font-lock-string-face)
-               ))
-
-;; One of the great things about the doom-modeline is its size. This can be
-;; approximated by forming a box around the mode line face:
-(let ((active-bg (face-attribute 'mode-line :background))
-      (inactive-bg (face-attribute 'mode-line-inactive :background)))
-  (custom-set-faces
-   `(mode-line ((t :box (:line-width 8 :color ,active-bg) :background ,active-bg))))
-  (custom-set-faces
-   `(mode-line-inactive ((t :box (:line-width 8 :color ,inactive-bg) :background ,inactive-bg)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Minor tweaks
 ;;
 ;;
