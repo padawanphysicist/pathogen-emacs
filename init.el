@@ -35,11 +35,9 @@
 ;; Main variables
 (defvar pathogen-cache-directory (concat user-emacs-directory "cache/"))
 (defvar pathogen-config-directory (substitute-in-file-name "$HOME/.pathogen.d/"))
-(defvar pathogen-custom-config-file (concat pathogen-config-directory "config.el"))
 
 (add-to-list 'load-path (concat user-emacs-directory "pathogen/"))
 (add-to-list 'load-path pathogen-config-directory)
-(add-to-list 'load-path (concat pathogen-config-directory "modules/"))
 
 (require '00-user-interface)
 (require '01-editor)
@@ -48,8 +46,8 @@
 (require '04-setup-keybindings)
 
 ;; Load additional settings
-(when (file-exists-p pathogen-custom-config-file)
-  (load pathogen-custom-config-file))
+(when (file-exists-p pathogen-config-directory)
+  (mapc #'load-file (file-expand-wildcards (concat pathogen-config-directory "*.el"))))
 
 (provide 'init)
 ;;; init.el ends here
