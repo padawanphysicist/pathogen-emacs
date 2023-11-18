@@ -20,3 +20,4 @@ projectile.cache
 anaconda-mode/
 .lsp-session*
 var/
+projects
