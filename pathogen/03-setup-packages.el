@@ -165,7 +165,7 @@
   (setq register-preview-delay 0
         register-preview-function #'consult-register-format)
   :config
-  (setq consult-project-function #'projectile-project-root)
+  (setq consult-project-function #'project-root)
   (setq consult-narrow-key "<"))
 
 (use-package embark
@@ -462,18 +462,6 @@
   (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))
   :custom
   (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Projectile
-;;
-;;
-;; https://github.com/bbatsov/projectile
-;;
-(use-package projectile
-  :config
-  (projectile-mode +1)
-  ;; Recommended keymap prefix on Windows/Linux
-  (define-key projectile-mode-map (kbd "C-c P") 'projectile-command-map))
 
 (provide '03-setup-packages)
 ;;; 03-setup-packages.el ends here
