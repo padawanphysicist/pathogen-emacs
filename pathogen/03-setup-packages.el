@@ -165,6 +165,14 @@
   (setq register-preview-delay 0
         register-preview-function #'consult-register-format)
   :config
+  (defun vct--project-try-explicit (dir)
+    "Find a super-directory of DIR containing a root file."
+    (locate-dominating-file dir ".git"))
+
+  (cl-defmethod project-root (project)
+    project)
+
+  (add-hook 'project-find-functions #'vct--project-try-explicit)
   (setq consult-project-function #'project-root)
   (setq consult-narrow-key "<"))
 
