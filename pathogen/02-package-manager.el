@@ -29,6 +29,8 @@
   ;; Integrate with use-package
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
   (setq straight-use-package-by-default t)
+  ;; Org mode is a wild beast and like to mess my config, so I must load it early
+  (straight-use-package 'org)
   (straight-use-package 'use-package))
 
 (provide '02-package-manager)
