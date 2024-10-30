@@ -43,7 +43,8 @@
 (require '01-editor)
 (require '02-package-manager)
 (require '03-setup-packages)
-(require '04-setup-keybindings)
+(require '04-custom-functions)
+(require '05-setup-keybindings)
 
 ;; Load additional settings
 (when (file-exists-p pathogen-config-directory)

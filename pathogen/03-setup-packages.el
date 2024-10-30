@@ -210,7 +210,7 @@
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.0)
+  (corfu-auto-delay 2.0)
   (corfu-quit-at-boundary 'separator)
   (corfu-echo-documentation 0.25)
   (corfu-preselect-first nil)
