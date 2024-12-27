@@ -102,5 +102,14 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 ;; `early-init-file'. This prevent Emacs from doing it early:
 (setq package-enable-at-startup nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Minimum severity level for displaying the warning buffer.
+;;
+;;
+;; If a warning’s severity level is lower than this,
+;; the warning is logged in the warnings buffer, but the buffer
+;; is not immediately displayed.  See also ‘warning-minimum-log-level’.
+(setq warning-minimum-level :emergency)
+
 (provide 'early-init)
 ;;; early-init.el ends here

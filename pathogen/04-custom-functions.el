@@ -27,9 +27,24 @@
 ;;
 ;;; Code:
 
-(defun pathogen/open-config ()
+(defun pathogen/user-config ()
   (interactive)
   (dired pathogen-config-directory))
+
+(defun pathogen/devel-config ()
+  (interactive)
+  (dired (concat user-emacs-directory "pathogen")))
+
+(defun pathogen/set-font (font-alist)
+  "Set the first available font from FONT-ALIST (name . size) as default font."
+  (let ((frame (selected-frame)))
+    (cond ((null font-alist) nil)  ; Base case: empty list
+          ((x-list-fonts (caar font-alist))  ; Check if font exists
+           (let ((font-name (caar font-alist))
+                 (font-size (cdar font-alist)))
+             (set-frame-font 
+              (format "%s-%d" font-name font-size) t t frame)))
+          (t (pathogen/set-font (cdr font-alist))))))  ; Recurse
 
 (provide '04-custom-functions)
 ;;; functions.el ends here

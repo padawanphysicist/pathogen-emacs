@@ -25,21 +25,6 @@ git clone https://gitlab.com/padawanphysicist/pathogen-emacs.git ~/.emacs.d
 #+end_src
 - Launch Emacs!
 
-* Core packages
-
-- [[https://github.com/justbur/emacs-which-key][which-key]]
-- [[https://github.com/minad/vertico][vertico]]
-- [[https://github.com/minad/marginalia][marginalia]]
-- [[https://github.com/minad/consult.git][consult]]
-- [[https://github.com/oantolin/embark][embark]]
-- [[https://github.com/oantolin/orderless][orderless]]
-- [[https://github.com/noctuid/general.el][general]]
-- [[https://github.com/deb0ch/emacs-winum][winum]]
-- [[https://github.com/emacsorphanage/popwin][popwin]]
-- [[https://github.com/abo-abo/avy][avy]]
-- [[https://orgmode.org/][Org]]
-- [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
-  
 * Main files
 
 - [[file:early-init.el][early-init.el]] :: Pre-initializalization file

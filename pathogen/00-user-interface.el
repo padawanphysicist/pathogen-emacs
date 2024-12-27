@@ -88,8 +88,10 @@
 (setq echo-keystrokes 0.02)
 ;; Expand the minibuffer to fit multi-line text
 ;; displayed in the echo-area
-;;(setq resize-mini-windows 'grow-only)
-(setq resize-mini-windows nil)
+(setq resize-mini-windows 'grow-only) ;; Denote like it!
+
+(setq visible-bell t)
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 (provide '00-user-interface)
 ;;; 00-user-interface.el ends here

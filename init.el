@@ -30,11 +30,11 @@
 ;;
 (require 'cl-lib) ;; Common Lisp facilities within Emacs
 (require 'ansi-color) ;; Translate ansi color codes to Emacs colors
-(require 'package) ;; Package manager
 
 ;; Main variables
 (defvar pathogen-cache-directory (concat user-emacs-directory "cache/"))
 (defvar pathogen-config-directory (substitute-in-file-name "$HOME/.pathogen.d/"))
+(defvar pathogen-config-file (substitute-in-file-name "$HOME/.pathogen.el"))
 
 (add-to-list 'load-path (concat user-emacs-directory "pathogen/"))
 (add-to-list 'load-path pathogen-config-directory)
@@ -44,11 +44,12 @@
 (require '02-package-manager)
 (require '03-setup-packages)
 (require '04-custom-functions)
-(require '05-setup-keybindings)
 
 ;; Load additional settings
 (when (file-exists-p pathogen-config-directory)
   (mapc #'load-file (file-expand-wildcards (concat pathogen-config-directory "*.el"))))
+(when (file-exists-p pathogen-config-file)
+  (load-file pathogen-config-file))
 
 (provide 'init)
 ;;; init.el ends here
