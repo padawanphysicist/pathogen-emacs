@@ -173,12 +173,6 @@
   (completion-category-overrides '((file (styles partial-completion))))
   (orderless-matching-styles '(orderless-initialism orderless-regexp)))
 
-;; Persist history over Emacs restarts. Vertico will sort items based on the history
-(use-package savehist
-  :ensure nil
-  :init
-  (savehist-mode))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; winum
 ;;
