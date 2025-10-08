@@ -147,7 +147,7 @@
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("M-." . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-  :after embark-consult
+  :after avy
   :config
   (defun avy-action-embark (pt)
     (unwind-protect
