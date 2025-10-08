@@ -61,6 +61,13 @@
  scroll-margin 0
  scroll-preserve-screen-position t)
 
+;; Enable pixel-scroll-precision-mode for smooth scrolling (Emacs 29+)
+;; This provides smooth pixel-level scrolling with mouse/trackpad instead of
+;; jumping line-by-line. Significantly improves the scrolling experience on
+;; modern displays and input devices.
+(when (fboundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-precision-mode 1))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Minor tweaks
 ;;
