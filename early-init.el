@@ -130,13 +130,21 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 (setq package-enable-at-startup nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Minimum severity level for displaying the warning buffer.
+;;; Warning level configuration
 ;;
 ;;
-;; If a warning’s severity level is lower than this,
-;; the warning is logged in the warnings buffer, but the buffer
-;; is not immediately displayed.  See also ‘warning-minimum-log-level’.
-(setq warning-minimum-level :emergency)
+;; Set to :error instead of :emergency to avoid suppressing important warnings
+;; about configuration issues, deprecated functions, or package loading errors.
+;; This still prevents minor warnings from interrupting startup while keeping
+;; you informed about actual problems.
+;;
+;; Warning levels (least to most severe):
+;;   :debug < :info < :warning < :error < :emergency
+;;
+;; - :emergency suppresses almost everything (previous setting)
+;; - :error shows errors but hides routine warnings (current setting)
+;; - :warning shows all warnings (Emacs default, can be noisy)
+(setq warning-minimum-level :error)
 
 (provide 'early-init)
 ;;; early-init.el ends here
