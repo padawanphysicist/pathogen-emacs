@@ -87,6 +87,19 @@ If you experience freezing, decrease this. If you experience stuttering, increas
                               (garbage-collect))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Improve subprocess communication
+;;
+;;
+;; Increase the amount of data which Emacs reads from subprocesses in a single
+;; chunk. This is especially important for LSP servers and other tools that
+;; communicate via stdout/stdin.
+;;
+;; The default value is 4096 bytes (4KB), which is far too low for modern
+;; systems. Setting this to 1MB significantly improves performance of language
+;; servers, tree-sitter parsers, and other external tools.
+(setq read-process-output-max (* 1024 1024)) ; 1MB
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Improve loading of files
 ;;
 ;;
