@@ -317,9 +317,17 @@
           (mc/create-fake-cursor-at-point)))))
   (add-to-list 'mc/cmds-to-run-once 'mc/toggle-cursor-at-point)
   (add-to-list 'mc/cmds-to-run-once 'multiple-cursors-mode)
-  :bind (("C-S-<mouse-1>" . mc/add-cursor-on-click)
+  :bind (;; Mouse and custom bindings
+         ("C-S-<mouse-1>" . mc/add-cursor-on-click)
          ("C-S-SPC" . mc/toggle-cursor-at-point)
-         ("<C-S-return>" . multiple-cursors-mode)))
+         ("<C-S-return>" . multiple-cursors-mode)
+         ;; Standard multiple-cursors bindings
+         ("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)
+         ("C-c C-<" . mc/mark-all-like-this)
+         ("C-S-c C-S-c" . mc/edit-lines)
+         ("C-c C->" . mc/skip-to-next-like-this)
+         ("C-c C-<" . mc/skip-to-previous-like-this)))
 
 (provide '03-setup-packages)
 ;;; 03-setup-packages.el ends here
