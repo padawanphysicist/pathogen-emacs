@@ -108,8 +108,6 @@
          ;; M-g bindings (goto-map)
          ("M-g e" . consult-compile-error)
          ("M-g f" . consult-flycheck)               ;; Alternative: consult-flycheck
-         ("M-g g" . consult-goto-line)             ;; orig. goto-line
-         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
          ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
          ("M-g m" . consult-mark)
          ("M-g k" . consult-global-mark)
@@ -219,10 +217,9 @@
   :custom
   (avy-timeout-seconds 1)
   (avy-case-fold-search nil) ;; Case sensitive search
-  :config
-  (global-set-key (kbd "C-;") 'avy-goto-char-timer)
-  (global-set-key (kbd "M-g g") 'avy-goto-line)
-  (global-set-key (kbd "M-g M-g") 'avy-goto-line))
+  :bind (("C-;" . avy-goto-char-timer)
+         ("M-g g" . avy-goto-line)
+         ("M-g M-g" . avy-goto-line)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; magit
