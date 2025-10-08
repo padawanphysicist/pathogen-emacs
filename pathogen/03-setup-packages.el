@@ -345,6 +345,55 @@
               ("C-c ! l" . flycheck-list-errors)
               ("C-c ! v" . flycheck-verify-setup)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; eglot
+;;
+;;
+;; Built-in LSP client (Emacs 29+, available via package for earlier versions)
+;; Provides IDE-like features: code completion, jump to definition,
+;; documentation, refactoring, and more.
+(use-package eglot
+  :ensure nil
+  :hook ((python-mode . eglot-ensure)
+         (python-ts-mode . eglot-ensure)
+         (js-mode . eglot-ensure)
+         (js-ts-mode . eglot-ensure)
+         (typescript-mode . eglot-ensure)
+         (typescript-ts-mode . eglot-ensure)
+         (rust-mode . eglot-ensure)
+         (rust-ts-mode . eglot-ensure)
+         (c-mode . eglot-ensure)
+         (c-ts-mode . eglot-ensure)
+         (c++-mode . eglot-ensure)
+         (c++-ts-mode . eglot-ensure)
+         (go-mode . eglot-ensure)
+         (go-ts-mode . eglot-ensure))
+  :custom
+  (eglot-autoshutdown t "Shutdown server when last buffer is killed")
+  (eglot-sync-connect nil "Connect asynchronously")
+  (eglot-events-buffer-size 0 "Disable event logging for performance")
+  :bind (:map eglot-mode-map
+              ("C-c l r" . eglot-rename)
+              ("C-c l a" . eglot-code-actions)
+              ("C-c l f" . eglot-format)
+              ("C-c l d" . eglot-find-declaration)
+              ("C-c l i" . eglot-find-implementation)
+              ("C-c l t" . eglot-find-typeDefinition)
+              ("C-c l o" . eglot-code-action-organize-imports)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; treesit-auto
+;;
+;;
+;; Automatically install and use tree-sitter grammars
+;; Provides better syntax highlighting and structural navigation
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt "Ask before installing grammars")
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
 (use-package multiple-cursors
   :config
   (defun mc/toggle-cursor-at-point ()
