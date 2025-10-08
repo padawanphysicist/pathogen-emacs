@@ -25,8 +25,8 @@
   (dashboard-startup-banner (concat user-emacs-directory "logo/pathogen-emacs.png") "Set initial banner")
   (dashboard-center-content t "Center contents by default")
   :config
-  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
-  (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
+  (add-hook 'after-init-hook #'dashboard-insert-startupify-lists)
+  (add-hook 'after-init-hook #'dashboard-initialize)
   (dashboard-setup-startup-hook))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
