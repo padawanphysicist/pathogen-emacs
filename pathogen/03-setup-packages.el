@@ -322,6 +322,29 @@
          ("C-x p c" . project-compile)
          ("C-x p e" . project-eshell)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; flycheck
+;;
+;;
+;; https://www.flycheck.org/
+;;
+;; On-the-fly syntax checking for GNU Emacs
+;; Provides real-time error highlighting and linting for 50+ languages
+(use-package flycheck
+  :hook (prog-mode . flycheck-mode)
+  :custom
+  (flycheck-check-syntax-automatically '(save idle-change mode-enabled)
+   "Check on save, after idle time, and when mode is enabled")
+  (flycheck-idle-change-delay 2.0
+   "Wait 2 seconds after typing stops before checking")
+  (flycheck-display-errors-delay 0.5
+   "Show error messages after 0.5 seconds")
+  :bind (:map flycheck-mode-map
+              ("M-n" . flycheck-next-error)
+              ("M-p" . flycheck-previous-error)
+              ("C-c ! l" . flycheck-list-errors)
+              ("C-c ! v" . flycheck-verify-setup)))
+
 (use-package multiple-cursors
   :config
   (defun mc/toggle-cursor-at-point ()
