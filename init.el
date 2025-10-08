@@ -83,7 +83,6 @@ DESCRIPTION is used in messages to identify the directory."
 ;;   - Load time tracking for performance analysis
 ;;   - Summary of failed modules at the end
 ;;
-;; Reference: IMPROVEMENTS.md #7
 
 (defvar pathogen--failed-modules nil
   "List of modules that failed to load during initialization.

@@ -248,7 +248,9 @@
 ;;
 ;;
 ;; https://github.com/benma/visual-regexp-steroids.el
+;; Deferred: only loads when keybinding is used
 (use-package visual-regexp-steroids
+  :defer t
   :bind
   (("C-c q" . vr/query-replace)))
 
@@ -256,12 +258,22 @@
 ;; Enable transposing frames
 ;;
 ;;
-(use-package transpose-frame)
+;; Deferred: only loads when transpose-frame commands are called
+(use-package transpose-frame
+  :defer t
+  :commands (transpose-frame
+             flip-frame
+             flop-frame
+             rotate-frame
+             rotate-frame-clockwise
+             rotate-frame-anticlockwise))
 
+;; Load after init to avoid slowing down startup
 (use-package dimmer
+  :defer 2
   :custom
   (dimmer-fraction 0.5)
-  :init
+  :config
   (dimmer-mode t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

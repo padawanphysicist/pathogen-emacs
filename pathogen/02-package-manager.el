@@ -128,7 +128,6 @@
 ;; Local development:
 ;;   (use-package pkg :elpaca (pkg :local-repo "~/projects/pkg"))
 ;;
-;; Reference: IMPROVEMENTS.md #30
 ;; See also: https://github.com/progfolio/elpaca#recipe-format
 
 ;; This function displays how long Emacs took to start.
