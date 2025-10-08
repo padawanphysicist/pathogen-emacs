@@ -49,6 +49,18 @@
 (setq tab-always-indent 'complete)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Electric indentation
+;;
+;;
+;; electric-indent-mode is enabled by default in Emacs 24.4+. It automatically
+;; reindents the current line when you press RET or type certain characters
+;; like closing braces, brackets, or semicolons.
+;;
+;; This provides convenient automatic formatting as you type. If you find it
+;; intrusive, you can disable it with: (electric-indent-mode -1)
+(electric-indent-mode 1)  ; Explicit, though enabled by default
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Clipboard/kill-ring
 ;;
 ;;
