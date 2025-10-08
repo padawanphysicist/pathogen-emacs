@@ -109,39 +109,55 @@
 ;;; Save minibuffer history
 ;;
 ;;
-(setq savehist-file (concat pathogen-cache-directory "savehist"))
-(savehist-mode 1)
-(setq
- savehist-save-minibuffer-history t
- ;; save on kill only
- savehist-autosave-interval nil    
- savehist-additional-variables
- '(
-   ;; persist clipboard
-   kill-ring  
-   ;; persist macros
-   register-alist
-   ;; persist marks
-   mark-ring global-mark-ring       
-   ;; persist searches
-   search-ring regexp-search-ring))
+(use-package savehist
+  :ensure nil
+  :init
+  (savehist-mode 1)
+  :custom
+  (savehist-file (concat pathogen-cache-directory "savehist"))
+  (savehist-save-minibuffer-history t)
+  ;; save on kill only
+  (savehist-autosave-interval nil)
+  (savehist-additional-variables
+   '(
+     ;; persist clipboard
+     kill-ring
+     ;; persist macros
+     register-alist
+     ;; persist marks
+     mark-ring global-mark-ring
+     ;; persist searches
+     search-ring regexp-search-ring)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Undo/Redo window configuration
 ;;
 ;;
-(winner-mode 1)
+(use-package winner
+  :ensure nil
+  :config
+  (winner-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Recent files
 ;;
 ;;
-(recentf-mode 1)
-(setq recentf-max-menu-items 50)
-(setq recentf-max-saved-items 50)
+(use-package recentf
+  :ensure nil
+  :init
+  (recentf-mode 1)
+  :custom
+  (recentf-max-menu-items 50)
+  (recentf-max-saved-items 50))
 
-;; Show matching parenthesis
-(show-paren-mode 1)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Show matching parenthesis
+;;
+;;
+(use-package paren
+  :ensure nil
+  :config
+  (show-paren-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Custom hooks
