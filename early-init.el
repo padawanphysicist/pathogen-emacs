@@ -52,6 +52,8 @@
 (defvar pathogen/gc-cons-threshold 67108864 ; 64mb
   "The default value to use for `gc-cons-threshold'.
 If you experience freezing, decrease this. If you experience stuttering, increase this.")
+(defvar pathogen/gc-cons-percentage 0.5 ; 50%
+  "The default value to use for `gc-cons-threshold'.")
 
 ;; and add a function to restore GC as a hook:
 ;;
@@ -60,7 +62,8 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Startup-Summary.html#Startup-Summary):
 (defun pathogen--restore-gc ()
   "Restore garbage collection."
-  (setq gc-cons-threshold pathogen/gc-cons-threshold))
+  (setq gc-cons-threshold pathogen/gc-cons-threshold)
+  (setq gc-cons-percentage pathogen/gc-cons-percentage))
 (add-hook 'emacs-startup-hook #'pathogen--restore-gc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -78,12 +81,10 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 ;; This keeps GC out of your way:
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (if (boundp 'after-focus-change-function)
-                (add-function :after after-focus-change-function
-                              (lambda ()
-                                (unless (frame-focus-state)
-                                  (garbage-collect))))
-              (add-hook 'after-focus-change-function 'garbage-collect))))
+            (add-function :after after-focus-change-function
+                          (lambda ()
+                            (unless (frame-focus-state)
+                              (garbage-collect))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Improve loading of files
