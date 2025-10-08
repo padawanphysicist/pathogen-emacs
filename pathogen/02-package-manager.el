@@ -77,6 +77,21 @@
 
 (message "Loaded elpaca configuration")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Elpaca logging configuration
+;;
+;;
+;; Elpaca logs package operations to the *elpaca-log* buffer by default.
+;; This is helpful for debugging package installation or update issues.
+;;
+;; Access the log with: M-x elpaca-log or (switch-to-buffer "*elpaca-log*")
+;;
+;; Reference: IMPROVEMENTS.md #28
+;; (setq elpaca-log-buffer "*elpaca-log*")  ; Explicit default
+
+;; Optional: Increase verbosity for debugging package issues
+;; (setq elpaca-verbosity 2)  ; 0=quiet, 1=normal (default), 2=verbose, 3=debug
+
 ;; This function displays how long Emacs took to start.
 (add-hook 'elpaca-after-init-hook
           (lambda ()
