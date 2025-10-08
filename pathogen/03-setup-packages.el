@@ -304,6 +304,24 @@
 
   (global-completion-preview-mode))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; project.el
+;;
+;;
+;; Built-in project management (Emacs 27+)
+;; Provides project detection, file finding, and project-scoped operations
+(use-package project
+  :ensure nil
+  :bind (("C-x p f" . project-find-file)
+         ("C-x p F" . project-or-external-find-file)
+         ("C-x p g" . project-find-regexp)
+         ("C-x p d" . project-find-dir)
+         ("C-x p p" . project-switch-project)
+         ("C-x p b" . project-switch-to-buffer)
+         ("C-x p k" . project-kill-buffers)
+         ("C-x p c" . project-compile)
+         ("C-x p e" . project-eshell)))
+
 (use-package multiple-cursors
   :config
   (defun mc/toggle-cursor-at-point ()
