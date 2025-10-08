@@ -19,6 +19,19 @@
 ;;
 ;; https://github.com/progfolio/elpaca
 ;;
+;; Bootstrap notes:
+;; The bootstrap process clones Elpaca from GitHub on first run. This requires:
+;;   - Active internet connection
+;;   - Access to github.com (not blocked by firewall/proxy)
+;;   - May take 30-60 seconds depending on network speed
+;;
+;; If Emacs hangs during first startup:
+;;   1. Check your internet connection
+;;   2. Ensure github.com is accessible
+;;   3. Try manual bootstrap:
+;;      git clone --depth=1 https://github.com/progfolio/elpaca.git \
+;;        ~/.emacs.d/elpaca/repos/elpaca
+;;
 (defvar elpaca-installer-version 0.11)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
