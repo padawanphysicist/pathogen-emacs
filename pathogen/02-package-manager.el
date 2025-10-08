@@ -85,12 +85,38 @@
 ;; This is helpful for debugging package installation or update issues.
 ;;
 ;; Access the log with: M-x elpaca-log or (switch-to-buffer "*elpaca-log*")
-;;
-;; Reference: IMPROVEMENTS.md #28
 ;; (setq elpaca-log-buffer "*elpaca-log*")  ; Explicit default
 
 ;; Optional: Increase verbosity for debugging package issues
 ;; (setq elpaca-verbosity 2)  ; 0=quiet, 1=normal (default), 2=verbose, 3=debug
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Elpaca recipe overrides
+;;
+;;
+;; You can override package recipes to use different sources, branches, or
+;; build configurations. This is useful for:
+;;   - Using forked repositories
+;;   - Testing development branches
+;;   - Pinning to specific commits
+;;   - Local package development
+;;
+;; Examples:
+;;
+;; Use a fork:
+;;   (use-package pkg :elpaca (pkg :host github :repo "you/pkg"))
+;;
+;; Use specific branch:
+;;   (use-package pkg :elpaca (pkg :branch "develop"))
+;;
+;; Pin to commit:
+;;   (use-package pkg :elpaca (pkg :ref "abc123"))
+;;
+;; Local development:
+;;   (use-package pkg :elpaca (pkg :local-repo "~/projects/pkg"))
+;;
+;; Reference: IMPROVEMENTS.md #30
+;; See also: https://github.com/progfolio/elpaca#recipe-format
 
 ;; This function displays how long Emacs took to start.
 (add-hook 'elpaca-after-init-hook
