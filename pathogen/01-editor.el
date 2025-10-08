@@ -136,7 +136,24 @@
 ;;
 ;;
 ;; Define hook run after font resize
-(defvar after-text-scale-hook nil "Hook run after text is rescaled.")
+(defvar after-text-scale-hook nil
+  "Hook run after text is rescaled.
+This hook is triggered after `text-scale-increase', `text-scale-decrease',
+or `text-scale-set' commands are executed.
+
+Example usage:
+  (add-hook 'after-text-scale-hook
+            (lambda ()
+              (message \"Text scaled to: %s\" text-scale-mode-amount)))")
+
+;; Make the hook functional by advising text scaling functions
+(defun pathogen--run-after-text-scale-hook (&rest _args)
+  "Run `after-text-scale-hook' after text scaling."
+  (run-hooks 'after-text-scale-hook))
+
+(advice-add 'text-scale-increase :after #'pathogen--run-after-text-scale-hook)
+(advice-add 'text-scale-decrease :after #'pathogen--run-after-text-scale-hook)
+(advice-add 'text-scale-set :after #'pathogen--run-after-text-scale-hook)
 
 ;; Define hook run after theme loading
 (defvar after-load-theme-hook nil
