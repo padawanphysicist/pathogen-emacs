@@ -170,9 +170,17 @@ Example usage:
 ;;; Sticky keys
 ;;
 ;;
-;; https://www.emacswiki.org/emacs/StickyModifiers
+;; Note: Emacs does not have built-in sticky keys support. The variable
+;; `modifier-keys-are-sticky` does not exist in standard Emacs and has been
+;; removed as it had no effect.
 ;;
-(setq modifier-keys-are-sticky t)
+;; If you need sticky keys functionality:
+;;   - Use OS-level sticky keys (recommended for system-wide support)
+;;     * macOS: System Preferences → Accessibility → Keyboard
+;;     * Linux: Settings → Universal Access → Typing Assist
+;;     * Windows: Settings → Accessibility → Keyboard
+;;   - Consider Emacs packages like `god-mode` or `key-chord` for modal editing
+;; See also: https://www.emacswiki.org/emacs/StickyModifiers
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Custom init file
