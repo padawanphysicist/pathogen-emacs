@@ -39,11 +39,63 @@
 (add-to-list 'load-path (concat user-emacs-directory "pathogen/"))
 (add-to-list 'load-path pathogen-config-directory)
 
-(require '00-user-interface)
-(require '01-editor)
-(require '02-package-manager)
-(require '03-setup-packages)
-(require '04-custom-functions)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Module loading with error handling
+;;
+;;
+;; Load configuration modules with proper error handling to prevent a single
+;; module failure from breaking the entire initialization. This provides:
+;;   - Graceful degradation when modules fail
+;;   - Clear error messages for debugging
+;;   - Load time tracking for performance analysis
+;;   - Summary of failed modules at the end
+;;
+;; Reference: IMPROVEMENTS.md #7
+
+(defvar pathogen--failed-modules nil
+  "List of modules that failed to load during initialization.
+Each element is a cons cell (MODULE . ERROR).")
+
+(defun pathogen--load-module (module)
+  "Load MODULE with error handling, timing, and user feedback.
+If MODULE fails to load, record the error and continue initialization
+with reduced functionality."
+  (let ((start-time (current-time)))
+    (condition-case err
+        (progn
+          (require module)
+          (message "Loaded %s in %.2fs"
+                   module
+                   (float-time (time-subtract (current-time) start-time))))
+      (error
+       (push (cons module err) pathogen--failed-modules)
+       (message "ERROR: Failed to load %s: %s"
+                module
+                (error-message-string err))
+       (display-warning 'init
+                        (format "Failed to load module '%s': %s\n\nEmacs will continue with reduced functionality."
+                                module (error-message-string err))
+                        :error)))))
+
+;; Load core modules
+(pathogen--load-module '00-user-interface)
+(pathogen--load-module '01-editor)
+(pathogen--load-module '02-package-manager)
+(pathogen--load-module '03-setup-packages)
+(pathogen--load-module '04-custom-functions)
+
+;; Report any failures at the end of initialization
+(when pathogen--failed-modules
+  (display-warning 'init
+                   (format "Failed to load %d module(s):\n%s"
+                           (length pathogen--failed-modules)
+                           (mapconcat (lambda (x)
+                                        (format "  - %s: %s"
+                                                (car x)
+                                                (error-message-string (cdr x))))
+                                      pathogen--failed-modules
+                                      "\n"))
+                   :error))
 
 ;; Load additional settings
 (when (file-exists-p pathogen-config-directory)
