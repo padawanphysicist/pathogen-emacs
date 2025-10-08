@@ -100,6 +100,19 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 (setq read-process-output-max (* 1024 1024)) ; 1MB
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Early UI optimizations
+;;
+;;
+;; Disable the startup screen to prevent it from flashing briefly during
+;; initialization. Setting this in early-init.el ensures it never appears,
+;; rather than appearing and then being hidden when init.el loads.
+(setq inhibit-startup-screen t)
+
+;; Use visual bell instead of audible beep. Setting this early prevents any
+;; initial beeps during startup.
+(setq visible-bell t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Improve loading of files
 ;;
 ;;

@@ -36,14 +36,6 @@
  scroll-bar-mode nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Disable startup screen
-;;
-;;
-;; Let's be honest: if you are using Emacs by now I don't think you are really
-;; interested in the info on the startup screen.
-(setq inhibit-startup-screen t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Smooth scrolling
 ;;
 ;;
@@ -90,7 +82,6 @@
 ;; displayed in the echo-area
 (setq resize-mini-windows 'grow-only) ;; Denote like it!
 
-(setq visible-bell t)
 (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 (provide '00-user-interface)
