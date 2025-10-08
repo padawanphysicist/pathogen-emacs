@@ -108,9 +108,18 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 ;; rather than appearing and then being hidden when init.el loads.
 (setq inhibit-startup-screen t)
 
-;; Use visual bell instead of audible beep. Setting this early prevents any
-;; initial beeps during startup.
-(setq visible-bell t)
+;; Bell configuration: Flash the mode line instead of the entire screen
+;; or making an audible beep. The default visual bell flashes the whole
+;; screen which can be jarring and distracting. This subtle mode-line
+;; flash provides feedback without being intrusive.
+(setq visible-bell nil)  ; Disable default visual bell
+(setq ring-bell-function
+      (lambda ()
+        (let ((orig-fg (face-foreground 'mode-line)))
+          (set-face-foreground 'mode-line "#F2804F")
+          (run-with-idle-timer 0.1 nil
+                               (lambda (fg) (set-face-foreground 'mode-line fg))
+                               orig-fg))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Improve loading of files
