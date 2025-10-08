@@ -141,9 +141,13 @@
 ;; Define hook run after theme loading
 (defvar after-load-theme-hook nil
   "Hook run after a color theme is loaded using `load-theme'.")
-(defadvice load-theme (after run-after-load-theme-hook activate)
-  "Run `after-load-theme-hook'."
+
+;; Use modern advice-add instead of deprecated defadvice (obsolete since Emacs 24.4)
+(defun pathogen--run-after-load-theme-hook (&rest _args)
+  "Run `after-load-theme-hook' after loading a theme."
   (run-hooks 'after-load-theme-hook))
+
+(advice-add 'load-theme :after #'pathogen--run-after-load-theme-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Sticky keys
@@ -152,8 +156,6 @@
 ;; https://www.emacswiki.org/emacs/StickyModifiers
 ;;
 (setq modifier-keys-are-sticky t)
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Custom init file
