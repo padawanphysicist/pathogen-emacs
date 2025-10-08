@@ -47,7 +47,7 @@
 (use-package which-key
   :diminish which-key-mode
   :custom
-  (which-key-idle-delay 0.1 "Don't wait too much for help buffer popup")
+  (which-key-idle-delay 0.4 "Delay before showing keybinding hints")
   :config
   (which-key-mode 1))
 
