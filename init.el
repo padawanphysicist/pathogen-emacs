@@ -40,6 +40,39 @@
 (add-to-list 'load-path pathogen-config-directory)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Ensure required directories exist
+;;
+;;
+;; Create cache and config directories if they don't exist. This prevents
+;; errors when modules try to write files (savehist, recentf, etc.) to
+;; directories that haven't been created yet.
+(defun pathogen--ensure-directory (dir description)
+  "Ensure DIR exists, creating it if necessary.
+DESCRIPTION is used in messages to identify the directory."
+  (condition-case err
+      (progn
+        (unless (file-exists-p dir)
+          (make-directory dir t)
+          (message "Created %s: %s" description dir))
+        ;; Verify it's actually a directory
+        (unless (file-directory-p dir)
+          (error "%s exists but is not a directory: %s" description dir))
+        ;; Check if directory is writable
+        (unless (file-writable-p dir)
+          (display-warning 'init
+                           (format "%s is not writable: %s"
+                                   (capitalize description) dir)
+                           :error)))
+    (error
+     (display-warning 'init
+                      (format "Failed to create %s '%s': %s"
+                              description dir (error-message-string err))
+                      :error))))
+
+;; Ensure cache directory exists (required for savehist, recentf, etc.)
+(pathogen--ensure-directory pathogen-cache-directory "cache directory")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Module loading with error handling
 ;;
 ;;
