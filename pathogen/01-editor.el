@@ -176,13 +176,17 @@ Example usage:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Custom init file
+;;
+;;
 ;; By default, Emacs stores any configuration you make through its UI by writing
 ;; custom-set-variables invocations to your init file, or to the file specified
-;; by custom-file. Though this is convenient, it’s also an excellent way to
+;; by custom-file. Though this is convenient, it's also an excellent way to
 ;; cause aggravation when the variable you keep trying to modify is being set in
-;; some custom-set-variables invocation. We can disable this by mapping it to
-;; the null device.
-(setq custom-file "~/.config/emacs/custom.el")
+;; some custom-set-variables invocation.
+;;
+;; We set custom-file to a separate file to keep init.el clean. Using
+;; user-emacs-directory ensures portability across different systems.
+(setq custom-file (concat user-emacs-directory "custom.el"))
 
 (provide '01-editor)
 ;;; 01-editor.el ends here
