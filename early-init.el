@@ -15,6 +15,23 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; File name handler optimization
+;;
+;;
+;; Disable file-name-handler-alist during initialization for significant
+;; performance improvement (30-50% faster startup). Handlers check for remote
+;; files, archives, compression, etc., which are not needed during init.
+;; The original list is restored after startup completes.
+(defvar pathogen--file-name-handler-alist file-name-handler-alist
+  "Backup of file-name-handler-alist for restoration after init.")
+(setq file-name-handler-alist nil)
+
+;; Restore after initialization
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq file-name-handler-alist pathogen--file-name-handler-alist)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Load shared variables
 ;;
 ;;
