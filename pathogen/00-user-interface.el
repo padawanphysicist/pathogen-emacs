@@ -9,9 +9,17 @@
 ;;
 ;;; Commentary:
 ;;
-;; Since I strive for a keyboard centric experience, I disable most of the
-;; point-and-click UI.  The settings here should provide some saner defaults, but
-;; not too opiniated.
+;; Module: User Interface (00)
+;; Purpose: Configure visual appearance and frame parameters
+;; Dependencies: None (built-in features only)
+;; Provides: Theme configuration, visual customization
+;;
+;; This module handles all visual aspects of Emacs. Since I strive for a
+;; keyboard centric experience, I disable most of the point-and-click UI.
+;; The settings here should provide some saner defaults, but not too opiniated.
+;;
+;; Note: Some UI settings are in early-init.el for even earlier loading
+;; (inhibit-startup-screen, visible-bell).
 ;;
 ;;; Code:
 

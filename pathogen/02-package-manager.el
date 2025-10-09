@@ -9,7 +9,14 @@
 ;;
 ;;; Commentary:
 ;;
-;; Setup package manager
+;; Module: Package Manager (02)
+;; Purpose: Package management infrastructure
+;; Dependencies: None
+;; Provides: (elpaca ...), (use-package ...)
+;;
+;; This module bootstraps and configures the Elpaca package manager and
+;; integrates it with use-package. CRITICAL: This module must load before
+;; any configuration that uses external packages.
 ;;
 ;;; Code:
 

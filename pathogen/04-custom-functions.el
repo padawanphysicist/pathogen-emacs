@@ -23,7 +23,13 @@
 ;;
 ;;; Commentary:
 ;;
-;;  Functions to be available to all custom configuration
+;; Module: Custom Functions (04)
+;; Purpose: User-facing commands and utility functions
+;; Dependencies: Can use any previous module
+;; Provides: pathogen/* commands available to users
+;;
+;; Functions to be available to all custom configuration. This module provides
+;; interactive commands and helper functions used across the configuration.
 ;;
 ;;; Code:
 

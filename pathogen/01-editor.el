@@ -9,7 +9,14 @@
 ;;
 ;;; Commentary:
 ;;
-;;  Settings for enhance basic emacs experience.
+;; Module: Editor (01)
+;; Purpose: Core editor behavior and built-in features
+;; Dependencies: None (built-in features only)
+;; Provides: Editor fundamentals, custom hooks
+;;
+;; Settings to enhance the basic Emacs editing experience using only built-in
+;; features. This module configures indentation, file handling, history, and
+;; other fundamental editor behaviors.
 ;;
 ;;; Code:
 

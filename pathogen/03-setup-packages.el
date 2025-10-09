@@ -9,6 +9,15 @@
 ;;
 ;;; Commentary:
 ;;
+;; Module: Setup Packages (03)
+;; Purpose: External package configurations
+;; Dependencies: 02-package-manager.el (elpaca, use-package)
+;; Provides: Modern IDE-like features and workflows
+;;
+;; This module configures all external packages including the completion stack
+;; (vertico, consult, embark, corfu, orderless), navigation tools (avy,
+;; ace-window), development tools (eglot, flycheck, treesit-auto, magit), and
+;; productivity packages (which-key, multiple-cursors, dimmer).
 ;;
 ;;; Code:
 

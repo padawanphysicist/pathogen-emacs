@@ -110,7 +110,84 @@ with reduced functionality."
                                 module (error-message-string err))
                         :error)))))
 
-;; Load core modules
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Core Module Architecture
+;;
+;; Pathogen Emacs uses a numbered module system for organized, maintainable
+;; configuration. Modules are loaded in order, with each providing specific
+;; functionality.
+;;
+;; MODULE RESPONSIBILITIES:
+;;
+;; 00-user-interface.el
+;;   Purpose: Visual appearance and frame configuration
+;;   - Frame appearance (fonts, colors, window chrome)
+;;   - Visual elements (mode-line, fringes, scrollbars)
+;;   - Theme configuration and hooks
+;;   - Does NOT depend on packages (built-in features only)
+;;   - Provides: Visual configuration, theme loading hooks
+;;
+;; 01-editor.el
+;;   Purpose: Core editor behavior and built-in features
+;;   - Editor behavior (indentation, tabs, whitespace)
+;;   - File handling (backups, auto-save, custom-file)
+;;   - History/persistence (savehist, recentf, winner-mode)
+;;   - Built-in features (paren matching, electric-indent)
+;;   - Custom hooks (after-load-theme-hook, after-text-scale-hook)
+;;   - Does NOT depend on external packages
+;;   - Provides: Editor fundamentals, custom hooks
+;;
+;; 02-package-manager.el
+;;   Purpose: Package management infrastructure
+;;   - Elpaca package manager bootstrap and configuration
+;;   - use-package setup and integration
+;;   - Package installation and update system
+;;   - CRITICAL: Must load before any external packages
+;;   - Provides: (elpaca ...), (use-package ...)
+;;
+;; 03-setup-packages.el
+;;   Purpose: External package configurations
+;;   - Completion stack (vertico, consult, embark, corfu, orderless)
+;;   - Navigation tools (avy, ace-window)
+;;   - Development tools (eglot, flycheck, treesit-auto, magit)
+;;   - Productivity packages (which-key, multiple-cursors, dimmer)
+;;   - Depends on: 02-package-manager.el
+;;   - Provides: Modern IDE-like features and workflows
+;;
+;; 04-custom-functions.el
+;;   Purpose: User-facing commands and utility functions
+;;   - Interactive commands (pathogen/user-config, pathogen/devel-config)
+;;   - Utility functions (pathogen/set-font)
+;;   - Helper functions used across configuration
+;;   - Can depend on: Any previous module
+;;   - Provides: pathogen/* commands available to users
+;;
+;; LOAD ORDER RATIONALE:
+;; The numbering (00-04) determines load order and is critical:
+;;   1. UI (00) loads early to prevent visual flicker during startup
+;;   2. Editor (01) sets up built-ins before package manager is available
+;;   3. Package manager (02) must load before any packages that depend on it
+;;   4. Packages (03) can only load once package manager is configured
+;;   5. Custom functions (04) last, as they may use features from all modules
+;;
+;; Changing load order may break dependencies!
+;;
+;; EXTENDING THE CONFIGURATION:
+;; When adding new functionality, choose the appropriate module:
+;;   - Built-in feature config → 01-editor.el
+;;   - New package → 03-setup-packages.el
+;;   - New user command → 04-custom-functions.el
+;;   - UI/appearance → 00-user-interface.el
+;;
+;; If 03-setup-packages.el grows too large (>500 lines), consider splitting:
+;;   - 03a-completion.el (vertico, consult, embark, corfu, orderless)
+;;   - 03b-navigation.el (avy, ace-window)
+;;   - 03c-development.el (eglot, flycheck, treesit-auto, magit)
+;;   - 03d-editing.el (multiple-cursors, visual-regexp, etc.)
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Load core modules in order
 (pathogen--load-module '00-user-interface)
 (pathogen--load-module '01-editor)
 (pathogen--load-module '02-package-manager)
