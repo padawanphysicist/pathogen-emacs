@@ -28,10 +28,25 @@
 ;;; Code:
 
 (defun pathogen/user-config ()
+  "Open user configuration directory in Dired.
+
+Opens the directory specified by `pathogen-config-directory' where
+user-specific configuration files are stored. This is useful for
+quickly accessing and editing your personal Emacs configuration.
+
+See also `pathogen/devel-config' for accessing the main Pathogen
+configuration directory."
   (interactive)
   (dired pathogen-config-directory))
 
 (defun pathogen/devel-config ()
+  "Open Pathogen development configuration directory in Dired.
+
+Opens the main Pathogen configuration directory (USER-EMACS-DIRECTORY/pathogen)
+containing the core numbered configuration modules. This is where the main
+system configuration files are located (00-user-interface.el, 01-editor.el, etc.).
+
+See also `pathogen/user-config' for accessing user-specific configuration files."
   (interactive)
   (dired (concat user-emacs-directory "pathogen")))
 
