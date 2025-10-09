@@ -153,18 +153,16 @@ with reduced functionality."
               (message "Pathogen Emacs Startup Report")
               (message "========================================")
               (message "Total startup time: %.2fs" startup-time)
-              (message "Garbage collections: %d (%.2fs)" gcs-done gc-elapsed)
-              (message "----------------------------------------")
+              (message "Garbage collections: %d (%.2fs)\n" gcs-done gc-elapsed)
               (when pathogen--module-timings
                 (message "Module load times (slowest first):")
                 (dolist (timing (sort pathogen--module-timings
                                      (lambda (a b) (> (cdr a) (cdr b)))))
-                  (message "  %s: %.2fs" (car timing) (cdr timing)))
-                (message "----------------------------------------"))
+                  (message "  %s: %.2fs\n" (car timing) (cdr timing))))
               (when pathogen--failed-modules
                 (message "Failed modules: %d" (length pathogen--failed-modules))
-                (message "----------------------------------------"))
-              (message "========================================\n"))))
+                (message ""))
+              (message "Pathogen loaded successfully. Have fun!\n"))))
 
 (provide 'init)
 ;;; init.el ends here
