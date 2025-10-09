@@ -15,6 +15,14 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Load shared variables
+;;
+;;
+;; Load pathogen-vars.el which defines shared configuration variables
+;; used across early-init.el, init.el, and loaded modules.
+(load (concat user-emacs-directory "pathogen-vars.el"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Modify garbage collector
 ;;
 ;;
@@ -48,12 +56,8 @@
 (pathogen--defer-gc)
 
 ;; For step 'b', I proceed as follows: since the default value of
-;; `gc-cons-threshold' is 800000 (800KB), I define a new value to be default,
-(defvar pathogen/gc-cons-threshold 67108864 ; 64mb
-  "The default value to use for `gc-cons-threshold'.
-If you experience freezing, decrease this. If you experience stuttering, increase this.")
-(defvar pathogen/gc-cons-percentage 0.5 ; 50%
-  "The default value to use for `gc-cons-threshold'.")
+;; `gc-cons-threshold' is 800000 (800KB), we use the values defined in
+;; pathogen-vars.el (pathogen/gc-cons-threshold and pathogen/gc-cons-percentage).
 
 ;; and add a function to restore GC as a hook:
 ;;

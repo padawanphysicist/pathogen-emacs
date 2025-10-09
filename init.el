@@ -31,10 +31,14 @@
 (require 'cl-lib) ;; Common Lisp facilities within Emacs
 (require 'ansi-color) ;; Translate ansi color codes to Emacs colors
 
-;; Main variables
-(defvar pathogen-cache-directory (concat user-emacs-directory "cache/"))
-(defvar pathogen-config-directory (substitute-in-file-name "$HOME/.pathogen.d/"))
-(defvar pathogen-config-file (substitute-in-file-name "$HOME/.pathogen.el"))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Load shared variables
+;;
+;;
+;; Load pathogen-vars.el which defines shared configuration variables.
+;; This file is also loaded by early-init.el to ensure variables are
+;; available at all stages of initialization.
+(require 'pathogen-vars)
 
 (add-to-list 'load-path (concat user-emacs-directory "pathogen/"))
 (add-to-list 'load-path pathogen-config-directory)
@@ -83,10 +87,7 @@ DESCRIPTION is used in messages to identify the directory."
 ;;   - Load time tracking for performance analysis
 ;;   - Summary of failed modules at the end
 ;;
-
-(defvar pathogen--failed-modules nil
-  "List of modules that failed to load during initialization.
-Each element is a cons cell (MODULE . ERROR).")
+;; Note: pathogen--failed-modules is defined in pathogen-vars.el
 
 (defun pathogen--load-module (module)
   "Load MODULE with error handling, timing, and user feedback.
