@@ -77,6 +77,11 @@ Default: 0.5 (50% growth triggers GC)")
 Internal variable used by the module loading system.
 Format: List of (MODULE . ERROR) cons cells.")
 
+(defvar pathogen--module-timings nil
+  "List of module load times for performance analysis.
+Internal variable used by the module loading system.
+Format: List of (MODULE . TIME-IN-SECONDS) cons cells.")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Variable Naming Conventions
 ;;

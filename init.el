@@ -97,9 +97,9 @@ with reduced functionality."
     (condition-case err
         (progn
           (require module)
-          (message "Loaded %s in %.2fs"
-                   module
-                   (float-time (time-subtract (current-time) start-time))))
+          (let ((load-time (float-time (time-subtract (current-time) start-time))))
+            (push (cons module load-time) pathogen--module-timings)
+            (message "Loaded %s in %.2fs" module load-time)))
       (error
        (push (cons module err) pathogen--failed-modules)
        (message "ERROR: Failed to load %s: %s"
@@ -135,6 +135,36 @@ with reduced functionality."
   (mapc #'load-file (file-expand-wildcards (concat pathogen-config-directory "*.el"))))
 (when (file-exists-p pathogen-config-file)
   (load-file pathogen-config-file))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Startup performance report
+;;
+;;
+;; Display a comprehensive startup performance report after initialization
+;; completes. This helps identify slow modules and optimization opportunities.
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (let ((startup-time (float-time (time-subtract (current-time)
+                                                           before-init-time)))
+                  (gcs-done gcs-done)
+                  (gc-elapsed gc-elapsed))
+              (message "\n")
+              (message "========================================")
+              (message "Pathogen Emacs Startup Report")
+              (message "========================================")
+              (message "Total startup time: %.2fs" startup-time)
+              (message "Garbage collections: %d (%.2fs)" gcs-done gc-elapsed)
+              (message "----------------------------------------")
+              (when pathogen--module-timings
+                (message "Module load times (slowest first):")
+                (dolist (timing (sort pathogen--module-timings
+                                     (lambda (a b) (> (cdr a) (cdr b)))))
+                  (message "  %s: %.2fs" (car timing) (cdr timing)))
+                (message "----------------------------------------"))
+              (when pathogen--failed-modules
+                (message "Failed modules: %d" (length pathogen--failed-modules))
+                (message "----------------------------------------"))
+              (message "========================================\n"))))
 
 (provide 'init)
 ;;; init.el ends here
