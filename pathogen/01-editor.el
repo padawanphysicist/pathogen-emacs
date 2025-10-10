@@ -200,7 +200,17 @@
   ;; Store recentf file in cache directory for cleaner organization
   (recentf-save-file (concat pathogen-cache-directory "recentf"))
   (recentf-max-menu-items 50)
-  (recentf-max-saved-items 50))
+  (recentf-max-saved-items 50)
+  ;; Cleanup recent files list periodically during idle time.
+  ;; This removes deleted/moved files automatically without impacting startup.
+  ;; The value is in seconds - 600 (10 minutes) provides automatic cleanup
+  ;; without being too aggressive.
+  ;;
+  ;; Options:
+  ;;   'mode   - Cleanup at startup (default, can slow startup)
+  ;;   'never  - No automatic cleanup (use if working with remote files)
+  ;;   NUMBER  - Cleanup after N seconds of idle time
+  (recentf-auto-cleanup 600))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Show matching parenthesis
