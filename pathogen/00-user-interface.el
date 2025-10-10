@@ -33,6 +33,7 @@
 (push '(menu-bar-lines . 0)   default-frame-alist)
 (push '(tool-bar-lines . 0)   default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
+(push '(horizontal-scroll-bars) default-frame-alist)
 ;; However, doing this only creates a problem: since their respective varibles
 ;; are not set, if the user wants to enable the tool-bar for example, it would
 ;; be necessary to use the cycle twice the command `tool-bar-mode' to enable.
