@@ -197,6 +197,8 @@
   :init
   (recentf-mode 1)
   :custom
+  ;; Store recentf file in cache directory for cleaner organization
+  (recentf-save-file (concat pathogen-cache-directory "recentf"))
   (recentf-max-menu-items 50)
   (recentf-max-saved-items 50))
 
