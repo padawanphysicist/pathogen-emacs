@@ -109,29 +109,42 @@
 ;;; Auto-save configuration
 ;;
 ;;
-;; Emacs auto-saves buffer contents to #filename# files periodically to protect
-;; against crashes and data loss. This configuration keeps auto-save enabled
-;; but adjusts the timing for better balance between safety and performance.
+;; Modern auto-save using auto-save-visited-mode (Emacs 26+).
 ;;
-;; How it works:
-;;   - Emacs saves to #filename# after N characters typed OR N seconds idle
-;;   - Auto-save files are stored in tmp directory (configured above)
-;;   - Recover with: M-x recover-file or M-x recover-session
-;;   - Files are auto-cleaned when you save the buffer normally
+;; Unlike traditional auto-save which creates #filename# backup files,
+;; auto-save-visited-mode saves the actual file periodically. This provides
+;; a cleaner, more modern editor experience similar to VS Code, Sublime, etc.
 ;;
-;; Configuration:
-;;   - auto-save-interval: Characters typed before auto-save triggers
-;;   - auto-save-timeout: Seconds of idle time before auto-save triggers
+;; BEHAVIOR:
+;;   - Saves actual files every N seconds of idle time
+;;   - No #filename# clutter in file system
+;;   - File is always up-to-date on disk
+;;   - No recovery needed after crash (file already saved)
 ;;
-;; Trade-offs:
-;;   - Lower values: More frequent saves, better protection, more I/O
-;;   - Higher values: Less frequent saves, less protection, better performance
+;; BENEFITS:
+;;   - Clean file system (no auto-save backup files)
+;;   - Modern UX (like contemporary editors)
+;;   - Works naturally with version control
+;;   - Simpler mental model (one source of truth)
 ;;
-;; The values below (200 chars, 20 seconds) provide good protection while
-;; minimizing performance impact on modern systems.
-(setq auto-save-default t)          ; Enable auto-save (explicitly set)
-(setq auto-save-interval 200)       ; Save every 200 characters (default: 300)
-(setq auto-save-timeout 20)         ; Save after 20 seconds idle (default: 30)
+;; TRADE-OFFS:
+;;   - No separate recovery file (file IS the recovery)
+;;   - May save broken/incomplete code
+;;   - Can trigger file watchers frequently
+;;   - Less control over when changes persist
+;;
+;; The 5-second interval balances protection with performance. For more
+;; conservative behavior, increase the interval (e.g., 10 or 30 seconds).
+;;
+;; TRADITIONAL ALTERNATIVE:
+;; If you prefer traditional #filename# auto-save with recovery mechanism:
+;;   (setq auto-save-default t)
+;;   (setq auto-save-interval 200)
+;;   (setq auto-save-timeout 20)
+;;
+(setq auto-save-default nil)        ; Disable traditional auto-save
+(auto-save-visited-mode 1)          ; Enable modern auto-save
+(setq auto-save-visited-interval 5) ; Save every 5 seconds
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Built-in plugins
