@@ -22,6 +22,70 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Feature Flags (Optional)
+;;
+;;
+;; You can selectively enable/disable features by defining flags in your
+;; ~/.pathogen.el file BEFORE loading this module.
+;;
+;; This is useful for:
+;;   - Creating minimal Emacs setups for debugging
+;;   - Disabling features on slower systems
+;;   - Testing configuration changes safely
+;;   - Customizing which modules to load
+;;
+;; USAGE:
+;;
+;; 1. Add flag definitions to ~/.pathogen.el:
+;;
+;;    (defvar pathogen-enable-lsp nil
+;;      "Disable LSP support (eglot, tree-sitter).")
+;;
+;;    (defvar pathogen-enable-snippets nil
+;;      "Disable yasnippet template system.")
+;;
+;;    (defvar pathogen-enable-completion t
+;;      "Enable completion framework (vertico, consult, etc.).")
+;;
+;; 2. Wrap corresponding use-package declarations in this file:
+;;
+;;    (when (bound-and-true-p pathogen-enable-lsp)
+;;      (use-package eglot
+;;        :hook ((python-mode . eglot-ensure)
+;;               (js-mode . eglot-ensure))
+;;        ...))
+;;
+;;    (when (bound-and-true-p pathogen-enable-snippets)
+;;      (use-package yasnippet
+;;        :defer 2
+;;        :config (yas-global-mode 1)))
+;;
+;; SUGGESTED FLAGS:
+;;
+;;   pathogen-enable-completion          - Vertico, Consult, Embark, Corfu
+;;   pathogen-enable-navigation          - Avy, Ace-window
+;;   pathogen-enable-version-control     - Magit, diff-hl
+;;   pathogen-enable-editing-enhancements - Multiple-cursors, visual-regexp
+;;   pathogen-enable-lsp                 - Eglot, tree-sitter
+;;   pathogen-enable-snippets            - Yasnippet
+;;   pathogen-enable-syntax-checking     - Flycheck
+;;   pathogen-enable-ui-enhancements     - Which-key, dimmer, rainbow-delimiters
+;;
+;; NOTE: By default, ALL features are enabled (no flags defined). Define a flag
+;;       and set it to nil to disable specific features.
+;;
+;; EXAMPLE MINIMAL CONFIG (~/.pathogen.el):
+;;
+;;   ;; Minimal setup: only completion and basic editing
+;;   (defvar pathogen-enable-lsp nil)
+;;   (defvar pathogen-enable-snippets nil)
+;;   (defvar pathogen-enable-syntax-checking nil)
+;;   (defvar pathogen-enable-ui-enhancements nil)
+;;
+;; Then wrap packages in this file with (when (bound-and-true-p FLAG) ...)
+;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; dashboard
 ;;
 ;;
