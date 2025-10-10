@@ -1,55 +1,10 @@
-#+html: <p align="center"><img src="/logo/pathogen-emacs.png" align="center" width="150" alt="Pathogen Emacs"></p>
+#+options: toc:nil
+#+html: <p align="center"><img src="./logo/pathogen-emacs.png" align="center" width="150" alt="Pathogen Emacs"></p>
 #+html: <h1 align="center">Pathogen Emacs</h1>
 
 #+html: <p align="center">
 #+html: <em>A modular, well-documented Emacs configuration focused on stability, simplicity, and understandability</em>
 #+html: </p>
-
-* Table of Contents :TOC:
-- [[#philosophy][Philosophy]]
-- [[#features][Features]]
-- [[#requirements][Requirements]]
-- [[#installation][Installation]]
-  - [[#first-time-startup][First-time Startup]]
-  - [[#verifying-installation][Verifying Installation]]
-- [[#configuration-structure][Configuration Structure]]
-  - [[#core-files][Core Files]]
-  - [[#module-system][Module System]]
-  - [[#load-order-and-dependencies][Load Order and Dependencies]]
-- [[#customization][Customization]]
-  - [[#user-configuration-file][User Configuration File]]
-  - [[#adding-packages][Adding Packages]]
-  - [[#removing-packages][Removing Packages]]
-  - [[#creating-custom-modules][Creating Custom Modules]]
-  - [[#feature-flags][Feature Flags]]
-- [[#key-features--workflows][Key Features & Workflows]]
-  - [[#completion-framework][Completion Framework]]
-  - [[#navigation][Navigation]]
-  - [[#version-control][Version Control]]
-  - [[#development-tools][Development Tools]]
-  - [[#editing-enhancements][Editing Enhancements]]
-- [[#important-keybindings][Important Keybindings]]
-  - [[#completion--navigation][Completion & Navigation]]
-  - [[#version-control-1][Version Control]]
-  - [[#lsp-and-development][LSP and Development]]
-  - [[#utility-functions][Utility Functions]]
-- [[#utility-functions-1][Utility Functions]]
-  - [[#configuration-management][Configuration Management]]
-  - [[#debugging-helpers][Debugging Helpers]]
-- [[#package-update-workflow][Package Update Workflow]]
-  - [[#updating-all-packages][Updating All Packages]]
-  - [[#before-updating][Before Updating]]
-  - [[#after-updating][After Updating]]
-  - [[#rollback-procedures][Rollback Procedures]]
-- [[#troubleshooting][Troubleshooting]]
-  - [[#slow-startup][Slow Startup]]
-  - [[#package-installation-fails][Package Installation Fails]]
-  - [[#lsp-not-working][LSP Not Working]]
-  - [[#fonts-not-loading][Fonts Not Loading]]
-  - [[#configuration-errors][Configuration Errors]]
-- [[#performance-optimization][Performance Optimization]]
-- [[#contributing][Contributing]]
-- [[#credits][Credits]]
 
 * Philosophy
 
