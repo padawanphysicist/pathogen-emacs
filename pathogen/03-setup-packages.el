@@ -350,6 +350,34 @@
          ("C-x p e" . project-eshell)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; yasnippet
+;;
+;;
+;; https://github.com/joaotavora/yasnippet
+;;
+;; Template system for Emacs. Allows quick insertion of code templates with
+;; tab-stop fields for customization. Essential productivity tool for reducing
+;; boilerplate code and maintaining consistent patterns.
+;;
+;; Examples:
+;;   - Type "for" + TAB → expands to full for-loop structure
+;;   - Type "def" + TAB → expands to function definition
+;;   - Type "class" + TAB → expands to class template
+;;
+;; Works seamlessly with LSP and completion frameworks for enhanced productivity.
+(use-package yasnippet
+  :defer 2
+  :bind (:map yas-minor-mode-map
+         ("C-c y n" . yas-new-snippet)
+         ("C-c y v" . yas-visit-snippet-file))
+  :config
+  (yas-global-mode 1))
+
+;; Collection of standard snippets for many languages
+(use-package yasnippet-snippets
+  :after yasnippet)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; flycheck
 ;;
 ;;
