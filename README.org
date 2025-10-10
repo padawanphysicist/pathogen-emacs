@@ -36,6 +36,11 @@
 - [[#utility-functions-1][Utility Functions]]
   - [[#configuration-management][Configuration Management]]
   - [[#debugging-helpers][Debugging Helpers]]
+- [[#package-update-workflow][Package Update Workflow]]
+  - [[#updating-all-packages][Updating All Packages]]
+  - [[#before-updating][Before Updating]]
+  - [[#after-updating][After Updating]]
+  - [[#rollback-procedures][Rollback Procedures]]
 - [[#troubleshooting][Troubleshooting]]
   - [[#slow-startup][Slow Startup]]
   - [[#package-installation-fails][Package Installation Fails]]
@@ -502,6 +507,7 @@ Pathogen provides interactive functions for configuration management and debuggi
 
 | Function                      | Description                                     |
 |-------------------------------+-------------------------------------------------|
+| =pathogen/update-packages=    | Update all packages with guided workflow        |
 | =pathogen/reload-config=      | Reload configuration without restarting Emacs   |
 | =pathogen/rebuild-packages=   | Rebuild all Elpaca packages                     |
 | =pathogen/validate-config=    | Check for common configuration issues           |
@@ -532,6 +538,122 @@ Example usage:
    ("Menlo" . 12)
    ("Courier" . 12)))  ; Fallback
 #+end_src
+
+* Package Update Workflow
+
+Pathogen uses Elpaca for package management. Here's how to safely update your packages.
+
+** Updating All Packages
+
+The recommended way to update packages:
+
+#+begin_src elisp
+M-x pathogen/update-packages
+#+end_src
+
+This function:
+- Updates all installed packages to their latest versions
+- Provides confirmation before starting
+- Shows progress in the =*elpaca-log*= buffer
+- Includes comprehensive guidance in the docstring
+
+** Before Updating
+
+1. *Backup your work*:
+   - Commit your configuration to git (if using version control)
+   - Save all buffers in Emacs
+   - Note current package versions: =M-x elpaca-log=
+
+2. *Check for breaking changes*:
+   - Review package changelogs for major updates
+   - Check if any packages have deprecated features you use
+
+** During Update
+
+- Monitor progress: =M-x elpaca-log=
+- The process may take several minutes
+- Don't interrupt Emacs during updates
+
+** After Updating
+
+1. Check for errors in =*Messages*= buffer
+2. Run =M-x pathogen/validate-config= to check for issues
+3. Test your workflow thoroughly
+4. If issues arise, see Rollback Procedures below
+
+** Updating a Single Package
+
+To update just one package:
+
+#+begin_src elisp
+M-x elpaca-update RET package-name
+#+end_src
+
+** Rollback Procedures
+
+If an update breaks something, you have several options:
+
+*** Method 1: Delete and Reinstall
+
+#+begin_src elisp
+M-x elpaca-delete RET package-name RET
+#+end_src
+
+Then restart Emacs. The package will reinstall from its recipe.
+
+*** Method 2: Manual Removal
+
+#+begin_src bash
+rm -rf ~/.emacs.d/elpaca/builds/package-name
+rm -rf ~/.emacs.d/elpaca/repos/package-name
+#+end_src
+
+Restart Emacs to reinstall.
+
+*** Method 3: Git Rollback
+
+If your configuration is in git:
+
+#+begin_src bash
+git log  # Find commit before update
+git reset --hard COMMIT_HASH
+#+end_src
+
+** Viewing Package Status
+
+Check individual package status:
+
+#+begin_src elisp
+M-x pathogen/check-package RET package-name
+#+end_src
+
+View all package logs:
+
+#+begin_src elisp
+M-x elpaca-log
+#+end_src
+
+** Rebuilding Packages
+
+If packages have compilation issues after updates:
+
+#+begin_src elisp
+M-x pathogen/rebuild-packages
+#+end_src
+
+This rebuilds all packages, fixing issues from:
+- Emacs version upgrades
+- Corrupted bytecode
+- Compilation errors
+
+** Update Schedule
+
+Recommended update frequency:
+- *Monthly*: For most users, monthly updates balance stability with new features
+- *Weekly*: For those who want latest features and don't mind occasional issues
+- *As needed*: Update specific packages when you need new features or bug fixes
+
+Always test after updates before doing critical work.
 
 * Troubleshooting
 

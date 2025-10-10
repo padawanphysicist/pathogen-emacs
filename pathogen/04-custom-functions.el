@@ -197,6 +197,71 @@ reloaded if they exist."
     (message "Configuration reloaded in %.2fs"
              (float-time (time-subtract (current-time) start-time)))))
 
+(defun pathogen/update-packages ()
+  "Update all installed packages with guided workflow.
+
+WORKFLOW:
+This function updates all Elpaca-managed packages to their latest versions.
+The update process may take several minutes depending on the number of
+packages and network speed.
+
+BEFORE UPDATING:
+It's recommended to backup your current working state:
+1. Ensure your configuration is committed to git (if using version control)
+2. Note current package versions: M-x elpaca-log
+3. Save all your work in Emacs
+
+AFTER UPDATING:
+1. Check *elpaca-log* buffer for update results
+2. Test your configuration thoroughly
+3. Watch for errors or warnings in *Messages* buffer
+4. If issues arise, use rollback procedures below
+
+ROLLBACK PROCEDURES:
+If an update breaks something, you can rollback:
+
+Method 1 - Rebuild to previous version:
+  M-x elpaca-delete RET package-name RET
+  Restart Emacs (package will reinstall from recipe)
+
+Method 2 - Manual removal and reinstall:
+  rm -rf ~/.emacs.d/elpaca/builds/package-name
+  rm -rf ~/.emacs.d/elpaca/repos/package-name
+  Restart Emacs
+
+Method 3 - Git rollback (if config in git):
+  git log  # Find commit before update
+  git reset --hard COMMIT_HASH
+
+SINGLE PACKAGE UPDATE:
+To update just one package: M-x elpaca-update RET package-name
+
+VIEW UPDATE LOG:
+To see update status and details: M-x elpaca-log
+
+See also:
+- `pathogen/rebuild-packages' - Rebuild all packages (fixes compile issues)
+- `pathogen/check-package' - Check individual package status
+- `pathogen/validate-config' - Validate configuration after updates"
+  (interactive)
+  (if (not (featurep 'elpaca))
+      (message "Elpaca not loaded - cannot update packages")
+    (when (yes-or-no-p "Update all packages? This may take several minutes. ")
+      (message "Updating all packages...")
+      (message "TIP: Monitor progress in *elpaca-log* buffer (M-x elpaca-log)")
+      ;; Call elpaca-update-all if it exists, otherwise update each package
+      (if (fboundp 'elpaca-update-all)
+          (elpaca-update-all)
+        ;; Fallback: update each package individually
+        (when (boundp 'elpaca--queued)
+          (let ((package-count 0))
+            (maphash (lambda (name _info)
+                       (elpaca-update name)
+                       (setq package-count (1+ package-count)))
+                     elpaca--queued)
+            (message "Updating %d package(s)... Check *elpaca-log* for progress"
+                     package-count)))))))
+
 (defun pathogen/rebuild-packages ()
   "Rebuild all Elpaca packages.
 
