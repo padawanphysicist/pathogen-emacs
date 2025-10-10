@@ -106,6 +106,34 @@
 (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Auto-save configuration
+;;
+;;
+;; Emacs auto-saves buffer contents to #filename# files periodically to protect
+;; against crashes and data loss. This configuration keeps auto-save enabled
+;; but adjusts the timing for better balance between safety and performance.
+;;
+;; How it works:
+;;   - Emacs saves to #filename# after N characters typed OR N seconds idle
+;;   - Auto-save files are stored in tmp directory (configured above)
+;;   - Recover with: M-x recover-file or M-x recover-session
+;;   - Files are auto-cleaned when you save the buffer normally
+;;
+;; Configuration:
+;;   - auto-save-interval: Characters typed before auto-save triggers
+;;   - auto-save-timeout: Seconds of idle time before auto-save triggers
+;;
+;; Trade-offs:
+;;   - Lower values: More frequent saves, better protection, more I/O
+;;   - Higher values: Less frequent saves, less protection, better performance
+;;
+;; The values below (200 chars, 20 seconds) provide good protection while
+;; minimizing performance impact on modern systems.
+(setq auto-save-default t)          ; Enable auto-save (explicitly set)
+(setq auto-save-interval 200)       ; Save every 200 characters (default: 300)
+(setq auto-save-timeout 20)         ; Save after 20 seconds idle (default: 30)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Built-in plugins
 ;;
 ;;
