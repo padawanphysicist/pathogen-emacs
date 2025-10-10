@@ -218,6 +218,27 @@ Example usage:
 ;; See also: https://www.emacswiki.org/emacs/StickyModifiers
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Just-in-time syntax highlighting
+;;
+;;
+;; JIT Lock mode is the default font-lock support mode in Emacs. It fontifies
+;; (highlights syntax) text on-demand as it becomes visible.
+;;
+;; The `jit-lock-stealth-time' variable controls when Emacs fontifies text that
+;; is not currently visible. By default, it's set to a high value (16 seconds),
+;; meaning Emacs waits a long time before fontifying off-screen text.
+;;
+;; Setting this to a lower value (0.2 seconds) improves responsiveness when
+;; scrolling through large files, as more text will already be fontified.
+;;
+;; Trade-off:
+;;   - Lower values: Better scrolling experience, slightly more CPU usage
+;;   - Higher values: Less CPU usage, potential delay when scrolling
+;;
+;; For modern systems, 0.2 seconds provides a good balance.
+(setq jit-lock-stealth-time 0.2)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Custom init file
 ;;
 ;;
