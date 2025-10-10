@@ -164,8 +164,10 @@
   :custom
   (savehist-file (concat pathogen-cache-directory "savehist"))
   (savehist-save-minibuffer-history t)
-  ;; save on kill only
-  (savehist-autosave-interval nil)
+  ;; Auto-save history every 5 minutes to protect against crashes.
+  ;; Setting to nil would only save on Emacs exit, risking data loss.
+  ;; 300 seconds (5 minutes) balances protection with minimal I/O overhead.
+  (savehist-autosave-interval 300)
   (savehist-additional-variables
    '(
      ;; persist clipboard
