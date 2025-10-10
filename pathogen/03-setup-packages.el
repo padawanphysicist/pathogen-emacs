@@ -288,10 +288,12 @@
              rotate-frame-anticlockwise))
 
 ;; Load after init to avoid slowing down startup
+;; Dims inactive windows to highlight the active one
 (use-package dimmer
   :defer 2
   :custom
   (dimmer-fraction 0.5)
+  :bind ("C-c t d" . dimmer-mode)  ; Toggle dimmer on/off
   :config
   (dimmer-mode t))
 
