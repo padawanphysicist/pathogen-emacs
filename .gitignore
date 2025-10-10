@@ -2,6 +2,7 @@ elpa/
 *~
 *cache/
 straight/
+elpaca/
 transient/
 recentf/
 recentf
@@ -21,3 +22,10 @@ anaconda-mode/
 .lsp-session*
 var/
 projects
+places
+eshell/
+.chatgpt-shell.el
+.mc-lists.el
+history
+multisession/
+ellama-sessions/

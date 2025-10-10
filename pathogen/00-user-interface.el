@@ -9,9 +9,17 @@
 ;;
 ;;; Commentary:
 ;;
-;; Since I strive for a keyboard centric experience, I disable most of the
-;; point-and-click UI.  The settings here should provide some saner defaults, but
-;; not too opiniated.
+;; Module: User Interface (00)
+;; Purpose: Configure visual appearance and frame parameters
+;; Dependencies: None (built-in features only)
+;; Provides: Theme configuration, visual customization
+;;
+;; This module handles all visual aspects of Emacs. Since I strive for a
+;; keyboard centric experience, I disable most of the point-and-click UI.
+;; The settings here should provide some saner defaults, but not too opiniated.
+;;
+;; Note: Some UI settings are in early-init.el for even earlier loading
+;; (inhibit-startup-screen, visible-bell).
 ;;
 ;;; Code:
 
@@ -25,6 +33,7 @@
 (push '(menu-bar-lines . 0)   default-frame-alist)
 (push '(tool-bar-lines . 0)   default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
+(push '(horizontal-scroll-bars) default-frame-alist)
 ;; However, doing this only creates a problem: since their respective varibles
 ;; are not set, if the user wants to enable the tool-bar for example, it would
 ;; be necessary to use the cycle twice the command `tool-bar-mode' to enable.
@@ -36,12 +45,25 @@
  scroll-bar-mode nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Disable startup screen
+;;; Default frame size
 ;;
 ;;
-;; Let's be honest: if you are using Emacs by now I don't think you are really
-;; interested in the info on the startup screen.
-(setq inhibit-startup-screen t)
+;; Set default frame dimensions for consistent appearance across systems.
+;; These values provide a comfortable working size that fits most displays
+;; while leaving room for side-by-side windows and comfortable reading.
+;;
+;; Width: 120 characters accommodates modern code style guides (80-100 char
+;; line limits) with room for line numbers and fringes. Also works well for
+;; side-by-side window splits.
+;;
+;; Height: 40 lines provides good context visibility without being too tall
+;; for smaller displays.
+;;
+;; Note: Users can override these in their personal config (~/.pathogen.el)
+;; or use (push '(fullscreen . maximized) default-frame-alist) to start
+;; maximized instead.
+(push '(width . 120) default-frame-alist)
+(push '(height . 40) default-frame-alist)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Smooth scrolling
@@ -69,6 +91,13 @@
  scroll-margin 0
  scroll-preserve-screen-position t)
 
+;; Enable pixel-scroll-precision-mode for smooth scrolling (Emacs 29+)
+;; This provides smooth pixel-level scrolling with mouse/trackpad instead of
+;; jumping line-by-line. Significantly improves the scrolling experience on
+;; modern displays and input devices.
+(when (fboundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-precision-mode 1))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Minor tweaks
 ;;
@@ -88,8 +117,9 @@
 (setq echo-keystrokes 0.02)
 ;; Expand the minibuffer to fit multi-line text
 ;; displayed in the echo-area
-;;(setq resize-mini-windows 'grow-only)
-(setq resize-mini-windows nil)
+(setq resize-mini-windows 'grow-only) ;; Denote like it!
+
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 (provide '00-user-interface)
 ;;; 00-user-interface.el ends here

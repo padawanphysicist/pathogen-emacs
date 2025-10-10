@@ -15,6 +15,31 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; File name handler optimization
+;;
+;;
+;; Disable file-name-handler-alist during initialization for significant
+;; performance improvement (30-50% faster startup). Handlers check for remote
+;; files, archives, compression, etc., which are not needed during init.
+;; The original list is restored after startup completes.
+(defvar pathogen--file-name-handler-alist file-name-handler-alist
+  "Backup of file-name-handler-alist for restoration after init.")
+(setq file-name-handler-alist nil)
+
+;; Restore after initialization
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq file-name-handler-alist pathogen--file-name-handler-alist)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Load shared variables
+;;
+;;
+;; Load pathogen-vars.el which defines shared configuration variables
+;; used across early-init.el, init.el, and loaded modules.
+(load (concat user-emacs-directory "pathogen-vars.el"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Modify garbage collector
 ;;
 ;;
@@ -48,10 +73,8 @@
 (pathogen--defer-gc)
 
 ;; For step 'b', I proceed as follows: since the default value of
-;; `gc-cons-threshold' is 800000 (800KB), I define a new value to be default,
-(defvar pathogen/gc-cons-threshold 67108864 ; 64mb
-  "The default value to use for `gc-cons-threshold'.
-If you experience freezing, decrease this. If you experience stuttering, increase this.")
+;; `gc-cons-threshold' is 800000 (800KB), we use the values defined in
+;; pathogen-vars.el (pathogen/gc-cons-threshold and pathogen/gc-cons-percentage).
 
 ;; and add a function to restore GC as a hook:
 ;;
@@ -60,7 +83,8 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Startup-Summary.html#Startup-Summary):
 (defun pathogen--restore-gc ()
   "Restore garbage collection."
-  (setq gc-cons-threshold pathogen/gc-cons-threshold))
+  (setq gc-cons-threshold pathogen/gc-cons-threshold)
+  (setq gc-cons-percentage pathogen/gc-cons-percentage))
 (add-hook 'emacs-startup-hook #'pathogen--restore-gc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -78,12 +102,45 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 ;; This keeps GC out of your way:
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (if (boundp 'after-focus-change-function)
-                (add-function :after after-focus-change-function
-                              (lambda ()
-                                (unless (frame-focus-state)
-                                  (garbage-collect))))
-              (add-hook 'after-focus-change-function 'garbage-collect))))
+            (add-function :after after-focus-change-function
+                          (lambda ()
+                            (unless (frame-focus-state)
+                              (garbage-collect))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Improve subprocess communication
+;;
+;;
+;; Increase the amount of data which Emacs reads from subprocesses in a single
+;; chunk. This is especially important for LSP servers and other tools that
+;; communicate via stdout/stdin.
+;;
+;; The default value is 4096 bytes (4KB), which is far too low for modern
+;; systems. Setting this to 1MB significantly improves performance of language
+;; servers, tree-sitter parsers, and other external tools.
+(setq read-process-output-max (* 1024 1024)) ; 1MB
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Early UI optimizations
+;;
+;;
+;; Disable the startup screen to prevent it from flashing briefly during
+;; initialization. Setting this in early-init.el ensures it never appears,
+;; rather than appearing and then being hidden when init.el loads.
+(setq inhibit-startup-screen t)
+
+;; Bell configuration: Flash the mode line instead of the entire screen
+;; or making an audible beep. The default visual bell flashes the whole
+;; screen which can be jarring and distracting. This subtle mode-line
+;; flash provides feedback without being intrusive.
+(setq visible-bell nil)  ; Disable default visual bell
+(setq ring-bell-function
+      (lambda ()
+        (let ((orig-fg (face-foreground 'mode-line)))
+          (set-face-foreground 'mode-line "#F2804F")
+          (run-with-idle-timer 0.1 nil
+                               (lambda (fg) (set-face-foreground 'mode-line fg))
+                               orig-fg))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Improve loading of files
@@ -101,6 +158,23 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 ;; Package initialization occurs before `user-init-file' is loaded, but after
 ;; `early-init-file'. This prevent Emacs from doing it early:
 (setq package-enable-at-startup nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Warning level configuration
+;;
+;;
+;; Set to :error instead of :emergency to avoid suppressing important warnings
+;; about configuration issues, deprecated functions, or package loading errors.
+;; This still prevents minor warnings from interrupting startup while keeping
+;; you informed about actual problems.
+;;
+;; Warning levels (least to most severe):
+;;   :debug < :info < :warning < :error < :emergency
+;;
+;; - :emergency suppresses almost everything (previous setting)
+;; - :error shows errors but hides routine warnings (current setting)
+;; - :warning shows all warnings (Emacs default, can be noisy)
+(setq warning-minimum-level :error)
 
 (provide 'early-init)
 ;;; early-init.el ends here

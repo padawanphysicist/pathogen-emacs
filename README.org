@@ -1,47 +1,871 @@
 #+html: <p align="center"><img src="/logo/pathogen-emacs.png" align="center" width="150" alt="Pathogen Emacs"></p>
 #+html: <h1 align="center">Pathogen Emacs</h1>
 
+#+html: <p align="center">
+#+html: <em>A modular, well-documented Emacs configuration focused on stability, simplicity, and understandability</em>
+#+html: </p>
+
+* Table of Contents :TOC:
+- [[#philosophy][Philosophy]]
+- [[#features][Features]]
+- [[#requirements][Requirements]]
+- [[#installation][Installation]]
+  - [[#first-time-startup][First-time Startup]]
+  - [[#verifying-installation][Verifying Installation]]
+- [[#configuration-structure][Configuration Structure]]
+  - [[#core-files][Core Files]]
+  - [[#module-system][Module System]]
+  - [[#load-order-and-dependencies][Load Order and Dependencies]]
+- [[#customization][Customization]]
+  - [[#user-configuration-file][User Configuration File]]
+  - [[#adding-packages][Adding Packages]]
+  - [[#removing-packages][Removing Packages]]
+  - [[#creating-custom-modules][Creating Custom Modules]]
+  - [[#feature-flags][Feature Flags]]
+- [[#key-features--workflows][Key Features & Workflows]]
+  - [[#completion-framework][Completion Framework]]
+  - [[#navigation][Navigation]]
+  - [[#version-control][Version Control]]
+  - [[#development-tools][Development Tools]]
+  - [[#editing-enhancements][Editing Enhancements]]
+- [[#important-keybindings][Important Keybindings]]
+  - [[#completion--navigation][Completion & Navigation]]
+  - [[#version-control-1][Version Control]]
+  - [[#lsp-and-development][LSP and Development]]
+  - [[#utility-functions][Utility Functions]]
+- [[#utility-functions-1][Utility Functions]]
+  - [[#configuration-management][Configuration Management]]
+  - [[#debugging-helpers][Debugging Helpers]]
+- [[#package-update-workflow][Package Update Workflow]]
+  - [[#updating-all-packages][Updating All Packages]]
+  - [[#before-updating][Before Updating]]
+  - [[#after-updating][After Updating]]
+  - [[#rollback-procedures][Rollback Procedures]]
+- [[#troubleshooting][Troubleshooting]]
+  - [[#slow-startup][Slow Startup]]
+  - [[#package-installation-fails][Package Installation Fails]]
+  - [[#lsp-not-working][LSP Not Working]]
+  - [[#fonts-not-loading][Fonts Not Loading]]
+  - [[#configuration-errors][Configuration Errors]]
+- [[#performance-optimization][Performance Optimization]]
+- [[#contributing][Contributing]]
+- [[#credits][Credits]]
+
+* Philosophy
+
 I use Emacs constantly since 2010 and I really like the idea of starter kits. I've used distributions like [[https://www.spacemacs.org/][Spacemacs]] and [[https://github.com/hlissner/doom-emacs][Doom Emacs]] until I conclude that they usually make a lot assumptions that are not fit for what I need.
 
 Of course you can try fork some of those kits in the wild and try to trim the pieces you don't want, but I found this to be too time consuming. So I decided to rewrite my own configuration as a starter-kit, to slowly organize the code I have and maybe make it useful for someone else besides me.
 
-Since I'm starting doing this effectively during the social distancing measures taken after COVID-19 world pandemic I decided to call =Pathogen=.
+Since I'm starting doing this effectively during the social distancing measures taken after COVID-19 world pandemic I decided to call it =Pathogen=.
 
 The philosophy is to be:
-1. stable,
-2. simple,
-3. easy to understand (and therefore extend).
+- Stable :: Prefer built-in features and well-established packages
+- Simple :: Clear, straightforward configuration without magic
+- Easy to understand :: Comprehensive documentation and comments
 
 This means that by default it won't have all the fanciness of Spacemacs or Doom. Unless you are willing to accept a huge amount of code/packages without understanding them well (which makes you pass through hell when something go astray), as an Emacs user you're going to have to get minimally comfortable seeking out new pieces of elisp code, bringing them in and configuring them. The Starter Kit should serve mainly as a guidance in this process by giving hints as to where to start and what to look for.
 
-Let me know you find this useful and/or have any suggestions.
+* Features
+
+** Core Infrastructure
+- Modern Package Manager :: [[https://github.com/progfolio/elpaca][Elpaca]] for fast, asynchronous package installation
+- Modular Architecture :: Numbered modules with clear responsibilities and load order
+- Performance Optimizations :: GC tuning, file-name-handler optimizations, lazy loading
+- Comprehensive Documentation :: Every setting explained with rationale
+
+** Development Tools
+- LSP Support :: Built-in =eglot= for Python, JavaScript/TypeScript, Rust, C/C++, Go
+- Syntax Checking :: =flycheck= with smart checking intervals
+- Tree-sitter :: Modern syntax highlighting with =treesit-auto=
+- Snippets :: =yasnippet= with 100+ standard templates
+- Project Management :: Enhanced =project.el= with comprehensive keybindings
+
+** Completion & Navigation
+- Completion Framework :: =vertico=, =consult=, =embark=, =corfu=, =orderless=
+- Smart Navigation :: =avy= for jumping, =ace-window= for window management
+- Which-key :: Keybinding discovery and guidance
+
+** Version Control
+- Magit :: Full-featured Git porcelain
+- Diff-hl :: Visual diff indicators in fringe
+
+** Editing Enhancements
+- Multiple Cursors :: Edit multiple locations simultaneously
+- Visual Regexp :: Live preview for regex search and replace
+- Expand Region :: Semantic selection expansion
+- Rainbow Delimiters :: Color-coded parentheses
+
+** UI Enhancements
+- Dashboard :: Beautiful startup screen with recent files and projects
+- Doom Themes :: Modern, professional color schemes
+- All-the-icons :: Icons for files and directories
+- Dimmer :: Highlight active window by dimming inactive ones
+
+* Requirements
+
+- *GNU Emacs* 27.1 or higher (29+ recommended for tree-sitter and eglot)
+- *Git* 2.23 or higher
+- *Internet connection* for initial package installation
+- *Optional*: LSP servers for language-specific features
+  - Python: =pip install python-lsp-server=
+  - JavaScript/TypeScript: =npm install -g typescript-language-server=
+  - Rust: =rustup component add rust-analyzer=
+  - Go: =go install golang.org/x/tools/gopls@latest=
 
 * Installation
 
-- Install [[https://www.gnu.org/software/emacs/][GNU Emacs]];
-- Clone this repo using [[https://git-scm.com/][Git]]:
-#+begin_src bash
-git clone https://gitlab.com/padawanphysicist/pathogen-emacs.git ~/.emacs.d
+** Basic Installation
+
+1. Backup your existing Emacs configuration (if any):
+   #+begin_src bash
+   mv ~/.emacs.d ~/.emacs.d.backup
+   mv ~/.emacs ~/.emacs.backup  # if you have this file
+   #+end_src
+
+2. Clone this repository:
+   #+begin_src bash
+   git clone https://gitlab.com/padawanphysicist/pathogen-emacs.git ~/.emacs.d
+   #+end_src
+
+3. Launch Emacs!
+   #+begin_src bash
+   emacs
+   #+end_src
+
+** First-time Startup
+
+The first startup will take 30-60 seconds as Elpaca bootstraps and installs all packages:
+
+1. *Bootstrap Phase*: Elpaca clones itself from GitHub
+2. *Package Installation*: All configured packages are downloaded and built
+3. *Compilation*: Byte-compilation of packages for better performance
+4. *Dashboard Display*: You'll see the Pathogen dashboard when complete
+
+You'll see progress messages in the =*Messages*= buffer and =*elpaca-log*= buffer.
+
+** Verifying Installation
+
+After Emacs starts, check that everything loaded correctly:
+
+1. Check the startup message in the echo area (bottom of screen) - should show load time
+2. Run =M-x pathogen/validate-config= to check for common issues
+3. Run =M-x pathogen/show-load-times= to see module load times
+
+If you encounter errors, see the [[#troubleshooting][Troubleshooting]] section.
+
+* Configuration Structure
+
+** Core Files
+
+| File               | Purpose                                      | When Loaded       |
+|--------------------+----------------------------------------------+-------------------|
+| =early-init.el=    | Pre-initialization, UI setup, GC tuning      | Before GUI init   |
+| =init.el=          | Main entry point, loads modules              | After GUI init    |
+| =~/.pathogen.el=   | User customizations (optional)               | After modules     |
+| =custom.el=        | Emacs customization system output            | Not loaded by us  |
+| =pathogen-vars.el= | Shared variables between early-init and init | Very early        |
+
+** Module System
+
+Pathogen uses a numbered module system where each module has a specific responsibility. Modules are located in the =pathogen/= directory:
+
+| Module                       | Purpose                               | Dependencies         |
+|------------------------------+---------------------------------------+----------------------|
+| =00-user-interface.el=       | Visual appearance, frame parameters   | None                 |
+| =01-editor.el=               | Core editor behavior, built-in modes  | None                 |
+| =02-package-manager.el=      | Elpaca and use-package setup          | None                 |
+| =03-setup-packages.el=       | External package configurations       | 02-package-manager   |
+| =04-custom-functions.el=     | Utility functions and debugging tools | None                 |
+
+** Load Order and Dependencies
+
+Modules are loaded in numerical order by =init.el=:
+
+1. *early-init.el* loads first (Emacs does this automatically)
+   - Sets up UI before frame creation (prevents flashing)
+   - Configures GC thresholds for faster startup
+   - Disables file-name-handler-alist temporarily
+     
+2. *init.el* orchestrates module loading:
+   #+begin_src elisp
+   (pathogen--load-module "00-user-interface")
+   (pathogen--load-module "01-editor")
+   (pathogen--load-module "02-package-manager")
+   (pathogen--load-module "03-setup-packages")
+   (pathogen--load-module "04-custom-functions")
+   #+end_src
+
+3. *~/.pathogen.el* loads last (if it exists)
+   - Your personal customizations
+   - Override any settings
+   - Add custom packages or functions
+
+*Critical*: Module =02-package-manager.el= MUST load before =03-setup-packages.el= because packages need Elpaca and use-package to be configured first.
+
+* Customization
+
+** User Configuration File
+
+Create =~/.pathogen.el= for your personal customizations:
+
+#+begin_src elisp
+;;; ~/.pathogen.el --- Personal Emacs configuration
+
+;; Example: Override theme
+(load-theme 'doom-gruvbox t)
+
+;; Example: Set custom font
+(pathogen/set-font
+ '(("JetBrains Mono" . 12)
+   ("Fira Code" . 12)
+   ("Menlo" . 12)))
+
+;; Example: Add custom keybindings
+(global-set-key (kbd "C-c m") 'magit-status)
+
+;; Example: Configure LSP for additional languages
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(ruby-mode . ("solargraph" "stdio"))))
+
+;; Example: Custom variables
+(setq pathogen-enable-lsp nil)  ; Disable LSP if desired
 #+end_src
-- Launch Emacs!
 
-* Core packages
+This file is loaded *after* all modules, so you can override any settings.
 
-- [[https://github.com/justbur/emacs-which-key][which-key]]
-- [[https://github.com/minad/vertico][vertico]]
-- [[https://github.com/minad/marginalia][marginalia]]
-- [[https://github.com/minad/consult.git][consult]]
-- [[https://github.com/oantolin/embark][embark]]
-- [[https://github.com/oantolin/orderless][orderless]]
-- [[https://github.com/noctuid/general.el][general]]
-- [[https://github.com/deb0ch/emacs-winum][winum]]
-- [[https://github.com/emacsorphanage/popwin][popwin]]
-- [[https://github.com/abo-abo/avy][avy]]
-- [[https://orgmode.org/][Org]]
-- [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
-  
-* Main files
+** Adding Packages
 
-- [[file:early-init.el][early-init.el]] :: Pre-initializalization file
-- [[file:init.el][init.el]] :: Main initialization file 
+To add a new package, edit =pathogen/03-setup-packages.el=:
 
+#+begin_src elisp
+;; Add at the end of the file, before (provide '03-setup-packages)
+(use-package package-name
+  :defer t  ; Lazy load when possible
+  :bind ("C-c x" . package-command)  ; Optional keybinding
+  :custom
+  (package-variable value "Documentation")
+  :config
+  (package-mode 1))
+#+end_src
+
+Then restart Emacs or run =M-x pathogen/reload-config=.
+
+** Removing Packages
+
+To remove a package:
+
+1. Comment out or delete its =use-package= declaration in =03-setup-packages.el=
+2. Restart Emacs or run =M-x pathogen/reload-config=
+3. Optionally remove the package directory: =M-x elpaca-delete= → select package
+
+** Creating Custom Modules
+
+You can add your own modules following the naming convention:
+
+1. Create =pathogen/05-my-module.el=:
+   #+begin_src elisp
+   ;;; 05-my-module.el --- My custom module -*- lexical-binding: t; -*-
+   ;;
+   ;; Module: My Custom Module (05)
+   ;; Purpose: Custom functionality
+   ;; Dependencies: None
+   ;;
+   ;;; Code:
+
+   ;; Your code here
+
+   (provide '05-my-module)
+   ;;; 05-my-module.el ends here
+   #+end_src
+
+2. Load it in =init.el=:
+   #+begin_src elisp
+   (pathogen--load-module "05-my-module")
+   #+end_src
+
+** Feature Flags
+
+Selectively enable/disable feature categories by defining flags in =~/.pathogen.el=:
+
+#+begin_src elisp
+;; Disable specific features
+(defvar pathogen-enable-lsp nil
+  "Disable LSP support.")
+
+(defvar pathogen-enable-snippets nil
+  "Disable yasnippet.")
+#+end_src
+
+Then wrap corresponding packages in =03-setup-packages.el=:
+
+#+begin_src elisp
+(when (bound-and-true-p pathogen-enable-lsp)
+  (use-package eglot
+    :hook ((python-mode . eglot-ensure))
+    ...))
+#+end_src
+
+Available flags (define any as =nil= to disable):
+- =pathogen-enable-completion= - Vertico, Consult, Embark, Corfu
+- =pathogen-enable-navigation= - Avy, Ace-window
+- =pathogen-enable-version-control= - Magit, diff-hl
+- =pathogen-enable-editing-enhancements= - Multiple-cursors, visual-regexp
+- =pathogen-enable-lsp= - Eglot, tree-sitter
+- =pathogen-enable-snippets= - Yasnippet
+- =pathogen-enable-syntax-checking= - Flycheck
+- =pathogen-enable-ui-enhancements= - Which-key, dimmer, rainbow-delimiters
+
+* Key Features & Workflows
+
+** Completion Framework
+
+Pathogen uses a modern completion stack:
+
+- *Vertico*: Vertical completion UI
+- *Consult*: Enhanced commands (finding, searching, preview)
+- *Orderless*: Flexible matching (space-separated patterns)
+- *Embark*: Contextual actions on completions
+- *Corfu*: In-buffer completion popup
+- *Marginalia*: Rich annotations in completion
+
+*** Basic Usage
+
+- =M-x= - Execute command (with live filtering)
+- =C-x C-f= - Find file (with directory navigation)
+- =C-x b= - Switch buffer (with preview)
+- =C-s= - Search in buffer
+
+*** Orderless Matching
+
+Type space-separated patterns in any order:
+
+- =py mod= matches "python-mode", "my-python-module"
+- =^py= matches beginning (python-mode, but not my-python)
+- =py$= matches end (numpy, scipy)
+
+*** Consult Commands
+
+| Keybinding | Command           | Description                          |
+|------------+-------------------+--------------------------------------|
+| =C-x p f=  | =consult-find=    | Find file in project                 |
+| =C-x p s=  | =consult-ripgrep= | Search project with ripgrep          |
+| =M-g i=    | =consult-imenu=   | Jump to function/class in buffer     |
+| =M-g g=    | =consult-goto-line= | Jump to line with preview          |
+| =M-s l=    | =consult-line=    | Search lines in buffer with preview  |
+
+*** Embark Actions
+
+Press =C-.= on any completion candidate to see available actions:
+- On files: Open, delete, rename, copy path
+- On buffers: Switch, kill, save
+- On symbols: Find definition, documentation
+
+** Navigation
+
+*** Avy - Jump to Visible Text
+
+| Keybinding | Command            | Description                |
+|------------+--------------------+----------------------------|
+| =C-'=      | =avy-goto-char-2=  | Jump to 2 characters       |
+| =C-c j l=  | =avy-goto-line=    | Jump to line               |
+| =C-c j w=  | =avy-goto-word-1=  | Jump to word               |
+
+Type the characters, then type the highlighted key to jump.
+
+*** Ace-window - Window Management
+
+| Keybinding | Command       | Description              |
+|------------+---------------+--------------------------|
+| =M-o=      | =ace-window=  | Select window by number  |
+
+When you have multiple windows, press =M-o= and a number to switch.
+
+** Version Control
+
+*** Magit - Git Interface
+
+| Keybinding | Command         | Description           |
+|------------+-----------------+-----------------------|
+| =C-x g=    | =magit-status=  | Open Magit status     |
+
+In Magit status buffer:
+- =s= - Stage file/hunk
+- =u= - Unstage
+- =c c= - Commit
+- =P p= - Push
+- =F p= - Pull
+- =b b= - Switch branch
+- =?= - Show help
+
+*** Diff-hl - Visual Diff
+
+Changes appear in the left fringe:
+- Green bar - Added lines
+- Blue bar - Modified lines
+- Red triangle - Deleted lines
+
+** Development Tools
+
+*** LSP with Eglot
+
+Automatically activates for: Python, JavaScript/TypeScript, Rust, C/C++, Go
+
+| Keybinding   | Command                    | Description                |
+|--------------+----------------------------+----------------------------|
+| =C-c l r=    | =eglot-rename=             | Rename symbol              |
+| =C-c l a=    | =eglot-code-actions=       | Show code actions          |
+| =C-c l f=    | =eglot-format=             | Format buffer              |
+| =M-.=        | =xref-find-definitions=    | Jump to definition         |
+| =M-,=        | =xref-pop-marker-stack=    | Jump back                  |
+| =C-h .=      | =eldoc-doc-buffer=         | Show documentation         |
+
+*** Flycheck - Syntax Checking
+
+| Keybinding | Command                   | Description              |
+|------------+---------------------------+--------------------------|
+| =M-n=      | =flycheck-next-error=     | Next error               |
+| =M-p=      | =flycheck-previous-error= | Previous error           |
+| =C-c ! l=  | =flycheck-list-errors=    | List all errors          |
+| =C-c ! v=  | =flycheck-verify-setup=   | Verify checker setup     |
+
+*** Yasnippet - Code Templates
+
+Type abbreviation and press =TAB=:
+- =for= + TAB → for-loop
+- =def= + TAB → function definition
+- =class= + TAB → class template
+
+| Keybinding | Command                    | Description           |
+|------------+----------------------------+-----------------------|
+| =C-c y n=  | =yas-new-snippet=          | Create new snippet    |
+| =C-c y v=  | =yas-visit-snippet-file=   | Edit existing snippet |
+
+** Editing Enhancements
+
+*** Multiple Cursors
+
+| Keybinding     | Command                         | Description                    |
+|----------------+---------------------------------+--------------------------------|
+| =C->=          | =mc/mark-next-like-this=        | Add cursor at next match       |
+| =C-<=          | =mc/mark-previous-like-this=    | Add cursor at previous match   |
+| =C-c C-<=      | =mc/mark-all-like-this=         | Add cursor at all matches      |
+| =C-S-c C-S-c=  | =mc/edit-lines=                 | Add cursor to each line        |
+
+*** Expand Region
+
+| Keybinding | Command         | Description              |
+|------------+-----------------+--------------------------|
+| =C-==      | =er/expand-region= | Expand selection semantically |
+
+Press repeatedly to expand further (word → expression → function → etc.)
+
+* Important Keybindings
+
+** Completion & Navigation
+
+| Keybinding | Command                | Description                    |
+|------------+------------------------+--------------------------------|
+| =M-x=      | =execute-extended-command= | Run command                |
+| =C-x C-f=  | =find-file=            | Find file                      |
+| =C-x b=    | =switch-to-buffer=     | Switch buffer                  |
+| =C-x p f=  | =project-find-file=    | Find file in project           |
+| =C-x p p=  | =project-switch-project= | Switch project               |
+| =C-x p s=  | =project-find-regexp=  | Search in project              |
+| =C-'=      | =avy-goto-char-2=      | Jump to character              |
+| =M-o=      | =ace-window=           | Switch window                  |
+
+** Version Control
+
+| Keybinding | Command         | Description           |
+|------------+-----------------+-----------------------|
+| =C-x g=    | =magit-status=  | Open Magit            |
+
+** LSP and Development
+
+| Keybinding | Command                 | Description              |
+|------------+-------------------------+--------------------------|
+| =M-.=      | =xref-find-definitions= | Jump to definition       |
+| =M-,=      | =xref-pop-marker-stack= | Jump back                |
+| =M-n=      | =flycheck-next-error=   | Next error               |
+| =M-p=      | =flycheck-previous-error= | Previous error         |
+| =C-c l r=  | =eglot-rename=          | Rename symbol            |
+| =C-c l a=  | =eglot-code-actions=    | Code actions             |
+
+** Utility Functions
+
+| Keybinding | Command         | Description              |
+|------------+-----------------+--------------------------|
+| =C-c t d=  | =dimmer-mode=   | Toggle window dimming    |
+
+* Utility Functions
+
+Pathogen provides interactive functions for configuration management and debugging.
+
+** Configuration Management
+
+| Function                      | Description                                     |
+|-------------------------------+-------------------------------------------------|
+| =pathogen/update-packages=    | Update all packages with guided workflow        |
+| =pathogen/reload-config=      | Reload configuration without restarting Emacs   |
+| =pathogen/rebuild-packages=   | Rebuild all Elpaca packages                     |
+| =pathogen/validate-config=    | Check for common configuration issues           |
+| =pathogen/clear-cache=        | Clear cache directory (savehist, recentf, etc.) |
+| =pathogen/reset-to-defaults=  | Nuclear reset (removes packages and cache)      |
+
+** Debugging Helpers
+
+| Function                    | Description                                      |
+|-----------------------------+--------------------------------------------------|
+| =pathogen/profile-init=     | Generate command to profile Emacs startup        |
+| =pathogen/check-package=    | Check detailed status of a package               |
+| =pathogen/show-load-times=  | Display module load times with bar charts        |
+| =pathogen/test-config=      | Test configuration in separate Emacs instance    |
+| =pathogen/list-autoloads=   | List all deferred/autoloaded functions           |
+
+** Font Configuration
+
+| Function            | Description                                 |
+|---------------------+---------------------------------------------|
+| =pathogen/set-font= | Set font from list of alternatives          |
+
+Example usage:
+#+begin_src elisp
+(pathogen/set-font
+ '(("JetBrains Mono" . 12)
+   ("Fira Code" . 12)
+   ("Menlo" . 12)
+   ("Courier" . 12)))  ; Fallback
+#+end_src
+
+* Package Update Workflow
+
+Pathogen uses Elpaca for package management. Here's how to safely update your packages.
+
+** Updating All Packages
+
+The recommended way to update packages:
+
+#+begin_src elisp
+M-x pathogen/update-packages
+#+end_src
+
+This function:
+- Updates all installed packages to their latest versions
+- Provides confirmation before starting
+- Shows progress in the =*elpaca-log*= buffer
+- Includes comprehensive guidance in the docstring
+
+** Before Updating
+
+1. *Backup your work*:
+   - Commit your configuration to git (if using version control)
+   - Save all buffers in Emacs
+   - Note current package versions: =M-x elpaca-log=
+
+2. *Check for breaking changes*:
+   - Review package changelogs for major updates
+   - Check if any packages have deprecated features you use
+
+** During Update
+
+- Monitor progress: =M-x elpaca-log=
+- The process may take several minutes
+- Don't interrupt Emacs during updates
+
+** After Updating
+
+1. Check for errors in =*Messages*= buffer
+2. Run =M-x pathogen/validate-config= to check for issues
+3. Test your workflow thoroughly
+4. If issues arise, see Rollback Procedures below
+
+** Updating a Single Package
+
+To update just one package:
+
+#+begin_src elisp
+M-x elpaca-update RET package-name
+#+end_src
+
+** Rollback Procedures
+
+If an update breaks something, you have several options:
+
+*** Method 1: Delete and Reinstall
+
+#+begin_src elisp
+M-x elpaca-delete RET package-name RET
+#+end_src
+
+Then restart Emacs. The package will reinstall from its recipe.
+
+*** Method 2: Manual Removal
+
+#+begin_src bash
+rm -rf ~/.emacs.d/elpaca/builds/package-name
+rm -rf ~/.emacs.d/elpaca/repos/package-name
+#+end_src
+
+Restart Emacs to reinstall.
+
+*** Method 3: Git Rollback
+
+If your configuration is in git:
+
+#+begin_src bash
+git log  # Find commit before update
+git reset --hard COMMIT_HASH
+#+end_src
+
+** Viewing Package Status
+
+Check individual package status:
+
+#+begin_src elisp
+M-x pathogen/check-package RET package-name
+#+end_src
+
+View all package logs:
+
+#+begin_src elisp
+M-x elpaca-log
+#+end_src
+
+** Rebuilding Packages
+
+If packages have compilation issues after updates:
+
+#+begin_src elisp
+M-x pathogen/rebuild-packages
+#+end_src
+
+This rebuilds all packages, fixing issues from:
+- Emacs version upgrades
+- Corrupted bytecode
+- Compilation errors
+
+** Update Schedule
+
+Recommended update frequency:
+- *Monthly*: For most users, monthly updates balance stability with new features
+- *Weekly*: For those who want latest features and don't mind occasional issues
+- *As needed*: Update specific packages when you need new features or bug fixes
+
+Always test after updates before doing critical work.
+
+* Troubleshooting
+
+** Slow Startup
+
+1. Check module load times:
+   #+begin_src elisp
+   M-x pathogen/show-load-times
+   #+end_src
+
+2. Profile initialization:
+   #+begin_src elisp
+   M-x pathogen/profile-init
+   #+end_src
+   Copy and run the generated command in terminal.
+
+3. Common causes:
+   - Too many packages loading immediately (use =:defer t=)
+   - Heavy packages without lazy loading (LSP, completion)
+   - Network issues during package updates
+
+4. Optimize:
+   - Use feature flags to disable unused categories
+   - Defer more packages with =:defer t= or =:hook=
+   - Consider =use-package-always-defer= (see =02-package-manager.el=)
+
+** Package Installation Fails
+
+1. Check Elpaca log:
+   #+begin_src elisp
+   M-x elpaca-log
+   #+end_src
+
+2. Verify internet connectivity and GitHub access:
+   #+begin_src bash
+   ping github.com
+   #+end_src
+
+3. Try rebuilding the package:
+   #+begin_src elisp
+   M-x elpaca-rebuild RET package-name
+   #+end_src
+
+4. Nuclear option - rebuild everything:
+   #+begin_src elisp
+   M-x pathogen/rebuild-packages
+   #+end_src
+
+** LSP Not Working
+
+1. Verify language server is installed:
+   #+begin_src bash
+   # Python
+   pip list | grep python-lsp-server
+
+   # JavaScript/TypeScript
+   npm list -g | grep typescript-language-server
+
+   # Rust
+   rustup component list | grep rust-analyzer
+   #+end_src
+
+2. Check eglot connection:
+   #+begin_src elisp
+   M-x eglot  ; Manually start in a source file
+   #+end_src
+
+3. View eglot events buffer:
+   #+begin_src elisp
+   M-x eglot-events-buffer
+   #+end_src
+
+4. Verify server configuration:
+   #+begin_src elisp
+   M-x describe-variable RET eglot-server-programs
+   #+end_src
+
+** Fonts Not Loading
+
+1. Verify font is installed:
+   #+begin_src bash
+   fc-list | grep "Font Name"
+   #+end_src
+
+2. Check if display is graphical:
+   #+begin_src elisp
+   M-: (display-graphic-p)  ; Should return t
+   #+end_src
+
+3. Try setting font manually:
+   #+begin_src elisp
+   M-x pathogen/set-font
+   #+end_src
+
+4. For daemon mode, ensure hooks are set:
+   - Font setting should be in =after-init-hook=
+   - For new frames: =server-after-make-frame-hook=
+
+** Configuration Errors
+
+1. Check for errors during startup:
+   #+begin_src elisp
+   M-x view-echo-area-messages  ; or switch to *Messages* buffer
+   #+end_src
+
+2. Validate configuration:
+   #+begin_src elisp
+   M-x pathogen/validate-config
+   #+end_src
+
+3. Test in clean environment:
+   #+begin_src elisp
+   M-x pathogen/test-config
+   #+end_src
+
+4. Start Emacs with debug mode:
+   #+begin_src bash
+   emacs --debug-init
+   #+end_src
+
+5. Check specific module:
+   #+begin_src elisp
+   M-: (load "~/.emacs.d/pathogen/MODULE-NAME.el")
+   #+end_src
+
+* Performance Optimization
+
+Pathogen includes several performance optimizations:
+
+** Startup Optimizations
+
+1. *GC Threshold Tuning* (=early-init.el=)
+   - Raises GC threshold to 100MB during startup
+   - Reduces to 10MB after init
+   - Prevents GC pauses during initialization
+
+2. *File-name-handler-alist Optimization* (=early-init.el=)
+   - Temporarily disabled during startup
+   - 30-50% faster startup time
+   - Restored after init completes
+
+3. *Lazy Loading* (=03-setup-packages.el=)
+   - Most packages deferred until needed
+   - Use =:hook=, =:mode=, =:bind= for automatic deferring
+   - Explicit =:defer t= where appropriate
+
+** Runtime Optimizations
+
+1. *Auto-save Strategy* (=01-editor.el=)
+   - Modern =auto-save-visited-mode= instead of traditional auto-save
+   - No #filename# clutter
+   - 5-second interval
+
+2. *JIT Lock Stealth Time* (=01-editor.el=)
+   - Fast syntax highlighting (0.2s)
+   - Improves scrolling in large files
+
+3. *Completion Performance* (=03-setup-packages.el=)
+   - Vertico with minimal processing
+   - Orderless for efficient matching
+   - Corfu with small delay
+
+** Monitoring Performance
+
+#+begin_src elisp
+;; View startup time
+M-x emacs-init-time
+
+;; View module load times
+M-x pathogen/show-load-times
+
+;; Profile startup
+M-x pathogen/profile-init
+
+;; Check use-package statistics (if debug-on-error is t)
+M-x use-package-report
+#+end_src
+
+* Contributing
+
+While this is primarily a personal configuration, improvements and suggestions are welcome:
+
+1. *Bug Reports*: Open an issue describing the problem and steps to reproduce
+2. *Feature Suggestions*: Open an issue explaining the use case and benefits
+3. *Pull Requests*: For bug fixes and improvements, please:
+   - Follow the existing code style and conventions
+   - Add comments explaining the rationale
+   - Update documentation if needed
+   - Test thoroughly before submitting
+
+** Coding Conventions
+
+- Use =lexical-binding: t= in all files
+- Prefix custom variables/functions with =pathogen/= or =pathogen--=
+  - Public API: =pathogen/= (e.g., =pathogen/reload-config=)
+  - Private/internal: =pathogen--= (e.g., =pathogen--load-module=)
+- Include comprehensive docstrings
+- Comment complex logic and design decisions
+- Group related settings with section headers
+
+* Credits
+
+Created and maintained by [[https://gitlab.com/padawanphysicist][Victor Santos]].
+
+Inspired by:
+- [[https://www.spacemacs.org/][Spacemacs]]
+- [[https://github.com/hlissner/doom-emacs][Doom Emacs]]
+- [[https://github.com/bbatsov/prelude][Prelude]]
+- Various Emacs configurations in the community
+
+Special thanks to the Emacs community and package maintainers.
+
+---
+
+Let me know if you find this useful and/or have any suggestions!
