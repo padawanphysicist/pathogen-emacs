@@ -152,6 +152,56 @@
 (use-package use-package-ensure-system-package
   :demand t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Use-package loading strategy
+;;
+;;
+;; By default, use-package loads packages immediately unless you specify
+;; :defer, :hook, :mode, :bind, or similar keywords that trigger lazy loading.
+;;
+;; For large configurations with slow startup times, you can enable global
+;; deferred loading with: (setq use-package-always-defer t)
+;;
+;; When enabled:
+;;   - ALL packages defer loading by default
+;;   - Must explicitly use :demand t for immediate loading
+;;   - Significantly improves startup time
+;;   - Requires careful auditing of which packages need immediate loading
+;;
+;; Packages that typically need :demand t:
+;;   - Themes (visual appearance on startup)
+;;   - Core infrastructure (evil, which-key, key-chord)
+;;   - Global modes (company, vertico, marginalia)
+;;   - Packages with startup hooks (dashboard, all-the-icons)
+;;
+;; Example with always-defer enabled:
+;;
+;;   (setq use-package-always-defer t)
+;;
+;;   (use-package doom-themes
+;;     :demand t  ; Theme must load immediately for visual appearance
+;;     :config
+;;     (load-theme 'doom-one t))
+;;
+;;   (use-package magit
+;;     ;; No :demand needed - magit can load when first invoked
+;;     :bind ("C-x g" . magit-status))
+;;
+;;   (use-package markdown-mode
+;;     ;; No :demand needed - loads when opening .md files
+;;     :mode "\\.md\\'")
+;;
+;; NOTE: This configuration does NOT enable use-package-always-defer by default.
+;;       Elpaca already provides efficient lazy loading, and most packages in
+;;       this configuration already have explicit loading strategies (:hook,
+;;       :mode, :bind, etc.). Enable use-package-always-defer only if you
+;;       experience slow startup times and want to enforce lazy loading globally.
+;;
+;; To enable globally, add to your ~/.pathogen.el:
+;;   (setq use-package-always-defer t)
+;;
+;; See also: https://github.com/jwiegley/use-package#loading-packages
+
 (if debug-on-error
     (setq use-package-verbose t
           use-package-expand-minimally nil
