@@ -56,16 +56,50 @@ See also `pathogen/user-config' for accessing user-specific configuration files.
   (interactive)
   (dired (concat user-emacs-directory "pathogen")))
 
-(defun pathogen/set-font (font-alist)
-  "Set the first available font from FONT-ALIST (name . size) as default font."
-  (let ((frame (selected-frame)))
-    (cond ((null font-alist) nil)  ; Base case: empty list
-          ((x-list-fonts (caar font-alist))  ; Check if font exists
-           (let ((font-name (caar font-alist))
-                 (font-size (cdar font-alist)))
-             (set-frame-font 
-              (format "%s-%d" font-name font-size) t t frame)))
-          (t (pathogen/set-font (cdr font-alist))))))  ; Recurse
+(defun pathogen/set-font (font-alist &optional original-alist)
+  "Set the first available font from FONT-ALIST as default font.
+
+FONT-ALIST is a list of (FONT-NAME . FONT-SIZE) cons cells.
+The function tries each font in order and uses the first available one.
+
+If no fonts are available, displays a warning and falls back to default.
+
+Example usage:
+  (pathogen/set-font '((\"JetBrains Mono\" . 12)
+                       (\"Fira Code\" . 12)
+                       (\"Monospace\" . 11)))
+
+Good practice: Always include a generic fallback font like \"Monospace\"
+at the end of the list to ensure at least one font is available.
+
+Returns the font that was set as (FONT-NAME . FONT-SIZE), or nil if
+none were available."
+  (let ((frame (selected-frame))
+        (orig-list (or original-alist font-alist)))
+    (cond
+     ;; Base case: empty list - no fonts available
+     ((null font-alist)
+      (when original-alist
+        ;; Only warn if we actually tried fonts (recursive call)
+        (display-warning 'pathogen
+                         (format "None of the requested fonts are available: %s\nUsing system default font."
+                                 (mapconcat (lambda (f) (format "\"%s\"" (car f)))
+                                           original-alist
+                                           ", "))
+                         :warning))
+      nil)
+
+     ;; Check if current font exists
+     ((x-list-fonts (caar font-alist))
+      (let ((font-name (caar font-alist))
+            (font-size (cdar font-alist)))
+        (set-frame-font (format "%s-%d" font-name font-size) t t frame)
+        (message "Set font to %s at size %d" font-name font-size)
+        ;; Return the font that was set
+        (cons font-name font-size)))
+
+     ;; Current font not available, try next
+     (t (pathogen/set-font (cdr font-alist) orig-list)))))  ; Recurse with original list
 
 (provide '04-custom-functions)
 ;;; functions.el ends here
