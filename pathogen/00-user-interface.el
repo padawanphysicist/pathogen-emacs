@@ -45,6 +45,27 @@
  scroll-bar-mode nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Default frame size
+;;
+;;
+;; Set default frame dimensions for consistent appearance across systems.
+;; These values provide a comfortable working size that fits most displays
+;; while leaving room for side-by-side windows and comfortable reading.
+;;
+;; Width: 120 characters accommodates modern code style guides (80-100 char
+;; line limits) with room for line numbers and fringes. Also works well for
+;; side-by-side window splits.
+;;
+;; Height: 40 lines provides good context visibility without being too tall
+;; for smaller displays.
+;;
+;; Note: Users can override these in their personal config (~/.pathogen.el)
+;; or use (push '(fullscreen . maximized) default-frame-alist) to start
+;; maximized instead.
+(push '(width . 120) default-frame-alist)
+(push '(height . 40) default-frame-alist)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Smooth scrolling
 ;;
 ;;
