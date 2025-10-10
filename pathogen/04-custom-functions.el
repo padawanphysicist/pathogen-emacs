@@ -33,6 +33,42 @@
 ;;
 ;;; Code:
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Font Configuration Example
+;;
+;; The pathogen/set-font function below helps you set fonts with fallback
+;; support. However, it's important to call it at the right time to ensure
+;; it works correctly in all scenarios (GUI, daemon mode, multiple frames).
+;;
+;; RECOMMENDED USAGE PATTERN:
+;; Add this to your personal configuration (~/.pathogen.el or ~/.pathogen.d/):
+;;
+;;   (defun my-setup-fonts ()
+;;     "Set up fonts for the current frame."
+;;     (when (display-graphic-p)
+;;       (pathogen/set-font '(("JetBrains Mono" . 12)
+;;                           ("Fira Code" . 12)
+;;                           ("Monospace" . 11)))))
+;;
+;;   ;; For regular Emacs startup
+;;   (add-hook 'after-init-hook #'my-setup-fonts)
+;;
+;;   ;; For daemon mode - ensures new frames get the font
+;;   (add-hook 'server-after-make-frame-hook #'my-setup-fonts)
+;;
+;; WHY USE HOOKS?
+;; - Ensures display system is initialized before setting fonts
+;; - Works correctly in daemon mode (emacs --daemon)
+;; - Applies fonts to all new frames, not just the first one
+;; - Guards against errors in terminal-only Emacs
+;;
+;; IMPORTANT:
+;; - Don't call pathogen/set-font directly at top-level in init files
+;; - Always check (display-graphic-p) before calling
+;; - Include a generic fallback font (e.g., "Monospace") in your list
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun pathogen/user-config ()
   "Open user configuration directory in Dired.
 
@@ -64,13 +100,29 @@ The function tries each font in order and uses the first available one.
 
 If no fonts are available, displays a warning and falls back to default.
 
-Example usage:
-  (pathogen/set-font '((\"JetBrains Mono\" . 12)
-                       (\"Fira Code\" . 12)
-                       (\"Monospace\" . 11)))
+TIMING AND USAGE:
+This function should be called from appropriate hooks to ensure fonts
+are set correctly in all scenarios (GUI, daemon mode, multiple frames).
 
-Good practice: Always include a generic fallback font like \"Monospace\"
-at the end of the list to ensure at least one font is available.
+Recommended approach:
+  (defun my-setup-fonts ()
+    \"Set up fonts for the current frame.\"
+    (when (display-graphic-p)
+      (pathogen/set-font '((\"JetBrains Mono\" . 12)
+                          (\"Fira Code\" . 12)
+                          (\"Monospace\" . 11)))))
+
+  (add-hook 'after-init-hook #'my-setup-fonts)
+  (add-hook 'server-after-make-frame-hook #'my-setup-fonts)
+
+See the \"Font Configuration Example\" section above for detailed
+explanation of why hooks are necessary.
+
+IMPORTANT:
+- Always wrap calls in (when (display-graphic-p) ...)
+- Don't call directly at top-level in init files
+- For daemon mode, use server-after-make-frame-hook
+- Include a generic fallback font like \"Monospace\"
 
 Returns the font that was set as (FONT-NAME . FONT-SIZE), or nil if
 none were available."
