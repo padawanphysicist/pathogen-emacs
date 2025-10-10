@@ -153,5 +153,171 @@ none were available."
      ;; Current font not available, try next
      (t (pathogen/set-font (cdr font-alist) orig-list)))))  ; Recurse with original list
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Configuration Management Utilities
+;;
+;; Functions for managing and maintaining your Pathogen Emacs configuration.
+;; These utilities help with common tasks like reloading config, rebuilding
+;; packages, clearing cache, and troubleshooting issues.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun pathogen/reload-config ()
+  "Reload Pathogen Emacs configuration.
+
+This function reloads all core configuration modules without restarting
+Emacs. Useful for testing configuration changes quickly.
+
+WARNING: This may not work perfectly for all changes (especially package
+configurations). For major changes, consider restarting Emacs.
+
+Note: User configuration files (~/.pathogen.el, ~/.pathogen.d/) are also
+reloaded if they exist."
+  (interactive)
+  (message "Reloading Pathogen configuration...")
+  (let ((start-time (current-time)))
+    ;; Reload shared variables
+    (load (concat user-emacs-directory "pathogen-vars.el"))
+
+    ;; Reload each module
+    (dolist (module '(00-user-interface
+                      01-editor
+                      02-package-manager
+                      03-setup-packages
+                      04-custom-functions))
+      (load (concat user-emacs-directory "pathogen/"
+                    (symbol-name module) ".el")))
+
+    ;; Reload user configuration
+    (when (file-exists-p pathogen-config-directory)
+      (mapc #'load-file (file-expand-wildcards
+                         (concat pathogen-config-directory "*.el"))))
+    (when (file-exists-p pathogen-config-file)
+      (load-file pathogen-config-file))
+
+    (message "Configuration reloaded in %.2fs"
+             (float-time (time-subtract (current-time) start-time)))))
+
+(defun pathogen/rebuild-packages ()
+  "Rebuild all Elpaca packages.
+
+This forces a complete rebuild of all installed packages, which can fix
+issues caused by:
+- Emacs version upgrades
+- Package compilation errors
+- Corrupted package bytecode
+
+WARNING: This will take several minutes to complete."
+  (interactive)
+  (when (yes-or-no-p "Rebuild all packages? This will take several minutes. ")
+    (message "Rebuilding all packages...")
+    (elpaca-rebuild)
+    (message "Package rebuild initiated. Check *elpaca-log* for progress.")))
+
+(defun pathogen/clear-cache (&optional force)
+  "Clear Pathogen cache directory.
+
+This removes saved history files (savehist, recentf) and other cache data.
+Useful when cache files become corrupted or too large.
+
+With prefix argument FORCE (\\[universal-argument]), skip confirmation prompt.
+
+WARNING: This will delete your command history, recent files list, and
+other cached data. They will be recreated on next Emacs restart."
+  (interactive "P")
+  (when (or force
+            (yes-or-no-p
+             (format "Delete all cache files in %s? "
+                     pathogen-cache-directory)))
+    (if (file-directory-p pathogen-cache-directory)
+        (progn
+          (delete-directory pathogen-cache-directory t)
+          (make-directory pathogen-cache-directory t)
+          (message "Cache cleared. Restart Emacs to recreate cache files."))
+      (message "Cache directory does not exist: %s"
+               pathogen-cache-directory))))
+
+(defun pathogen/reset-to-defaults ()
+  "Reset Pathogen configuration to defaults.
+
+This removes:
+- User configuration files (~/.pathogen.el, ~/.pathogen.d/)
+- Custom.el file (customization settings)
+- Cache directory (history, recent files)
+
+WARNING: This is DESTRUCTIVE and cannot be undone! Make backups first.
+
+After reset, Emacs will start with base Pathogen configuration only."
+  (interactive)
+  (when (yes-or-no-p "DESTRUCTIVE: Reset to defaults? This cannot be undone! ")
+    (when (yes-or-no-p "Are you ABSOLUTELY sure? ")
+      (let ((deleted-items '()))
+        ;; Remove user config file
+        (when (file-exists-p pathogen-config-file)
+          (delete-file pathogen-config-file)
+          (push pathogen-config-file deleted-items))
+
+        ;; Remove user config directory
+        (when (file-directory-p pathogen-config-directory)
+          (delete-directory pathogen-config-directory t)
+          (push pathogen-config-directory deleted-items))
+
+        ;; Remove custom.el
+        (let ((custom-file-path (concat user-emacs-directory "custom.el")))
+          (when (file-exists-p custom-file-path)
+            (delete-file custom-file-path)
+            (push custom-file-path deleted-items)))
+
+        ;; Remove cache
+        (when (file-directory-p pathogen-cache-directory)
+          (delete-directory pathogen-cache-directory t)
+          (push pathogen-cache-directory deleted-items))
+
+        (if deleted-items
+            (message "Reset complete. Deleted:\n%s\n\nRestart Emacs to complete reset."
+                     (mapconcat #'identity deleted-items "\n"))
+          (message "Nothing to reset - already at defaults."))))))
+
+(defun pathogen/validate-config ()
+  "Check configuration for common issues.
+
+Validates:
+- All required directories exist and are writable
+- All core modules can be loaded
+- Cache files are accessible
+
+Displays a report of any issues found."
+  (interactive)
+  (message "Validating configuration...")
+  (let ((issues '()))
+
+    ;; Check cache directory
+    (unless (file-directory-p pathogen-cache-directory)
+      (push "Cache directory does not exist" issues))
+    (when (and (file-directory-p pathogen-cache-directory)
+               (not (file-writable-p pathogen-cache-directory)))
+      (push "Cache directory is not writable" issues))
+
+    ;; Check modules exist
+    (dolist (module '(00-user-interface 01-editor 02-package-manager
+                      03-setup-packages 04-custom-functions))
+      (let ((module-file (concat user-emacs-directory "pathogen/"
+                                (symbol-name module) ".el")))
+        (unless (file-exists-p module-file)
+          (push (format "Module missing: %s" module) issues))))
+
+    ;; Check for failed modules
+    (when pathogen--failed-modules
+      (push (format "%d modules failed to load"
+                    (length pathogen--failed-modules)) issues))
+
+    ;; Display results
+    (if issues
+        (display-warning 'pathogen
+                         (format "Configuration issues found:\n%s"
+                                 (mapconcat (lambda (i) (concat "  - " i))
+                                           issues "\n"))
+                         :warning)
+      (message "✓ Configuration validation passed - no issues found."))))
+
 (provide '04-custom-functions)
 ;;; functions.el ends here
