@@ -85,8 +85,72 @@
   (setq elpaca-use-package-by-default t))
 
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a 
+(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a
                ;; use-package keyword
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; System package integration
+;;
+;;
+;; The `use-package-ensure-system-package` extension allows use-package to check
+;; for and optionally install system-level dependencies (executables, CLI tools)
+;; that some Emacs packages require to function properly.
+;;
+;; This package is installed but not configured for automatic installation.
+;; Instead, you can manually add `:ensure-system-package` to individual package
+;; configurations where needed.
+;;
+;; Common use cases:
+;;   - LSP servers (require language-specific binaries)
+;;   - External tools (ripgrep, fd, markdown processors)
+;;   - Build tools (compilers, formatters, linters)
+;;
+;; Example usage:
+;;
+;;   (use-package markdown-mode
+;;     :mode "\\.md\\'"
+;;     :ensure-system-package
+;;     ((markdown . "sudo apt install markdown")
+;;      (pandoc . "sudo apt install pandoc")))
+;;
+;;   (use-package rg
+;;     :ensure-system-package
+;;     (rg . "sudo apt install ripgrep"))
+;;
+;;   (use-package rust-mode
+;;     :mode "\\.rs\\'"
+;;     :ensure-system-package
+;;     ((rustc . "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh")
+;;      (cargo . "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh")))
+;;
+;; The format is: (executable . "install-command")
+;;
+;; If the executable is not found in PATH, use-package will:
+;;   1. Display a warning message
+;;   2. Ask if you want to run the install command
+;;   3. Execute the command if you confirm
+;;
+;; For packages where the executable name matches the install command, you can
+;; use shorthand: :ensure-system-package (ripgrep pandoc)
+;;
+;; Platform-specific commands:
+;;   You can use conditional logic for cross-platform support:
+;;
+;;   (use-package markdown-mode
+;;     :ensure-system-package
+;;     (markdown . ,(cond
+;;                   ((eq system-type 'darwin) "brew install markdown")
+;;                   ((eq system-type 'gnu/linux) "sudo apt install markdown")
+;;                   (t "echo 'Please install markdown manually'"))))
+;;
+;; NOTE: This package does NOT automatically install anything by default.
+;;       You must explicitly add `:ensure-system-package` to each use-package
+;;       declaration where you want system dependency checking.
+;;
+;; See also: https://github.com/jwiegley/use-package-ensure-system-package
+
+(use-package use-package-ensure-system-package
+  :demand t)
 
 (if debug-on-error
     (setq use-package-verbose t
