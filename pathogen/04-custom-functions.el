@@ -280,15 +280,20 @@ After reset, Emacs will start with base Pathogen configuration only."
 (defun pathogen/validate-config ()
   "Check configuration for common issues.
 
-Validates:
-- All required directories exist and are writable
-- All core modules can be loaded
-- Cache files are accessible
+Performs comprehensive validation including:
+- Directory permissions and existence
+- Core module integrity
+- Package installation status
+- LSP server availability
+- Font availability
+- Git availability (required for Elpaca)
+- Deprecated settings detection
 
-Displays a report of any issues found."
+Displays a detailed report of any issues or warnings found."
   (interactive)
   (message "Validating configuration...")
-  (let ((issues '()))
+  (let ((issues '())
+        (warnings '()))
 
     ;; Check cache directory
     (unless (file-directory-p pathogen-cache-directory)
@@ -307,17 +312,122 @@ Displays a report of any issues found."
 
     ;; Check for failed modules
     (when pathogen--failed-modules
-      (push (format "%d modules failed to load"
-                    (length pathogen--failed-modules)) issues))
+      (push (format "%d modules failed to load: %s"
+                    (length pathogen--failed-modules)
+                    (mapconcat #'symbol-name pathogen--failed-modules ", "))
+            issues))
+
+    ;; Check Git availability (required for Elpaca)
+    (unless (executable-find "git")
+      (push "Git executable not found (required for Elpaca package manager)" issues))
+
+    ;; Check Elpaca installation
+    (when (featurep 'elpaca)
+      (let ((elpaca-dir (expand-file-name "elpaca/" user-emacs-directory)))
+        (unless (file-directory-p elpaca-dir)
+          (push "Elpaca directory missing - package manager may not be initialized" issues))))
+
+    ;; Check for failed package installations (if elpaca is loaded)
+    (when (and (featurep 'elpaca)
+               (boundp 'elpaca--queued)
+               (hash-table-p elpaca--queued))
+      (let ((failed-packages '()))
+        (maphash (lambda (name info)
+                   (when (and (listp info)
+                              (plist-get info :failed))
+                     (push name failed-packages)))
+                 elpaca--queued)
+        (when failed-packages
+          (push (format "Failed package installations: %s"
+                        (mapconcat #'symbol-name failed-packages ", "))
+                issues))))
+
+    ;; Check LSP servers for configured languages (if eglot is loaded)
+    (when (featurep 'eglot)
+      (let ((missing-servers '()))
+        ;; Check Python LSP
+        (when (and (not (executable-find "pylsp"))
+                   (not (executable-find "pyls")))
+          (push "python-lsp-server (Python LSP not found - run: pip install python-lsp-server)"
+                missing-servers))
+
+        ;; Check TypeScript LSP
+        (when (not (executable-find "typescript-language-server"))
+          (push "typescript-language-server (JS/TS LSP not found - run: npm install -g typescript-language-server)"
+                missing-servers))
+
+        ;; Check Rust Analyzer
+        (when (and (executable-find "rustc")
+                   (not (executable-find "rust-analyzer")))
+          (push "rust-analyzer (Rust LSP not found - run: rustup component add rust-analyzer)"
+                missing-servers))
+
+        ;; Check Go LSP
+        (when (and (executable-find "go")
+                   (not (executable-find "gopls")))
+          (push "gopls (Go LSP not found - run: go install golang.org/x/tools/gopls@latest)"
+                missing-servers))
+
+        (when missing-servers
+          (dolist (server missing-servers)
+            (push (format "LSP server missing: %s" server) warnings)))))
+
+    ;; Check fonts (if in graphical environment)
+    (when (display-graphic-p)
+      (let ((common-fonts '("JetBrains Mono" "Fira Code" "Source Code Pro"
+                            "Menlo" "Monaco" "DejaVu Sans Mono")))
+        (unless (cl-some (lambda (font) (find-font (font-spec :name font)))
+                         common-fonts)
+          (push "No common programming fonts found - consider installing JetBrains Mono or Fira Code"
+                warnings))))
+
+    ;; Check for deprecated variables/functions
+    (when (boundp 'modifier-keys-are-sticky)
+      (push "Variable 'modifier-keys-are-sticky' is set but doesn't exist in standard Emacs"
+            warnings))
+
+    ;; Check custom.el conflicts
+    (let ((custom-file-path (concat user-emacs-directory "custom.el")))
+      (when (and (file-exists-p custom-file-path)
+                 (> (nth 7 (file-attributes custom-file-path)) 1000))
+        (push "custom.el is large - consider managing settings in modules instead"
+              warnings)))
+
+    ;; Check for pathogen-vars.el
+    (let ((vars-file (concat user-emacs-directory "pathogen-vars.el")))
+      (unless (file-exists-p vars-file)
+        (push "pathogen-vars.el missing - shared variables may not be defined" issues)))
 
     ;; Display results
-    (if issues
-        (display-warning 'pathogen
-                         (format "Configuration issues found:\n%s"
-                                 (mapconcat (lambda (i) (concat "  - " i))
-                                           issues "\n"))
-                         :warning)
-      (message "✓ Configuration validation passed - no issues found."))))
+    (cond
+     ;; Critical issues found
+     ((and issues (not warnings))
+      (display-warning 'pathogen
+                       (format "Configuration issues found:\n%s"
+                               (mapconcat (lambda (i) (concat "  ✗ " i))
+                                         issues "\n"))
+                       :error))
+     ;; Only warnings
+     ((and warnings (not issues))
+      (display-warning 'pathogen
+                       (format "Configuration warnings:\n%s"
+                               (mapconcat (lambda (w) (concat "  ⚠ " w))
+                                         warnings "\n"))
+                       :warning)
+      (message "✓ Configuration validation passed with %d warning(s)"
+               (length warnings)))
+     ;; Both issues and warnings
+     ((and issues warnings)
+      (display-warning 'pathogen
+                       (format "Configuration issues found:\n%s\n\nWarnings:\n%s"
+                               (mapconcat (lambda (i) (concat "  ✗ " i))
+                                         issues "\n")
+                               (mapconcat (lambda (w) (concat "  ⚠ " w))
+                                         warnings "\n"))
+                       :error))
+     ;; All good
+     (t
+      (message "✓ Configuration validation passed - no issues found.")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Debugging and Profiling Helpers
