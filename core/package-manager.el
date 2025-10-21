@@ -1,4 +1,4 @@
-;;; 02-package-manager.el --- Setup package manager -*- lexical-binding: t; -*-
+;;; package-manager.el --- Setup package manager -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2021 Victor Santos
 ;;
@@ -145,8 +145,6 @@
   (setq use-package-verbose nil
         use-package-expand-minimally t))
 
-(message "Loaded elpaca configuration")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Elpaca logging configuration
 ;;
@@ -196,5 +194,7 @@
                               (time-subtract (current-time) before-init-time)))
                      gcs-done)))
 
-(provide '02-package-manager)
-;;; 02-package-manager.el ends here
+(message "Loaded package-manager module")
+
+(provide 'package-manager)
+;;; package-manager.el ends here
