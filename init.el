@@ -18,6 +18,8 @@
 (require 'core)
 (require 'package-manager)
 
+(pathogen-load-layer "ui/themes")
+
 (pathogen/set-font)
 (pathogen/set-smooth-scrolling)
 (pathogen/misc-settings)
