@@ -16,6 +16,7 @@
 
 (require 'vars)
 (require 'core)
+(require 'package-manager)
 
 (pathogen/set-font)
 (pathogen/set-smooth-scrolling)
