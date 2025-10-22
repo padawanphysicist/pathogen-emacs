@@ -23,8 +23,11 @@
 (defconst pathogen--core-dir (expand-file-name "core/" pathogen--emacs-dir)
   "Directory containing Pathogen core configuration.")
 
-(defconst pathogen--layers-dirs (list (expand-file-name "layers/" pathogen--emacs-dir))
-  "Directory containing Pathogen default layer configuration.")
+(defconst pathogen--layers-dir (expand-file-name "layers/" pathogen--emacs-dir)
+  "Directory containing Pathogen core layers.")
+
+(defconst pathogen--layers-dirs '()
+  "Directories containing Pathogen layers.")
 
 (defvar pathogen-private-layers-dir "~/.pathogen.d/"
   "Directory containing Pathogen private layer configuration.")
