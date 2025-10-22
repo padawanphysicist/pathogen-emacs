@@ -17,12 +17,29 @@
 ;;
 ;;; Code:
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Public API Variables
-;;
-;; These variables are safe for users to customize in their personal
-;; configuration files.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defconst pathogen--emacs-dir user-emacs-directory
+  "Pathogen main directory.")
+
+(defconst pathogen--core-dir (expand-file-name "core/" pathogen--emacs-dir)
+  "Directory containing Pathogen core configuration.")
+
+(defconst pathogen--layers-dirs (list (expand-file-name "layers/" pathogen--emacs-dir))
+  "Directory containing Pathogen default layer configuration.")
+
+(defvar pathogen-private-layers-dir "~/.pathogen.d/"
+  "Directory containing Pathogen private layer configuration.")
+
+(defvar pathogen--enabled-layers '()
+  "List of enabled layers.")
+
+(defvar pathogen--file-name-handler-alist file-name-handler-alist
+  "Backup of file-name-handler-alist for restoration after init.")
+
+(defvar pathogen--config-file (substitute-in-file-name "$HOME/.pathogen.el")
+  "User's personal configuration file.
+This file is loaded after all Pathogen modules if it exists. Use this
+for personal customizations without modifying Pathogen core files.")
+
 (defvar pathogen-gc-cons-threshold 67108864 ; 64MB
   "The default value to use for `gc-cons-threshold' after initialization.
 During startup, GC threshold is set very high to speed up initialization.
@@ -38,18 +55,6 @@ Default: 64MB (67108864 bytes)")
 This controls how much heap growth triggers garbage collection.
 
 Default: 0.5 (50% growth triggers GC)")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Internal Variables
-;;
-;; This variables are not supposed to be customized
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defconst pathogen--emacs-dir user-emacs-directory)
-(defconst pathogen--core-dir (expand-file-name "core" pathogen--emacs-dir))
-(defconst pathogen--layers-dir (expand-file-name "layers" pathogen--emacs-dir))
-
-(defvar pathogen--file-name-handler-alist file-name-handler-alist
-  "Backup of file-name-handler-alist for restoration after init.")
 
 (provide 'vars)
 ;;; vars.el ends here

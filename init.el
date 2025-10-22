@@ -15,13 +15,24 @@
 ;;; Code:
 
 (require 'vars)
-(require 'core)
 (require 'package-manager)
+(require 'funcs)
 
-(pathogen-load-layer "ui/themes")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Load core layers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(pathogen/load-layers '(better-defaults))
 
-(pathogen/set-font)
-(pathogen/set-smooth-scrolling)
-(pathogen/misc-settings)
-(pathogen/ui-hooks)
-(pathogen/configure-builtin-plugins)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Load additional settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Additional layers
+(if (file-exists-p pathogen-private-layers-dir)
+  (pathogen--add-layers-dir pathogen-private-layers-dir)
+  (message "No private layers found"))
+;; Extra configuration
+(if (file-exists-p pathogen--config-file)
+  (load-file pathogen--config-file)
+  (message "No personal configuration file found."))
+
+(provide 'init.el)
