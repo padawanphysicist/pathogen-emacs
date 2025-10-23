@@ -30,7 +30,7 @@
   (dolist (dir '("core"))
     (add-to-list 'load-path (expand-file-name dir pathogen-root-dir))))
 
-(require 'vars)
+(require 'variables)
 (require 'early-funcs)
 
 (pathogen/toggle-gui-elements-off)
