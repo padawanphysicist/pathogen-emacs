@@ -1,0 +1,7 @@
+#+title: pathogen-base
+
+This layer loads the necessary packages for pathogen to start-up.
+
+* Features:
+
+- Loads =which-key= which is used to show key bindings in other modes

@@ -70,7 +70,7 @@ Do not access directly. Use `pathogen-layer-get' instead.")
 ;(defvar pathogen-configuration-layers '()
 ;  "List of layers to load. Set via .pathogen.el")
 ;
-(defvar pathogen--default-configuration-layers '(+emacs/better-defaults)
+(defvar pathogen--default-configuration-layers '(+pathogen/base)
   "List of layers to load by default")
 ;
 ;(defvar pathogen--enabled-layers '()
