@@ -70,8 +70,8 @@ Do not access directly. Use `pathogen-layer-get' instead.")
 ;(defvar pathogen-configuration-layers '()
 ;  "List of layers to load. Set via .pathogen.el")
 ;
-;(defvar pathogen--default-configuration-layers '()
-;  "List of layers to load by default")
+(defvar pathogen--default-configuration-layers '(+emacs/better-defaults)
+  "List of layers to load by default")
 ;
 ;(defvar pathogen--enabled-layers '()
 ;  "List of enabled layers.")
@@ -101,5 +101,6 @@ This controls how much heap growth triggers garbage collection.
 
 Default: 0.5 (50% growth triggers GC)")
 
+(message "Loaded variables module")
 (provide 'variables)
 ;;; variables.el ends here

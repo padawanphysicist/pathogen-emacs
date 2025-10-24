@@ -194,7 +194,7 @@
                               (time-subtract (current-time) before-init-time)))
                      gcs-done)))
 
-(message "Loaded elpaca configuration")
+(message "Loaded package-manager module")
 
 (provide 'package-manager)
 ;;; package-manager.el ends here
