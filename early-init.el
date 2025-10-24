@@ -33,10 +33,10 @@
 (require 'variables)
 (require 'early-funcs)
 
-(pathogen/toggle-gui-elements-off)
-(pathogen/tune-garbage-collector)
-(pathogen/ui-tweaks)
-(pathogen/minor-tweaks)
+(pathogen--toggle-gui-elements-off)
+(pathogen--tune-garbage-collector)
+(pathogen--ui-tweaks)
+(pathogen--minor-tweaks)
 
 (provide 'early-init)
 ;;; early-init.el ends here

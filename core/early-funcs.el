@@ -13,8 +13,9 @@
 ;;
 ;;; Code:
 
-(defun pathogen/toggle-gui-elements-off ()
-  "Toggle menu bar, tool bar, scroll bars"
+(defun pathogen--toggle-gui-elements-off ()
+  "Toggle menu bar, tool bar, scroll bars."
+
   ;; To prevent the glimpse of un-styled Emacs we disable these UI elements early
   ;; by directly setting the variable `default-frame-alist', which keeps the
   ;; default values used when creating a frame (window in the modern parlance):
@@ -22,6 +23,7 @@
   (push '(tool-bar-lines . 0)   default-frame-alist)
   (push '(vertical-scroll-bars) default-frame-alist)
   (push '(horizontal-scroll-bars) default-frame-alist)
+
   ;; However, doing this only creates a problem: since their respective varibles
   ;; are not set, if the user wants to enable the tool-bar for example, it would
   ;; be necessary to use the cycle twice the command `tool-bar-mode' to enable.
@@ -32,7 +34,7 @@
    tool-bar-mode nil
    scroll-bar-mode nil))
 
-(defun pathogen/tune-garbage-collector ()
+(defun pathogen--tune-garbage-collector ()
   "Modify garbage collector
   
   The garbage collector (GC) of Emacs in Emacs is very simple. You allocate
@@ -95,7 +97,7 @@
                               (unless (frame-focus-state)
 				(garbage-collect)))))))
 
-(defun pathogen/minor-tweaks ()
+(defun pathogen--minor-tweaks ()
   "Perform a series of minor tweaks."
 
   ;; File name handler optimization
@@ -148,26 +150,12 @@
   ;; - :warning shows all warnings (Emacs default, can be noisy)
   (setq warning-minimum-level :error))
 
-(defun pathogen/ui-tweaks ()
+(defun pathogen--ui-tweaks ()
   "Early UI optimizations"
 
   ;; Disable the startup screen to prevent it from flashing briefly during
   ;; initialization. Setting this in early-init.el ensures it never appears,
   ;; rather than appearing and then being hidden when init.el loads.
-  (setq inhibit-startup-screen t)
-
-  ;; Bell configuration: Flash the mode line instead of the entire screen
-  ;; or making an audible beep. The default visual bell flashes the whole
-  ;; screen which can be jarring and distracting. This subtle mode-line
-  ;; flash provides feedback without being intrusive.
-  (setq visible-bell nil)  ; Disable default visual bell
-  (setq ring-bell-function
-	(lambda ()
-          (let ((orig-fg (face-foreground 'mode-line)))
-            (set-face-foreground 'mode-line "#F2804F")
-            (run-with-idle-timer 0.1 nil
-				 (lambda (fg) (set-face-foreground 'mode-line fg))
-				 orig-fg))))
-  )
+  (setq inhibit-startup-screen t))
 
 (provide 'early-funcs)
