@@ -55,6 +55,12 @@ Do not access directly. Use `pathogen-layer-get' instead.")
 (defvar pathogen--emacs-dir user-emacs-directory
   "Pathogen main directory.")
 
+(defvar pathogen--cache-dir (concat pathogen--emacs-dir "cache/")
+  "Directory where Emacs stores cache files.
+This includes savehist, recentf, and other persistent data.
+Users can customize this to store cache in a different location.")
+
+
 (defconst pathogen--core-dir (expand-file-name "core/" pathogen--emacs-dir)
   "Directory containing Pathogen core configuration.")
 
@@ -70,7 +76,7 @@ Do not access directly. Use `pathogen-layer-get' instead.")
 ;(defvar pathogen-configuration-layers '()
 ;  "List of layers to load. Set via .pathogen.el")
 ;
-(defvar pathogen--default-configuration-layers '(+pathogen/base)
+(defvar pathogen--default-configuration-layers '(+pathogen/base +completion/compleseus)
   "List of layers to load by default")
 ;
 ;(defvar pathogen--enabled-layers '()
