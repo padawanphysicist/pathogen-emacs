@@ -76,7 +76,7 @@ Users can customize this to store cache in a different location.")
 ;(defvar pathogen-configuration-layers '()
 ;  "List of layers to load. Set via .pathogen.el")
 ;
-(defvar pathogen--default-configuration-layers '(+pathogen/base +pathogen/editing +completion/compleseus)
+(defvar pathogen--default-configuration-layers '(+pathogen/base +pathogen/editing +completion/compleseus +source-control/git)
   "List of layers to load by default")
 ;
 ;(defvar pathogen--enabled-layers '()
