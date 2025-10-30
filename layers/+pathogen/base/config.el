@@ -166,6 +166,8 @@
 (use-package emacs
   :ensure nil
   :custom
+  ;; uses shorter answers "y" or "n".
+  (use-short-answers t)
   ;; `vertico-multiform-mode' adds a menu in the minibuffer
   ;; to switch display modes.
   (context-menu-mode t "Enable context menu.")
