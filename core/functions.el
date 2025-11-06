@@ -247,7 +247,7 @@ Examples:
 
 (defun pathogen--layer-load-files (layer-struct)
   "Internal: Load all configuration files for LAYER-STRUCT in order."
-  (let ((files '("variables.el" "config.el" "functions.el")))
+  (let ((files '("variables.el" "functions.el" "config.el")))
     (dolist (file files)
       (pathogen--layer-load-file layer-struct file))))
 
