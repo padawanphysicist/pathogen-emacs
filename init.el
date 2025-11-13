@@ -1,4 +1,4 @@
-;;; init.el --- Main initialization file for Emacs -*- no-byte-compile: t; lexical-binding: t; fill-column: 79; -*-
+;;; init.el --- Main initialization file for Emacs -*- lexical-binding: t; fill-column: 79; -*-
 ;;
 ;; Copyright (C) 2021 Victor Santos
 ;;
@@ -15,7 +15,25 @@
 ;;
 ;;; Code:
 
-(require 'pathogen-variables)
-(require 'pathogen-package-manager)
-(require 'pathogen-functions)
+(require 'package-manager)
+(require 'layers)
+
+;; Register the internal layer directory
+(pathogen-add-layers-dir (expand-file-name "layers/" pathogen--emacs-dir))
+
+;; Register additional layer directory
+(pathogen-add-layers-dir pathogen-additional-layers-dir)
+
+;; Extra configuration
+(if (file-exists-p pathogen-user-config-file)
+  (load-file pathogen-user-config-file)
+  (message "[Pathogen] No personal configuration file found."))
+
+;;; Load layers
+(pathogen-load-layers pathogen--default-configuration-layers)
+;; User layers
+(pathogen-load-layers pathogen-configuration-layers)
+
+(message "[Pathogen] Loaded init file.")
+;;; init.el ends here
 

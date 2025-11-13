@@ -1,4 +1,4 @@
-;;; pathogen-package-manager.el --- Setup package manager -*- lexical-binding: t; fill-column: 79; -*-
+;;; package-manager.el --- Setup package manager -*- lexical-binding: t; fill-column: 79; -*-
 ;;
 ;; Copyright (C) 2021 Victor Santos
 ;;
@@ -191,5 +191,5 @@
 
 (message "[Pathogen] Loaded package-manager module.")
 
-(provide 'pathogen-package-manager)
-;;; pathogen-package-manager.el ends here
+(provide 'package-manager)
+;;; package-manager.el ends here

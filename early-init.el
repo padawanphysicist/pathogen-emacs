@@ -86,4 +86,5 @@
   (dolist (dir '("core"))
     (add-to-list 'load-path (expand-file-name dir pathogen-root-dir))))
 
+(require 'variables)
 ;;; early-init.el ends here
