@@ -1,3 +1,7 @@
 elpaca/
 cache/
 *~
+elpa/
+custom.el
+projects
+transient/
