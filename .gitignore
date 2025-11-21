@@ -5,3 +5,4 @@ elpa/
 custom.el
 projects
 transient/
+eln-cache/
