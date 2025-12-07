@@ -6,3 +6,7 @@ custom.el
 projects
 transient/
 eln-cache/
+.org-id-locations
+bookmarks
+tramp
+multisession
