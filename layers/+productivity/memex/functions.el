@@ -1,6 +1,12 @@
+(defun pathogen-productivity-memex/log-todo-next-creation-date (&rest ignore)
+  "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
+  (when (and (string= (org-get-todo-state) "NEXT")
+             (not (org-entry-get nil "ACTIVATED")))
+    (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
+
 (defun memex/help ()
   (interactive)
-  (find-file (expand-file-name "README.org" memex-directory)))
+  (find-file (expand-file-name "README.org" pathogen-productivity-memex/root-directory)))
 
 (defun pathogen-productivity-memex/open-folder ()
   (interactive)
@@ -9,7 +15,7 @@
 
 (defun memex/consult (initial)
   (interactive "P")
-  (consult-ripgrep memex-directory initial))
+  (consult-ripgrep pathogen-productivity-memex/root-directory initial))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Funções Customizadas para Zettelkasten
@@ -33,7 +39,7 @@
 (defun memex--dailies-get-template-content ()
   "Lê e formata o arquivo de template diário.
 Substitui os especificadores de tempo/data."
-  (let ((memex-dailies-template-file (expand-file-name "assets/templates/daily.org" memex-directory)))
+  (let ((memex-dailies-template-file (expand-file-name "assets/templates/daily.org" pathogen-productivity-memex/root-directory)))
     (if (not (file-exists-p memex-dailies-template-file))
         (progn
           (message "Arquivo de template não encontrado: %s" memex-dailies-template-file)

@@ -100,7 +100,7 @@
 ;;   - Requires careful auditing of which packages need immediate loading
 ;;
 ;; Packages that typically need :demand t:
-;;   - Themes (visual appearance on startup)
+;;   - Themes (visual appearance on startup)x
 ;;   - Core infrastructure (evil, which-key, key-chord)
 ;;   - Global modes (company, vertico, marginalia)
 ;;   - Packages with startup hooks (dashboard, all-the-icons)

@@ -17,6 +17,7 @@
 
 (require 'package-manager)
 (require 'layers)
+(require 'prefixes)
 
 ;; Register the internal layer directory
 (pathogen-add-layers-dir (expand-file-name "layers/" pathogen--emacs-dir))

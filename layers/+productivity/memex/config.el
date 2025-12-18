@@ -2,19 +2,19 @@
   :hook ((org-mode . visual-line-mode)
          (org-mode . org-latex-preview))
   :custom
-  ((org-directory memex-directory)
+  ((org-directory pathogen-productivity-memex/root-directory)
    (org-ellipsis " [+]")
    (org-link-elisp-skip-confirm-regexp ".*")
    (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "STOP(s)")))
    (org-log-into-drawer t)
    (org-log-done 'note)
-   (org-refile-targets `((nil :maxlevel . 9)
-                         (org-agenda-files :maxlevel . 9)
-                         ;; MOCs específicos
-                         (,(expand-file-name "collections/trabalho.org" memex-directory) :maxlevel . 3)
-                         (,(expand-file-name "collections/pessoal.org" memex-directory) :maxlevel . 3)
-                         (,(expand-file-name "collections/projetos.org" memex-directory) :maxlevel . 3)
-                         (,(expand-file-name "collections/bullet.org" memex-directory) :maxlevel . 2)))
+   ;; (org-refile-targets `((nil :maxlevel . 9)
+   ;;                       (org-agenda-files :maxlevel . 9)
+   ;;                       ;; MOCs específicos
+   ;;                       (,(expand-file-name "collections/trabalho.org" pathogen-productivity-memex/root-directory) :maxlevel . 3)
+   ;;                       (,(expand-file-name "collections/pessoal.org" pathogen-productivity-memex/root-directory) :maxlevel . 3)
+   ;;                       (,(expand-file-name "collections/projetos.org" pathogen-productivity-memex/root-directory) :maxlevel . 3)
+   ;;                       (,(expand-file-name "collections/bullet.org" pathogen-productivity-memex/root-directory) :maxlevel . 2)))
    (org-refile-use-outline-path t)
    ;; https://lists.gnu.org/archive/html/emacs-orgmode/2024-09/msg00209.html
    (org-yank-image-save-method (expand-file-name "assets/img/" org-directory))
@@ -25,6 +25,7 @@
    (org-highlight-latex-and-related '(native latex script entities))
    (org-startup-with-inline-images t "show inline images when loading a new Org file."))
   :config
+  (add-hook 'org-after-todo-state-change-hook #'pathogen-productivity-memex/log-todo-next-creation-date)
   ;; https://notes.alexkehayias.com/emacs-inline-macro-in-the-buffer/
   ;; Display macros inline in buffers
   (add-to-list 'font-lock-extra-managed-props 'display)
@@ -126,42 +127,46 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org Capture - Captura rápida de notas e tarefas
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package org-capture
-  :after org
-  :ensure nil
-  :custom
-  (org-capture-templates
-   `(;; TODO rápido (vai para inbox mobile)
-     ;; ("t" "TODO Rápido" entry
-     ;;  (file ,(expand-file-name "inbox/mobile.org" memex-directory))
-     ;;  "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
-     ;;  :empty-lines 1)
-
-     ;; Nota (vai para inbox desktop)
-     ("t" "Anotação rápida" entry
-      (file ,(expand-file-name "productivity/inbox.org" memex-directory))
-      "* TODO %U %?\n:PROPERTIES:\n:ID: %(org-id-new)\n:CREATED: %U\n:END:\n"
-      :empty-lines 1)
-
-     ;; Journal entry (vai para journal/YYYY/)
-     ("j" "Journal" entry
-      (file+olp+datetree
-       ,(expand-file-name (format-time-string "journal/%Y/%Y-%m-%d.org") memex-directory))
-      "* %<%H:%M> %?\n"
-      :empty-lines 1)
-
-     ;; Meeting notes (vai para trabalho.org MOC)
-     ("m" "Meeting" entry
-      (file+headline ,(expand-file-name "collections/trabalho.org" memex-directory) "Tarefas")
-      "* MEETING %? :meeting:\nSCHEDULED: %^T\n** Participantes\n\n** Notas\n\n** Action Items\n- [ ] \n"
-      :empty-lines 1)
-
-     ;; Zettel note
-     ("z" "Zettel Note" entry
-      (file ,(expand-file-name (format "notes/%s.org" (format-time-string "%Y%m%d%H%M%S"))
-                                memex-directory))
-      "#+title: %^{Título}\n#+date: %U\n#+setupfile: ../assets/tags.org\n#+filetags: \n\n:PROPERTIES:\n:ID: %(org-id-new)\n:CREATED: %U\n:END:\n\n* %?\n\n* Links Relacionados\n\n* Backlinks\n# Adicione manualmente links para notas que referenciam esta\n# Use: M-x memex/find-backlinks para buscar automaticamente\n\n* References\n"
-      :empty-lines 1))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (use-package org-capture                                                                                                                                                                                                                                                                                                                       ;;
+;;   :after org                                                                                                                                                                                                                                                                                                                                   ;;
+;;   :ensure nil                                                                                                                                                                                                                                                                                                                                  ;;
+;;   :config                                                                                                                                                                                                                                                                                                                                      ;;
+;;   ;;:custom                                                                                                                                                                                                                                                                                                                                    ;;
+;;   ;; (org-capture-templates                                                                                                                                                                                                                                                                                                                    ;;
+;;   ;;  `(;; TODO rápido (vai para inbox mobile)                                                                                                                                                                                                                                                                                                 ;;
+;;   ;;    ;; ("t" "TODO Rápido" entry                                                                                                                                                                                                                                                                                                            ;;
+;;   ;;    ;;  (file ,(expand-file-name "inbox/mobile.org" pathogen-productivity-memex/root-directory))                                                                                                                                                                                                                                           ;;
+;;   ;;    ;;  "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"                                                                                                                                                                                                                                                                                   ;;
+;;   ;;    ;;  :empty-lines 1)                                                                                                                                                                                                                                                                                                                    ;;
+;;                                                                                                                                                                                                                                                                                                                                                ;;
+;;   ;;    ;; Nota (vai para inbox desktop)                                                                                                                                                                                                                                                                                                       ;;
+;;   ;;    ;; ("t" "Anotação rápida" entry                                                                                                                                                                                                                                                                                                        ;;
+;;   ;;    ;;  (file ,(expand-file-name "productivity/inbox.org" pathogen-productivity-memex/root-directory))                                                                                                                                                                                                                                     ;;
+;;   ;;    ;;  "* TODO %U %?\n:PROPERTIES:\n:ID: %(org-id-new)\n:CREATED: %U\n:END:\n"                                                                                                                                                                                                                                                            ;;
+;;   ;;    ;;  :empty-lines 1)                                                                                                                                                                                                                                                                                                                    ;;
+;;                                                                                                                                                                                                                                                                                                                                                ;;
+;;   ;;    ;; Journal entry (vai para journal/YYYY/)                                                                                                                                                                                                                                                                                              ;;
+;;   ;;    ("j" "Journal" entry                                                                                                                                                                                                                                                                                                                   ;;
+;;   ;;     (file+olp+datetree                                                                                                                                                                                                                                                                                                                    ;;
+;;   ;;      ,(expand-file-name (format-time-string "journal/%Y/%Y-%m-%d.org") pathogen-productivity-memex/root-directory))                                                                                                                                                                                                                       ;;
+;;   ;;     "* %<%H:%M> %?\n"                                                                                                                                                                                                                                                                                                                     ;;
+;;   ;;     :empty-lines 1)                                                                                                                                                                                                                                                                                                                       ;;
+;;                                                                                                                                                                                                                                                                                                                                                ;;
+;;   ;;    ;; Meeting notes (vai para trabalho.org MOC)                                                                                                                                                                                                                                                                                           ;;
+;;   ;;    ("m" "Meeting" entry                                                                                                                                                                                                                                                                                                                   ;;
+;;   ;;     (file+headline ,(expand-file-name "collections/trabalho.org" pathogen-productivity-memex/root-directory) "Tarefas")                                                                                                                                                                                                                   ;;
+;;   ;;     "* MEETING %? :meeting:\nSCHEDULED: %^T\n** Participantes\n\n** Notas\n\n** Action Items\n- [ ] \n"                                                                                                                                                                                                                                   ;;
+;;   ;;     :empty-lines 1)                                                                                                                                                                                                                                                                                                                       ;;
+;;                                                                                                                                                                                                                                                                                                                                                ;;
+;;   ;;    ;; Zettel note                                                                                                                                                                                                                                                                                                                         ;;
+;;   ;;    ("z" "Zettel Note" entry                                                                                                                                                                                                                                                                                                               ;;
+;;   ;;     (file ,(expand-file-name (format "notes/%s.org" (format-time-string "%Y%m%d%H%M%S"))                                                                                                                                                                                                                                                  ;;
+;;   ;;                               pathogen-productivity-memex/root-directory))                                                                                                                                                                                                                                                                ;;
+;;   ;;     "#+title: %^{Título}\n#+date: %U\n#+setupfile: ../assets/tags.org\n#+filetags: \n\n:PROPERTIES:\n:ID: %(org-id-new)\n:CREATED: %U\n:END:\n\n* %?\n\n* Links Relacionados\n\n* Backlinks\n# Adicione manualmente links para notas que referenciam esta\n# Use: M-x memex/find-backlinks para buscar automaticamente\n\n* References\n" ;;
+;;   ;;     :empty-lines 1)))                                                                                                                                                                                                                                                                                                                     ;;
+;;   )                                                                                                                                                                                                                                                                                                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package org-modern
   :ensure t
@@ -226,6 +231,7 @@
                      ("d" . memex-dailies-submap)
                      ("s" . memex-search-submap)
                      ("c" . org-capture)
+                     ;;("i" . #'pathogen-productivity-memex/capture-inbox)
                      )
   :bind (:prefix-map memex-dailies-submap
                      :prefix-docstring "Memex dailies"
@@ -244,6 +250,21 @@
                      ("h" . consult-org-heading)
                      ("g" . #'memex/consult)))
 
+;; (use-package org-chef
+;;   :ensure t
+;;   :after org
+;;   :custom (pathogen-productivity-chef--recipes . pathogen-productivity-chef/recipes)
+;;   :config
+;;   (with-eval-after-load 'org-capture 
+;;     (add-to-list org-capture-templates
+;;                  '(("c" "Cookbook" entry (file pathogen-productivity-chef--recipes)
+;;                     "%(org-chef-get-recipe-from-url)"
+;;                     :empty-lines 1)
+;;                    ("z" "Protocol Cookbook" entry (file pathogen-productivity-chef--recipes)
+;;                     "%(org-chef-get-recipe-string-from-url \"%:link\")"
+;;                     :empty-lines 1)
+;;                    ("m" "Manual Cookbook" entry (file pathogen-productivity-chef--recipes)
+;;                     "* %^{Recipe title: }\n  :PROPERTIES:\n  :source-url:\n  :servings:\n  :prep-time:\n  :cook-time:\n  :ready-in:\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;80
 ;;; GNU Hyperbole
 ;;

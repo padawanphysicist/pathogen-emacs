@@ -1,4 +1,9 @@
-(defvar memex-directory (expand-file-name "~/2.areas/org/"))
+(defvar pathogen-productivity-memex/root-directory "~/org/"
+  "Root directory for memex.")
+
+
+
+;;(defvar pathogen-productivity-chef/recipes "~/org/recipes.org"  "Cookbook file.")
 
 ;; Recursively find all .org files in org-directory
 ;; EXCLUINDO cemetery/, tmp/, archive/ para melhor performance
@@ -6,10 +11,10 @@
   (seq-filter
    (lambda (file)
      (not (string-match-p "\\(cemetery\\|tmp\\|archive\\)/" file)))
-   (directory-files-recursively memex-directory "\\.org$")))
+   (directory-files-recursively pathogen-productivity-memex/root-directory "\\.org$")))
 
 ;; Nova estrutura Zettelkasten
-(defvar memex-notes-dailies-directory  (expand-file-name "journal/" memex-directory))
-(defvar memex-notes-directory (expand-file-name "notes/" memex-directory))
-(defvar memex-collections-directory (expand-file-name "collections/" memex-directory))
-(defvar memex-inbox-directory (expand-file-name "inbox/" memex-directory))
+(defvar memex-notes-dailies-directory  (expand-file-name "journal/" pathogen-productivity-memex/root-directory))
+(defvar memex-notes-directory (expand-file-name "notes/" pathogen-productivity-memex/root-directory))
+(defvar memex-collections-directory (expand-file-name "collections/" pathogen-productivity-memex/root-directory))
+;;(defvar memex-inbox-directory (expand-file-name "inbox/" pathogen-productivity-memex/root-directory))
