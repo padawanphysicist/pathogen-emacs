@@ -108,11 +108,6 @@
     (let ((org-agenda-files (directory-files-recursively dir "\\.org$")))
       (org-agenda nil "t")))
 
-  ;; Quick access functions for common directories
-  (defun memex-agenda-dailies ()
-    "Run agenda with journal Org files."
-    (interactive)
-    (memex-agenda-from-directory (expand-file-name "journal/" org-directory)))
 
   (defun memex-agenda-dashboard ()
     (interactive)
@@ -228,15 +223,9 @@
                      :prefix "C-c o"
                      ("h" . #'memex/help)
                      ("a" . memex-agenda-submap)
-                     ("d" . memex-dailies-submap)
                      ("s" . memex-search-submap)
                      ("c" . org-capture)
-                     ;;("i" . #'pathogen-productivity-memex/capture-inbox)
                      )
-  :bind (:prefix-map memex-dailies-submap
-                     :prefix-docstring "Memex dailies"
-                     :prefix "C-c o d"
-                     ("d" . memex/dailies-goto-today))
   :bind (:prefix-map memex-agenda-submap
                      :prefix-docstring "Memex agenda"
                      :prefix "C-c o a"
@@ -250,21 +239,6 @@
                      ("h" . consult-org-heading)
                      ("g" . #'memex/consult)))
 
-;; (use-package org-chef
-;;   :ensure t
-;;   :after org
-;;   :custom (pathogen-productivity-chef--recipes . pathogen-productivity-chef/recipes)
-;;   :config
-;;   (with-eval-after-load 'org-capture 
-;;     (add-to-list org-capture-templates
-;;                  '(("c" "Cookbook" entry (file pathogen-productivity-chef--recipes)
-;;                     "%(org-chef-get-recipe-from-url)"
-;;                     :empty-lines 1)
-;;                    ("z" "Protocol Cookbook" entry (file pathogen-productivity-chef--recipes)
-;;                     "%(org-chef-get-recipe-string-from-url \"%:link\")"
-;;                     :empty-lines 1)
-;;                    ("m" "Manual Cookbook" entry (file pathogen-productivity-chef--recipes)
-;;                     "* %^{Recipe title: }\n  :PROPERTIES:\n  :source-url:\n  :servings:\n  :prep-time:\n  :cook-time:\n  :ready-in:\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;80
 ;;; GNU Hyperbole
 ;;

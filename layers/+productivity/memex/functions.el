@@ -27,67 +27,67 @@
 (define-prefix-command 'memex-agenda-submap)
 (define-prefix-command 'memex-search-submap)
 
-(defun memex--dailies-filename (offset)
-    "RETURN file name for journal OFFSET days from today.  OFFSET needs to be an integer."
-    (if (integerp offset)
-        (let* ((target-time (+ (float-time) (* 86400 offset)))
-               (year (format-time-string "%Y" target-time))
-               (filename (format-time-string "%Y-%m-%d.org" target-time)))
-          (expand-file-name (concat year "/" filename) memex-notes-dailies-directory))
-      (error "Invalid offset value '%s'.  Expecting an integer" offset)))
+;; (defun memex--dailies-filename (offset)
+;;     "RETURN file name for journal OFFSET days from today.  OFFSET needs to be an integer."
+;;     (if (integerp offset)
+;;         (let* ((target-time (+ (float-time) (* 86400 offset)))
+;;                (year (format-time-string "%Y" target-time))
+;;                (filename (format-time-string "%Y-%m-%d.org" target-time)))
+;;           (expand-file-name (concat year "/" filename) memex-notes-dailies-directory))
+;;       (error "Invalid offset value '%s'.  Expecting an integer" offset)))
 
-(defun memex--dailies-get-template-content ()
-  "Lê e formata o arquivo de template diário.
-Substitui os especificadores de tempo/data."
-  (let ((memex-dailies-template-file (expand-file-name "assets/templates/daily.org" pathogen-productivity-memex/root-directory)))
-    (if (not (file-exists-p memex-dailies-template-file))
-        (progn
-          (message "Arquivo de template não encontrado: %s" memex-dailies-template-file)
-          "") ; Retorna uma string vazia se o template não existir
-      ;; Arquivo existe, vamos lê-lo e formatá-lo
-      (with-temp-buffer
-        (insert-file-contents memex-dailies-template-file)
-        ;; format-time-string processa o buffer inteiro
-        ;; substituindo códigos como %Y, %m, %d, %A, etc.
-        (format-time-string (buffer-string))))))
+;; (defun memex--dailies-get-template-content ()
+;;   "Lê e formata o arquivo de template diário.
+;; Substitui os especificadores de tempo/data."
+;;   (let ((memex-dailies-template-file (expand-file-name "assets/templates/daily.org" pathogen-productivity-memex/root-directory)))
+;;     (if (not (file-exists-p memex-dailies-template-file))
+;;         (progn
+;;           (message "Arquivo de template não encontrado: %s" memex-dailies-template-file)
+;;           "") ; Retorna uma string vazia se o template não existir
+;;       ;; Arquivo existe, vamos lê-lo e formatá-lo
+;;       (with-temp-buffer
+;;         (insert-file-contents memex-dailies-template-file)
+;;         ;; format-time-string processa o buffer inteiro
+;;         ;; substituindo códigos como %Y, %m, %d, %A, etc.
+;;         (format-time-string (buffer-string))))))
 
-(defun memex/dailies-goto-today ()
-  "Abre a nota diária de hoje.
-Se o arquivo não existir, cria-o usando `memex/dailies-template-file`."
-  (interactive)
-  (let* ((filename (memex--dailies-filename 0))
-         (file-exists (file-exists-p filename)))
+;; (defun memex/dailies-goto-today ()
+;;   "Abre a nota diária de hoje.
+;; Se o arquivo não existir, cria-o usando `memex/dailies-template-file`."
+;;   (interactive)
+;;   (let* ((filename (memex--dailies-filename 0))
+;;          (file-exists (file-exists-p filename)))
     
-    ;; 1. Garante que o diretório pai existe
-    ;(unless file-exists
-    ;  (make-directory (file-name-directory filename) :parents t))
+;;     ;; 1. Garante que o diretório pai existe
+;;     ;(unless file-exists
+;;     ;  (make-directory (file-name-directory filename) :parents t))
     
-    ;; 2. Abre o arquivo (ou cria um novo buffer para ele)
-    (find-file filename)
+;;     ;; 2. Abre o arquivo (ou cria um novo buffer para ele)
+;;     (find-file filename)
     
-    ;; 3. Se o arquivo não existia, insere o conteúdo do template
-    (unless file-exists
-      (insert (memex--dailies-get-template-content)))))
+;;     ;; 3. Se o arquivo não existia, insere o conteúdo do template
+;;     (unless file-exists
+;;       (insert (memex--dailies-get-template-content)))))
 
 ;(defun memex/dailies-goto-today ()
 ;    "Open today's daily."
 ;    (interactive)
 ;    (find-file (memex--dailies-filename 0)))
 
-  (defun memex/dailies-goto-yesterday ()
-    "Open yesterday's daily."
-    (interactive)
-    (find-file (memex--dailies-filename -1)))
+  ;; (defun memex/dailies-goto-yesterday ()
+  ;;   "Open yesterday's daily."
+  ;;   (interactive)
+  ;;   (find-file (memex--dailies-filename -1)))
 
-  (defun memex/dailies-goto-tomorrow ()
-    "Open tomorrows's daily."
-    (interactive)
-    (find-file (memex--dailies-filename 1)))
+  ;; (defun memex/dailies-goto-tomorrow ()
+  ;;   "Open tomorrows's daily."
+  ;;   (interactive)
+  ;;   (find-file (memex--dailies-filename 1)))
 
-  (defun memex/dailies-goto-date ()
-    "Read a date and open daily for that particular date."
-    (interactive)
-    (find-file (format "%s.org" (org-read-date))))
+  ;; (defun memex/dailies-goto-date ()
+  ;;   "Read a date and open daily for that particular date."
+  ;;   (interactive)
+  ;;   (find-file (format "%s.org" (org-read-date))))
 
   (defun memex/open-bujo ()
     "Open Bullet Journal."
