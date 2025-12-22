@@ -1,6 +1,11 @@
 (use-package org
   :custom
-  (org-archive-location (format "%s::* %s" pathogen-productivity-gtd/done pathogen-productivity-gtd/done-heading-title)))
+  (
+   (org-log-into-drawer t)
+   (org-log-done 'note)
+  )
+  ;; (org-archive-location (format "%s::* %s" pathogen-productivity-gtd/done pathogen-productivity-gtd/done-heading-title))
+  )
 
 (use-package org-capture
   :after org

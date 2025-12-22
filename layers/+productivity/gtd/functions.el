@@ -1,11 +1,19 @@
 (defun pathogen-productivity-gtd/capture-inbox ()
   (interactive)
-  (call-interactively 'org-store-link)
   (org-capture nil "i"))
 
 (defun pathogen-productivity-gtd/open-inbox ()
   (interactive)
   (find-file pathogen-productivity-gtd/inbox))
+
+(defun pathogen-productivity-gtd/archive-to-done-file ()
+  "Archive the current Org subtree to 'done.org' in the same directory."
+  (interactive)
+  (let ((org-archive-location
+         (format "%s::* %s" pathogen-productivity-gtd/done
+                 pathogen-productivity-gtd/done-heading-title)))
+    (org-archive-subtree-default)
+    (message "Subtree archived to done.org")))
 
 (defun pathogen-productivity-gtd/show-today-scheduled ()
   "Display the Org agenda for the current date only."
