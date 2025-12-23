@@ -1,13 +1,13 @@
 (use-package org
-  :hook ((org-mode . visual-line-mode)
-         (org-mode . org-latex-preview))
-  :custom
-  ((org-directory pathogen-productivity-memex/root-directory)
-   (org-ellipsis " [+]")
-   (org-link-elisp-skip-confirm-regexp ".*")
-   (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "STOP(s)")))
-   (org-log-into-drawer t)
-   (org-log-done 'note)
+  ;; :hook ((org-mode . visual-line-mode)
+  ;;        (org-mode . org-latex-preview))
+  ;;:custom
+  ;;(;; (org-directory pathogen-productivity-memex/root-directory)
+   ;; (org-ellipsis " [+]")
+   ;; (org-link-elisp-skip-confirm-regexp ".*")
+   ;; (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "STOP(s)")))
+   ;; (org-log-into-drawer t)
+   ;; (org-log-done 'note)
    ;; (org-refile-targets `((nil :maxlevel . 9)
    ;;                       (org-agenda-files :maxlevel . 9)
    ;;                       ;; MOCs específicos
@@ -15,17 +15,22 @@
    ;;                       (,(expand-file-name "collections/pessoal.org" pathogen-productivity-memex/root-directory) :maxlevel . 3)
    ;;                       (,(expand-file-name "collections/projetos.org" pathogen-productivity-memex/root-directory) :maxlevel . 3)
    ;;                       (,(expand-file-name "collections/bullet.org" pathogen-productivity-memex/root-directory) :maxlevel . 2)))
-   (org-refile-use-outline-path t)
-   ;; https://lists.gnu.org/archive/html/emacs-orgmode/2024-09/msg00209.html
-   (org-yank-image-save-method (expand-file-name "assets/img/" org-directory))
-   (org-preview-latex-image-directory "~/.cache/emacs/org/ltxpng/")
-   (org-hide-emphasis-markers t "hide the emphasis marker characters.")
-   (org-startup-indented t "turn on ‘org-indent-mode’ on startup.")
-   (org-startup-with-link-previews t)
-   (org-highlight-latex-and-related '(native latex script entities))
-   (org-startup-with-inline-images t "show inline images when loading a new Org file."))
-  :config
-  (add-hook 'org-after-todo-state-change-hook #'pathogen-productivity-memex/log-todo-next-creation-date)
+   ;; (org-refile-use-outline-path t)
+   ;; ;; https://lists.gnu.org/archive/html/emacs-orgmode/2024-09/msg00209.html
+   ;; (org-yank-image-save-method (expand-file-name "assets/img/" org-directory))
+   ;; (org-preview-latex-image-directory "~/.cache/emacs/org/ltxpng/")
+   ;; (org-hide-emphasis-markers t "hide the emphasis marker characters.")
+   ;; (org-startup-indented t "turn on ‘org-indent-mode’ on startup.")
+   ;; (org-startup-with-link-previews t)
+   ;; (org-highlight-latex-and-related '(native latex script entities))
+   ;; (org-startup-with-inline-images t "show inline images when loading a new Org file."))
+   :config
+
+   (if (boundp 'org-agenda-files)
+      ;; Defined
+      (add-to-list 'org-agenda-files pathogen-productivity-gtd/inbox)
+  (setq org-agenda-files (list pathogen-productivity-gtd/inbox)))
+  
   ;; https://notes.alexkehayias.com/emacs-inline-macro-in-the-buffer/
   ;; Display macros inline in buffers
   (add-to-list 'font-lock-extra-managed-props 'display)
@@ -65,59 +70,59 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; User interface for PKM
 ;; These settings aim to provide a neat acess to my files
-(use-package org-agenda
-  :after org
-  :ensure nil
-  :custom
-  (org-agenda-files memex-agenda-files)
-  (org-agenda-custom-commands
-   '(;; Dashboard completo
-     ("d" "Dashboard"
-      ((agenda "" ((org-agenda-span 'day)
-                   (org-agenda-overriding-header "📅 Hoje")))
-       (tags-todo "+PRIORITY=\"A\""
-                  ((org-agenda-overriding-header "🔥 Alta Prioridade")))
-       (tags-todo "+TODO=\"PROG\""
-                  ((org-agenda-overriding-header "⏭️  Em Progresso")))
-       (tags-todo "+TODO=\"TODO\""
-                  ((org-agenda-overriding-header "📋 A Fazer")))))
+;; (use-package org-agenda
+;;   :after org
+;;   :ensure nil
+;;   :custom
+;;   (org-agenda-files memex-agenda-files)
+;;   (org-agenda-custom-commands
+;;    '(;; Dashboard completo
+;;      ("d" "Dashboard"
+;;       ((agenda "" ((org-agenda-span 'day)
+;;                    (org-agenda-overriding-header "📅 Hoje")))
+;;        (tags-todo "+PRIORITY=\"A\""
+;;                   ((org-agenda-overriding-header "🔥 Alta Prioridade")))
+;;        (tags-todo "+TODO=\"PROG\""
+;;                   ((org-agenda-overriding-header "⏭️  Em Progresso")))
+;;        (tags-todo "+TODO=\"TODO\""
+;;                   ((org-agenda-overriding-header "📋 A Fazer")))))
 
-     ;; Contexto: Trabalho
-     ("w" "Trabalho" tags-todo "+work|+arco"
-      ((org-agenda-overriding-header "💼 Tarefas de Trabalho")))
+;;      ;; Contexto: Trabalho
+;;      ("w" "Trabalho" tags-todo "+work|+arco"
+;;       ((org-agenda-overriding-header "💼 Tarefas de Trabalho")))
 
-     ;; Contexto: Pessoal
-     ("p" "Pessoal" tags-todo "+personal-work-arco"
-      ((org-agenda-overriding-header "🏠 Tarefas Pessoais")))
+;;      ;; Contexto: Pessoal
+;;      ("p" "Pessoal" tags-todo "+personal-work-arco"
+;;       ((org-agenda-overriding-header "🏠 Tarefas Pessoais")))
 
-     ;; Review semanal
-     ("r" "Review Semanal"
-      ((todo "DONE"
-             ((org-agenda-overriding-header "✅ Completados Esta Semana")
-              (org-agenda-span 'week)))
-       (tags-todo "-TODO=\"DONE\"-TODO=\"STOP\""
-                  ((org-agenda-overriding-header "📋 Todos os TODOs Ativos")))))))
-  :config
-    (defun memex-agenda-files-from-directory (dir)
-    "Get all Org files from DIR recursively."
-    (when (and dir (file-directory-p dir))
-      (directory-files-recursively dir "\\.org$")))
+;;      ;; Review semanal
+;;      ("r" "Review Semanal"
+;;       ((todo "DONE"
+;;              ((org-agenda-overriding-header "✅ Completados Esta Semana")
+;;               (org-agenda-span 'week)))
+;;        (tags-todo "-TODO=\"DONE\"-TODO=\"STOP\""
+;;                   ((org-agenda-overriding-header "📋 Todos os TODOs Ativos")))))))
+;;   :config
+;;     (defun memex-agenda-files-from-directory (dir)
+;;     "Get all Org files from DIR recursively."
+;;     (when (and dir (file-directory-p dir))
+;;       (directory-files-recursively dir "\\.org$")))
 
-  (defun memex-agenda-from-directory (dir)
-    "Run agenda with all Org files from DIR."
-    (let ((org-agenda-files (directory-files-recursively dir "\\.org$")))
-      (org-agenda nil "t")))
+;;   (defun memex-agenda-from-directory (dir)
+;;     "Run agenda with all Org files from DIR."
+;;     (let ((org-agenda-files (directory-files-recursively dir "\\.org$")))
+;;       (org-agenda nil "t")))
 
 
-  (defun memex-agenda-dashboard ()
-    (interactive)
-    (org-agenda nil "d")
-    (delete-other-windows))
+;;   (defun memex-agenda-dashboard ()
+;;     (interactive)
+;;     (org-agenda nil "d")
+;;     (delete-other-windows))
 
-  (defun memex-agenda-work ()
-    (interactive)
-    (org-agenda nil "w")
-    (delete-other-windows)))
+;;   (defun memex-agenda-work ()
+;;     (interactive)
+;;     (org-agenda nil "w")
+;;     (delete-other-windows)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org Capture - Captura rápida de notas e tarefas
@@ -163,22 +168,22 @@
 ;;   )                                                                                                                                                                                                                                                                                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package org-modern
-  :ensure t
-  :custom
-  ;(org-modern-fold-stars '(("▶" . "▼") ("▷" . "▽") ("⯈" . "⯆") ("▹" . "▿") ("▸" . "▾")))
-  (org-modern-fold-stars '(("◉" . "◉") ("○" . "○") ("✸" . "✸") ("◉" . "◉") ("○" . "○") ("✸" . "✸")))
-  :config
-  (with-eval-after-load 'org (global-org-modern-mode)))
+;; (use-package org-modern
+;;   :ensure t
+;;   :custom
+;;   ;(org-modern-fold-stars '(("▶" . "▼") ("▷" . "▽") ("⯈" . "⯆") ("▹" . "▿") ("▸" . "▾")))
+;;   (org-modern-fold-stars '(("◉" . "◉") ("○" . "○") ("✸" . "✸") ("◉" . "◉") ("○" . "○") ("✸" . "✸")))
+;;   :config
+;;   (with-eval-after-load 'org (global-org-modern-mode)))
 
 ;; Reveals hidden elements interactively.
 ;; https://github.com/awth13/org-appear
-(use-package org-appear
-  :after org
-  :custom
-  ((org-appear-autolinks nil)
-   (org-appear-inside-latex t))
-  :hook (org-mode . org-appear-mode))
+;; (use-package org-appear
+;;   :after org
+;;   :custom
+;;   ((org-appear-autolinks nil)
+;;    (org-appear-inside-latex t))
+;;   :hook (org-mode . org-appear-mode))
 
 (use-package cdlatex
   :ensure t
@@ -215,29 +220,29 @@
 ;         ("C-c o g" . consult-ripgrep)))        ; Buscar texto em notes/
 
 ;; Keybindings
-(use-package emacs
-  :ensure nil 
-  :hook (after-init . memex/help)
-  :bind (:prefix-map memex-submap
-                     :prefix-docstring "Memex custom map"
-                     :prefix "C-c o"
-                     ("h" . #'memex/help)
-                     ("a" . memex-agenda-submap)
-                     ("s" . memex-search-submap)
-                     ("c" . org-capture)
-                     )
-  :bind (:prefix-map memex-agenda-submap
-                     :prefix-docstring "Memex agenda"
-                     :prefix "C-c o a"
-                     ("a" . org-agenda)
-                     ("d" . #'memex-agenda-dashboard)
-                     ("w" . #'memex-agenda-work)
-                     )
-  :bind (:prefix-map memex-search-submap
-                     :prefix-docstring "Memex Search"
-                     :prefix "C-c o s"
-                     ("h" . consult-org-heading)
-                     ("g" . #'memex/consult)))
+;; (use-package emacs
+;;   :ensure nil 
+;;   :hook (after-init . memex/help)
+;;   :bind (:prefix-map memex-submap
+;;                      :prefix-docstring "Memex custom map"
+;;                      :prefix "C-c o"
+;;                      ("h" . #'memex/help)
+;;                      ("a" . memex-agenda-submap)
+;;                      ("s" . memex-search-submap)
+;;                      ("c" . org-capture)
+;;                      )
+;;   :bind (:prefix-map memex-agenda-submap
+;;                      :prefix-docstring "Memex agenda"
+;;                      :prefix "C-c o a"
+;;                      ("a" . org-agenda)
+;;                      ("d" . #'memex-agenda-dashboard)
+;;                      ("w" . #'memex-agenda-work)
+;;                      )
+;;   :bind (:prefix-map memex-search-submap
+;;                      :prefix-docstring "Memex Search"
+;;                      :prefix "C-c o s"
+;;                      ("h" . consult-org-heading)
+;;                      ("g" . #'memex/consult)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;80
 ;;; GNU Hyperbole

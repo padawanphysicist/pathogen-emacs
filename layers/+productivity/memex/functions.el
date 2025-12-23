@@ -1,21 +1,17 @@
-(defun pathogen-productivity-memex/log-todo-next-creation-date (&rest ignore)
-  "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
-  (when (and (string= (org-get-todo-state) "NEXT")
-             (not (org-entry-get nil "ACTIVATED")))
-    (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
 
-(defun memex/help ()
+
+(defun pathogen-productivity-memex/open-main-file ()
   (interactive)
-  (find-file (expand-file-name "README.org" pathogen-productivity-memex/root-directory)))
+  (find-file (expand-file-name "README.org" pathogen-productivity-memex/base-directory)))
 
-(defun pathogen-productivity-memex/open-folder ()
-  (interactive)
-  ;; TODO add something like "if dirvish is loaded"
-  (dirvish org-directory))
+;; (defun pathogen-productivity-memex/open-folder ()
+;;   (interactive)
+;;   ;; TODO add something like "if dirvish is loaded"
+;;   (dirvish org-directory))
 
-(defun memex/consult (initial)
+(defun pathogen-productivity-memex/consult (initial)
   (interactive "P")
-  (consult-ripgrep pathogen-productivity-memex/root-directory initial))
+  (consult-ripgrep pathogen-productivity-memex/base-directory initial))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Funções Customizadas para Zettelkasten
@@ -89,15 +85,15 @@
   ;;   (interactive)
   ;;   (find-file (format "%s.org" (org-read-date))))
 
-  (defun memex/open-bujo ()
-    "Open Bullet Journal."
-    (interactive)
-    (find-file (expand-file-name "collections/bullet.org" org-directory)))
+  ;; (defun memex/open-bujo ()
+  ;;   "Open Bullet Journal."
+  ;;   (interactive)
+  ;;   (find-file (expand-file-name "collections/bullet.org" org-directory)))
 
-  (defun memex/edit-tags ()
-    "Edit tag sets."
-    (interactive)
-    (find-file (expand-file-name "assets/tags.org" org-directory)))
+  ;; (defun memex/edit-tags ()
+  ;;   "Edit tag sets."
+  ;;   (interactive)
+  ;;   (find-file (expand-file-name "assets/tags.org" org-directory)))
 
 ;;; Buscar backlinks da nota atual
 (defun memex/find-backlinks ()
@@ -178,13 +174,13 @@
 
 ;; Usar: C-c m b (backlinks), C-c m l (insert link), C-c m t (by tag)
 
-(defun memex--hyperbole-change-default-action-key ()
+(defun pathogen-productivity-memex--hyperbole-change-default-action-key ()
   ;;(hkey-set-action-key "\M-S-RET")
   (hkey-set-key "<M-S-Return>" 'hkey-either)
   ;;(add-hook 'hyperbole-init-hook (lambda () (hkey-set-key <KEY> '<CMD>)
   )
 
-(defun memex--hyperbole-disable-key-bindings-after-init-hook ()
+(defun pathogen-productivity-memex--hyperbole-disable-key-bindings-after-init-hook ()
   "The table below is what I found defined by non-Hyperbole modes, which
   Hyperbole's global minor mode overrides based upon the bindings listed by
   https://emacs.stackexchange.com/a/75065/15483 :

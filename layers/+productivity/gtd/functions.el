@@ -1,3 +1,10 @@
+(defun pathogen-productivity-gtd/log-todo-next-creation-date (&rest ignore)
+  "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
+  ;; Use todo keyword as a variable
+  (when (and (string= (org-get-todo-state) "PROG") 
+             (not (org-entry-get nil "ACTIVATED")))
+    (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
+
 (defun pathogen-productivity-gtd/capture-inbox ()
   (interactive)
   (org-capture nil "i"))

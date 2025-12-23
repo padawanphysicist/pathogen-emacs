@@ -5,7 +5,8 @@
    (org-log-done 'note)
    )
   :config
-  (add-to-list 'org-agenda-files pathogen-productivity-gtd/inbox)
+  (add-hook 'org-after-todo-state-change-hook #'pathogen-productivity-gtd/log-todo-next-creation-date)
+  ;; (add-to-list 'org-agenda-files pathogen-productivity-gtd/inbox)
   ;; (org-archive-location (format "%s::* %s" pathogen-productivity-gtd/done pathogen-productivity-gtd/done-heading-title))
   )
 
