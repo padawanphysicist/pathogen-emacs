@@ -3,9 +3,18 @@
   (
    (org-log-into-drawer t)
    (org-log-done 'note)
-  )
+   )
+  :config
+  (add-to-list 'org-agenda-files pathogen-productivity-gtd/inbox)
   ;; (org-archive-location (format "%s::* %s" pathogen-productivity-gtd/done pathogen-productivity-gtd/done-heading-title))
   )
+
+;; (use-package org-agenda
+;;   :after org
+;;   :config
+  
+  
+;;   )
 
 (use-package org-capture
   :after org

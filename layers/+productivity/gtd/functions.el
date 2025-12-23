@@ -18,7 +18,17 @@
 (defun pathogen-productivity-gtd/show-today-scheduled ()
   "Display the Org agenda for the current date only."
   (interactive)
-  (let ((org-agenda-span 'day)
-        (org-scheduled-past-days 0)
+  (let ((org-agenda-files (list pathogen-productivity-gtd/inbox))
+        (org-agenda-span 'day)
+        (org-scheduled-past-days 7)
         (org-agenda-start-day ".")) ; "." represents today
+    (org-agenda-list)))
+
+(defun pathogen-productivity-gtd/show-tomorrow-scheduled ()
+  "Display the Org agenda for the next day only."
+  (interactive)
+  (let ((org-agenda-files (list pathogen-productivity-gtd/inbox))
+        (org-agenda-span 'day)
+        (org-scheduled-past-days 7)
+        (org-agenda-start-day "+1"))  ; "+1" represents tomorrow
     (org-agenda-list)))
