@@ -21,6 +21,7 @@
   (let ((org-agenda-files (list pathogen-productivity-gtd/inbox))
         (org-agenda-span 'day)
         (org-scheduled-past-days 7)
+        (org-deadline-past-days 7)
         (org-agenda-start-day ".")) ; "." represents today
     (org-agenda-list)))
 
@@ -30,5 +31,6 @@
   (let ((org-agenda-files (list pathogen-productivity-gtd/inbox))
         (org-agenda-span 'day)
         (org-scheduled-past-days 7)
+        (org-deadline-past-days 7)
         (org-agenda-start-day "+1"))  ; "+1" represents tomorrow
     (org-agenda-list)))
