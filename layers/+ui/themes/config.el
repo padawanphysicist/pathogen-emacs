@@ -1,7 +1,8 @@
 (use-package ef-themes
+  :demand t
   :config
   (if (member pathogen-ui-themes/default-theme (custom-available-themes))
-      (modus-themes-load-theme pathogen-ui-themes/default-theme)))
+      (ef-themes-load-theme pathogen-ui-themes/default-theme)))
 
 (if pathogen-ui-themes/enable-theme-switching
     (use-package midnight

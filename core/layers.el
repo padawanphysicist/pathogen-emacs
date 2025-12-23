@@ -190,7 +190,6 @@ Examples:
   "Internal: Set VARIABLES for LAYER-STRUCT from plist."
   (let ((vars variables)
         (layer-name (pathogen--layer-name-to-string (pathogen-layer-name layer))))
-    (message (format "%s" layer-name))
     (while vars
       (let* ((key (pop vars))
              (value (pop vars))

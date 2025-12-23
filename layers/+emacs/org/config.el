@@ -170,16 +170,16 @@
 
 (use-package org-modern
   :ensure t
+  :after org
   :custom
-  ;(org-modern-fold-stars '(("▶" . "▼") ("▷" . "▽") ("⯈" . "⯆") ("▹" . "▿") ("▸" . "▾")))
   (org-modern-fold-stars '(("◉" . "◉") ("○" . "○") ("✸" . "✸") ("◉" . "◉") ("○" . "○") ("✸" . "✸")))
   :config
-  (with-eval-after-load 'org (global-org-modern-mode)))
+  (global-org-modern-mode))
 
 ;; Reveals hidden elements interactively.
 ;; https://github.com/awth13/org-appear
 (use-package org-appear
-  :after org
+  :after org-modern
   :custom
   ((org-appear-autolinks nil)
    (org-appear-inside-latex t))
@@ -243,27 +243,6 @@
 ;                     :prefix "C-c o s"
 ;                     ("h" . consult-org-heading)
 ;                     ("g" . #'memex/consult)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;80
-;;; GNU Hyperbole
-;;
-;; https://www.gnu.org/software/hyperbole/
-;;
-;(use-package hyperbole
-;  :ensure t
-;  ;;:after org
-;  :config
-;  ;; The hyperbole-mode-hook is completely useless because of the
-;  ;; after-init-hook that hyperbole.el adds. So we have to add our own just to
-;  ;; tell it to stop defining keybindings we do not want (e.g., overrides Org
-;  ;; mode bindings):
-;  (hyperbole-mode +1)
-;  ;; (add-hook 'after-init-hook #'memex--hyperbole-disable-key-bindings-after-init-hook t)
-;  ;;:hook (hyperbole-init . #'memex--hyperbole-change-default-action-key)
-;  )
-
-; FIX messes with org indent mode
-;;(setq initial-buffer-choice (expand-file-name "README.org" org-directory))
 
 ;; Wait for Elpaca to process packages before continuing
 ;; This ensures org is available in config.el
