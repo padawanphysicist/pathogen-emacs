@@ -2,8 +2,6 @@
 (require 'eieio)
 (require 'cl-lib)
 
-(defvar pathogen--genome (make-hash-table :test 'equal)
-  "The global registry of all discovered Germs.")
 
 ;; (defclass pathogen-germ ()
 ;;   ((name :initarg :name :type symbol :accessor pathogen-germ-name)
@@ -24,11 +22,24 @@
    (loaded-p :initarg :loaded-p :initform nil :type boolean :accessor pathogen-germ-loaded-p))
   "The base class for a Pathogen feature layer.")
 
-(defun pathogen-dna-register (germ-obj)
-  (puthash (pathogen-germ-name germ-obj) germ-obj pathogen--genome))
+;(defun pathogen-dna-register (germ-obj)
+;  (puthash (pathogen-germ-name germ-obj) germ-obj pathogen--genome))
+(defun pathogen-dna-register (germ)
+  "Store GERM in the global genome with real-time tracing."
+  (let ((name (pathogen-germ-name germ)))
+    (message "[Pathogen Trace] Registering: %s (Path: %s)" 
+             name (pathogen-germ-path germ))
+    (puthash name germ pathogen--genome)))
 
 (defun pathogen-dna-get (name)
-  (gethash name pathogen--genome))
+  "Retrieve a germ, handling potential quoting issues."
+  (let ((clean-name (if (and (listp name) (eq (car name) 'quote))
+                        (cadr name)
+                      name)))
+    (gethash clean-name pathogen--genome)))
+;
+;(defun pathogen-dna-get (name)
+;  (gethash name pathogen--genome))
 
 (defun pathogen-dna-all-names ()
   "Return a list of all germ names currently in the genome."

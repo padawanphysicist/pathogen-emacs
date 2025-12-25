@@ -60,6 +60,148 @@ Use M-x pathogen-microscope to view the current state of the laboratory. It disp
 
 
 * Testes
+** Teste de sanidade
+
+#+begin_src emacs-lisp
+;; To create a file, visit it with ‘C-x C-f’ and enter text in its buffer.
+
+(require 'pathogen)
+
+;; 1. Define how to find paths
+(defun pathogen--find-germ-path (name)
+  (expand-file-name (symbol-name name) "~/.emacs.d/germs/"))
+
+;; 2. Define the 'hello' germ (matches directory name)
+(define-germ hello :enabled t)
+
+;; 3. Run the sequence
+(pathogen-propagate)
+
+;; 4. Verify using the 'hello' prefix
+(if (boundp 'hello-germ-active-p)
+    (message "Success! Variable check: %s" hello-germ-active-p)
+  (message "Failure: Variable not found. Check *Messages* for Quarantine warnings."))
+
+(let* ((germ-name 'hello)
+       (expected-path (expand-file-name (symbol-name germ-name) "~/.emacs.d/germs/"))
+       (germ-obj (pathogen-dna-get germ-name)))
+  
+  (message "--- PATHOGEN SANITY CHECK ---")
+  
+  ;; Check 1: DNA Registration
+  (if (not germ-obj)
+      (message "FAIL: Germ '%s' not found in DNA registry. Did you run (define-germ %s)?" germ-name germ-name)
+    (message "PASS: Germ '%s' is registered." germ-name)
+    
+    ;; Check 2: Path Assignment
+    (let ((stored-path (pathogen-germ-path germ-obj)))
+      (if (string-empty-p stored-path)
+          (message "FAIL: Germ object has no path! Check if pathogen-create-germ calls (pathogen--find-germ-path).")
+        (message "PASS: Germ object path is: %s" stored-path)))
+    
+    ;; Check 3: Physical Directory
+    (if (not (file-directory-p expected-path))
+        (message "FAIL: Directory NOT found at %s" expected-path)
+      (message "PASS: Directory exists.")
+      
+      ;; Check 4: File Presence
+      (let ((files '("genome.el" "enzymes.el" "symptoms.el"))
+            (found-any nil))
+        (dolist (f files)
+          (if (file-exists-p (expand-file-name f expected-path))
+              (progn (message "  [+] Found: %s" f) (setq found-any t))
+            (message "  [-] Missing: %s (Optional)" f)))
+        (if (not found-any)
+            (message "FAIL: No expression files found in directory! Check naming.")
+          (message "PASS: Genetic material found."))))
+    
+    ;; Check 5: Status
+    (message "CURRENT STATUS: %s" (if (pathogen-germ-loaded-p germ-obj) "ACTIVE" "INACTIVE")))
+  
+  (message "-----------------------------"))
+#+end_src
+
+#+RESULTS:
+: -----------------------------
+
+
+** Biopsia
+
+#+begin_src emacs-lisp
+(let* ((name 'hello)
+       (germ (pathogen-dna-get name))
+       (path (pathogen-germ-path germ))
+       (sequence '("genome.el" "enzymes.el" "symptoms.el")))
+  
+  (message "--- BIOPSY START for %s ---" name)
+  (message "1. Object found: %s" (if germ "YES" "NO"))
+  (message "2. Target Directory: %s" path)
+  (message "3. Directory exists: %s" (file-directory-p path))
+  
+  (dolist (file sequence)
+    (let ((full-path (expand-file-name file path)))
+      (message "   Checking %s... %s" 
+               file 
+               (if (file-exists-p full-path) "FOUND" "MISSING"))))
+  (message "--- BIOPSY END ---"))
+#+end_src
+
+#+begin_src emacs-lisp
+(let ((germ (pathogen-dna-get 'hello)))
+  (list :name (pathogen-germ-name germ)
+        :path (pathogen-germ-path germ)
+        :exists (file-directory-p (pathogen-germ-path germ))))  
+#+end_src
+
+#+RESULTS:
+| :name | hello | :path | /home/vct/.emacs.d/germs/hello | :exists | t |
+
+** Teste 2
+
+#+begin_src emacs-lisp
+  (require 'pathogen)
+
+  ;; 1. Define how to find paths
+  (defun pathogen--find-germ-path (name)
+    (expand-file-name (symbol-name name) "~/.emacs.d/germs/"))
+
+  ;; 2. Define the 'hello' germ (matches directory name)
+  (define-germ hello :enabled t)
+
+  ;; 3. Run the sequence
+  (pathogen-propagate)
+
+  ;; 4. Verify using the 'hello' prefix
+  (if (boundp 'hello-germ-active-p)
+      (message "Success! Variable check: %s" hello-germ-active-p)
+    (message "Failure: Variable not found. Check *Messages* for Quarantine warnings."))
+#+end_src
+
+#+RESULTS:
+: Failure: Variable not found. Check *Messages* for Quarantine warnings.
+
+#+begin_src emacs-lisp
+  (let* ((dir "~/.emacs.d/germs/hello/")
+       (target (expand-file-name "genome.el" dir)))
+  (message "Checking for: %s | Result: %s" target (file-exists-p target)))
+  
+  (let ((germ (pathogen-dna-get 'hello)))
+    (if germ
+        (message "Germ Path: [%s] | Exists: %s" 
+                 (pathogen-germ-path germ)
+                 (file-directory-p (pathogen-germ-path germ)))
+      (message "Germ 'hello' is not registered in the Genome!")))
+
+  (let* ((dir "~/.emacs.d/germs/hello/")
+       (target (expand-file-name "genome.el" dir)))
+  (message "Checking for: %s | Result: %s" target (file-exists-p target)))
+
+  (let ((germ (pathogen-dna-get 'hello)))
+  (pathogen-infect germ))
+#+end_src
+#+RESULTS:
+
+** Teste 1
 
 #+begin_src emacs-lisp
 ;(let ((germ (make-instance 'pathogen-germ
