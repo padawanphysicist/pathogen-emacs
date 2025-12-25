@@ -1,6 +1,3 @@
-;;; pathogen.el --- Final Assembly
-
-
 (let ((default-directory (file-name-directory load-file-name)))
   (add-to-list 'load-path (expand-file-name "core" default-directory))
   (add-to-list 'load-path (expand-file-name "protocols" default-directory)))
@@ -32,3 +29,4 @@
     (pathogen-microscope)))
 
 (provide 'pathogen)
+;;; pathogen.el --- Final Assembly
