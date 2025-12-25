@@ -112,27 +112,43 @@
     instance))
 
 (defmacro infect! (&rest layers)
-  "Declarative layer definition with Ghost Germ tracing."
   `(progn
-     ;; Clear the genome before a fresh layer load to prevent stale ghosts
      (clrhash pathogen--genome)
      (dolist (layer ',layers)
-       (let (name variables)
-         (cond
-          ;; Case 1: Simple symbol (+ui/themes)
-          ((symbolp layer) 
-           (setq name layer))
-          ;; Case 2: List with variables ((+ui/fonts :variables ...))
-          ((listp layer)
+       (let (name variables dependencies)
+         (if (symbolp layer)
+             (setq name layer)
            (setq name (car layer)
-                 variables (plist-get (cdr layer) :variables)))
-          (t (warn "[Pathogen Trace] Invalid layer format: %s" layer)))
-
-         (when name
-           (pathogen-create-germ name :vars variables))))
-     
-     (message "[Pathogen Trace] Sequence calculated: %s" (pathogen-sequence-dna))
+                 variables (plist-get (cdr layer) :variables)
+                 dependencies (plist-get (cdr layer) :deps))) ; Capture :deps
+         
+         (pathogen-create-germ name 
+                               :vars variables 
+                               :deps dependencies)))
      (pathogen-propagate)))
+
+;(defmacro infect! (&rest layers)
+;  "Declarative layer definition with Ghost Germ tracing."
+;  `(progn
+;     ;; Clear the genome before a fresh layer load to prevent stale ghosts
+;     (clrhash pathogen--genome)
+;     (dolist (layer ',layers)
+;       (let (name variables)
+;         (cond
+;          ;; Case 1: Simple symbol (+ui/themes)
+;          ((symbolp layer) 
+;           (setq name layer))
+;          ;; Case 2: List with variables ((+ui/fonts :variables ...))
+;          ((listp layer)
+;           (setq name (car layer)
+;                 variables (plist-get (cdr layer) :variables)))
+;          (t (warn "[Pathogen Trace] Invalid layer format: %s" layer)))
+;
+;         (when name
+;           (pathogen-create-germ name :vars variables))))
+;     
+;     (message "[Pathogen Trace] Sequence calculated: %s" (pathogen-sequence-dna))
+;     (pathogen-propagate)))
 ;
 ;(defmacro infect! (&rest layers)
 ;  "Declaratively define and enable multiple germs with namespacing."

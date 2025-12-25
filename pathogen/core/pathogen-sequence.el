@@ -2,12 +2,33 @@
 (require 'pathogen-dna)
 
 (defun pathogen-sequence-dna ()
-  "Return a list of Germ NAMES (symbols) currently in the genome."
-  (let (names)
-    (maphash (lambda (name _germ-object) 
-               (push name names)) 
-             pathogen--genome)
-    names))
+  "Return germ names sorted by their dependency requirements."
+  (let ((sorted nil)
+	(visited (make-hash-table :test 'equal)))
+    (cl-labels ((visit (name)
+		       (progn
+			 (when (eq (gethash name visited) 'busy)
+			   (error "🧬 Circular DNA detected! Germ %s depends on itself via a loop" name)))
+		       (let ((germ (pathogen-dna-get name)))
+			 (when (and germ (not (gethash name visited)))
+			   (puthash name 'busy visited)
+			   ;; Recursively visit all dependencies first
+			   (dolist (dep (pathogen-germ-dependencies germ))
+			     (visit dep))
+			   (puthash name 'done visited)
+			   (push name sorted)))
+		       ))
+	       ;; Iterate over all germs in the genome
+	       (maphash (lambda (name _) (visit name)) pathogen--genome)
+	       (reverse sorted))))
+
+;(defun pathogen-sequence-dna ()
+;  "Return a list of Germ NAMES (symbols) currently in the genome."
+;  (let (names)
+;    (maphash (lambda (name _germ-object) 
+;               (push name names)) 
+;             pathogen--genome)
+;    names))
 
 ;(defun pathogen-sequence-dna ()
 ;  "Returns a linear list of germ objects in the correct load order."
