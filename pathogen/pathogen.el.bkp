@@ -1,0 +1,18 @@
+;;; pathogen.el --- Master Control -*- lexical-binding: t; -*-
+
+(let ((default-directory (file-name-directory load-file-name)))
+  (add-to-list 'load-path (expand-file-name "core" default-directory))
+  (add-to-list 'load-path (expand-file-name "protocols" default-directory)))
+
+(require 'pathogen-dna)
+(require 'pathogen-sequence)
+(require 'pathogen-infection)
+
+(defun pathogen-propagate ()
+  "Sequences the DNA and infects the host."
+  (interactive)
+  (let ((order (pathogen-sequence-dna)))
+    (dolist (germ order)
+      (pathogen-infect germ))))
+
+(provide 'pathogen)

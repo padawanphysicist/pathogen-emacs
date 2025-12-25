@@ -1,26 +1,18 @@
+;;; infection.el --- Transmission Protocols & API -*- lexical-binding: t; -*-
 (require 'pathogen-dna)
+(require 'pathogen-incubator)
 
-(cl-defun pathogen-create-germ (germ-spec &key vars enabled deps)
-  "Parse GERM-SPEC and return a registered `pathogen-germ' instance."
-  (let* ((name (cond ((and (listp germ-spec) (plist-get germ-spec :name))
-                     (plist-get germ-spec :name))
-                    (t germ-spec)))
-         (final-vars (or vars (and (listp germ-spec) (plist-get germ-spec :variables))))
-         (final-deps (or deps (and (listp germ-spec) (plist-get germ-spec :dependencies))))
-         (is-enabled (if (listp germ-spec)
-                         (if (plist-member germ-spec :enabled-p) 
-                             (plist-get germ-spec :enabled-p) t)
-                       (if (null enabled) t enabled)))
-         (path (pathogen--find-germ-path name)))
-    
-    (if (not path)
-        (progn (warn "✗ Germ not found in laboratory: %s" name) nil)
-      
-      (let ((instance (pathogen-germ :name (if (stringp name) (intern name) name)
-                                    :path path
-                                    :variables final-vars
-                                    :dependencies final-deps
-                                    :enabled-p is-enabled)))
-        ;; Register in the Genome (from dna.el)
-        (pathogen-dna-register instance)
-        instance))))
+(cl-defun pathogen-create-germ (name &key vars enabled deps)
+  "Factory to create and register a germ."
+  (let ((instance (pathogen-germ :name name
+                                :dependencies deps
+                                :variables vars
+                                :enabled-p (if (null enabled) t enabled))))
+    (pathogen-dna-register instance)
+    instance))
+
+(defmacro define-germ (name &rest props)
+  "DSL to define a germ."
+  `(pathogen-create-germ ',name ,@props))
+
+(provide 'pathogen-infection)
