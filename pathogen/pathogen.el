@@ -12,6 +12,11 @@
 (require 'pathogen-quarantine)
 (require 'pathogen-microscope)
 
+(defvar pathogen-germs-directory
+  (let ((env-path (getenv "PATHOGEN_GERMS_DIRECTORY")))
+    (expand-file-name (or env-path "~/.emacs.d/germs/")))
+  "The directory containing the germs definitions.")
+
 (defvar pathogen-config-file
   (let ((env-path (getenv "PATHOGEN_CONFIG_FILE")))
     (expand-file-name (or env-path "~/.pathogen.el")))

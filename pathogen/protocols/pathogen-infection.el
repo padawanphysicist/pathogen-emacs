@@ -37,31 +37,61 @@
   `(pathogen-create-germ ',name ,@props))
 
 (defun pathogen-lab-generate-germ (name)
-  "Generate a new Germ directory and pre-fill files with namespaced wrappers."
-  (interactive "sEnter Germ Name (e.g. +ui/fonts): ")
-  (let* ((germ-dir (expand-file-name name (pathogen--get-lab-root)))
+  "Synthesize a new Pathogen germ with standard boilerplate files."
+  (interactive "sEnter germ name (e.g., +ui/dashboard): ")
+  ;; TODO fix  germs directory
+  (let* ((germ-dir (expand-file-name name (expand-file-name "germs/" user-emacs-directory)))
          (files '("genome.el" "enzymes.el" "symptoms.el"))
-         (descriptions '("Base variables and data blueprints."
-                         "Functional catalysts and custom logic."
-                         "Outward expression and package configuration.")))
+         (header-template ";;; germs/%s/%s --- Pathogen Synthesis\n\n"))
     
     (if (file-exists-p germ-dir)
-        (error "Germ '%s' already exists!" name)
+        (error "❌ Germ %s already exists in the laboratory!" name)
+      
+      ;; Create directory
       (make-directory germ-dir t)
       
-      (cl-loop for file in files
-               for desc in descriptions
-               do (let ((path (expand-file-name file germ-dir)))
-                    (with-temp-file path
-                      ;; Header
-                      (insert (format ";;; %s --- %s -*- lexical-binding: t; -*-\n\n" file desc))
-                      ;; The namespaced wrapper
-                      (insert (format "(with-germ-data %s ()\n" name))
-                      (insert "  \"Insert logic here.\"\n")
-                      (insert "  )\n"))))
+      ;; Create files
+      (dolist (file files)
+        (let ((file-path (expand-file-name file germ-dir)))
+          (with-temp-file file-path
+            (insert (format header-template name file))
+            (cond
+             ((string= file "genome.el")
+              (insert (format ";; Traits for %s\n(defvar %s-variable nil)\n" name name)))
+             ((string= file "enzymes.el")
+              (insert (format ";; Catalyst logic for %s\n" name)))
+             ((string= file "symptoms.el")
+              (insert (format "(with-germ-data %s (variable)\n  (message \"Infecting with %%s\" %s-variable))\n" name name))))))
       
-      (message "Infection Prepared: Germ '%s' synthesized with namespaced wrappers." name)
-      (dired germ-dir))))
+      (message "🧪 Germ %s synthesized successfully at %s" name germ-dir)
+      (dired germ-dir)))))
+
+;(defun pathogen-lab-generate-germ (name)
+;  "Generate a new Germ directory and pre-fill files with namespaced wrappers."
+;  (interactive "sEnter Germ Name (e.g. +ui/fonts): ")
+;  (let* ((germ-dir (expand-file-name name (pathogen--get-lab-root)))
+;         (files '("genome.el" "enzymes.el" "symptoms.el"))
+;         (descriptions '("Base variables and data blueprints."
+;                         "Functional catalysts and custom logic."
+;                         "Outward expression and package configuration.")))
+;    
+;    (if (file-exists-p germ-dir)
+;        (error "Germ '%s' already exists!" name)
+;      (make-directory germ-dir t)
+;      
+;      (cl-loop for file in files
+;               for desc in descriptions
+;               do (let ((path (expand-file-name file germ-dir)))
+;                    (with-temp-file path
+;                      ;; Header
+;                      (insert (format ";;; %s --- %s -*- lexical-binding: t; -*-\n\n" file desc))
+;                      ;; The namespaced wrapper
+;                      (insert (format "(with-germ-data %s ()\n" name))
+;                      (insert "  \"Insert logic here.\"\n")
+;                      (insert "  )\n"))))
+;      
+;      (message "Infection Prepared: Germ '%s' synthesized with namespaced wrappers." name)
+;      (dired germ-dir))))
 
 
 ;; (defun pathogen-lab-generate-germ (name)
@@ -99,7 +129,10 @@
   "Convert a germ name (like +ui/fonts) into a path."
   (let ((name-str (symbol-name name)))
     ;; This will look in ~/.emacs.d/germs/+ui/fonts/
-    (expand-file-name name-str (expand-file-name "germs/" user-emacs-directory))))
+    ;(expand-file-name name-str (expand-file-name "germs/" user-emacs-directory))
+    (expand-file-name name-str pathogen-germs-directory)
+
+    ))
 
 (cl-defun pathogen-create-germ (name &key vars deps (enabled t))
   "Factory to create and register a germ with path resolution."
