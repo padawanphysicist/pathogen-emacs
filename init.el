@@ -5,3 +5,4 @@
 ;(defvar pathogen--genome (make-hash-table :test 'equal))
 
 (pathogen-load-config)
+;(pathogen-propagate)

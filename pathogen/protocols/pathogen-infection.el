@@ -145,20 +145,74 @@
     instance))
 
 (defmacro infect! (&rest layers)
+  "The primary infection vector. Sequentially injects DNA and expresses symptoms."
   `(progn
+     ;; 1. Flush old state
      (clrhash pathogen--genome)
+     (setq pathogen--expressed-packages nil)
+     
+     ;; 2. Register all layers in the Genome
      (dolist (layer ',layers)
        (let (name variables dependencies)
          (if (symbolp layer)
              (setq name layer)
            (setq name (car layer)
                  variables (plist-get (cdr layer) :variables)
-                 dependencies (plist-get (cdr layer) :deps))) ; Capture :deps
-         
-         (pathogen-create-germ name 
-                               :vars variables 
-                               :deps dependencies)))
-     (pathogen-propagate)))
+                 dependencies (plist-get (cdr layer) :dependencies)))
+         (pathogen-create-germ name :vars variables :deps dependencies)))
+     
+     ;; 3. Trigger the heartbeat
+     (pathogen-propagate)
+     ))
+
+;(defmacro infect! (&rest layers)
+;  `(progn
+;     ;; Phase 1: Injection (Set all variables for all germs)
+;     (dolist (layer ',layers)
+;       (let (name variables)
+;         (if (symbolp layer)
+;             (setq name layer)
+;           (setq name (car layer)
+;                 variables (plist-get (cdr layer) :variables)))
+;         ;; This only sets the variables in the germ objects
+;         (pathogen-create-germ name :vars variables)))
+;     
+;     ;; Phase 2: Propagation (Actually load the files)
+;     ;; This MUST happen after the dolist has completed
+;     (pathogen-propagate)))
+
+;(defmacro infect! (&rest layers)
+;  "Register and sequence germ layers."
+;  `(progn
+;     (clrhash pathogen--genome)
+;     (dolist (layer ',layers)
+;       (let (name variables dependencies)
+;         (if (symbolp layer)
+;             (setq name layer)
+;           (setq name (car layer)
+;                 variables (plist-get (cdr layer) :variables)
+;                 dependencies (plist-get (cdr layer) :deps)))
+;         
+;         (pathogen-create-germ name 
+;                               :vars variables 
+;                               :deps dependencies)))
+;     (pathogen-propagate)))
+
+;(defmacro infect! (&rest layers)
+;  `(progn
+;     (clrhash pathogen--genome)
+;     (dolist (layer ',layers)
+;       (let (name variables dependencies)
+;         (if (symbolp layer)
+;             (setq name layer)
+;           (setq name (car layer)
+;                 variables (plist-get (cdr layer) :variables)
+;                 dependencies (plist-get (cdr layer) :deps))) ; Capture :deps
+;         
+;         (pathogen-create-germ name 
+;                               :vars variables 
+;                               :deps dependencies)))
+;     (pathogen-propagate)))
 
 ;(defmacro infect! (&rest layers)
 ;  "Declarative layer definition with Ghost Germ tracing."
@@ -226,14 +280,41 @@
 ;;      (message "[Pathogen] %d layers synthesized into the genome." (length ',layers))))
 
 (defmacro with-germ-data (germ-name vars &rest body)
-  "Create a local scope for GERM-NAME using VARS.
-VARS should be a list of short symbols.
-Example: (with-germ-data +ui/fonts (default-preset) (message default-preset))"
   (declare (indent 2))
-  (let ((mappings (mapcar (lambda (v)
-                            (list v (intern (format "%s-%s" germ-name v))))
-                          vars)))
-    `(cl-symbol-macrolet ,mappings
-       ,@body)))
+  `(let ,(mapcar (lambda (v)
+                   (let* ((full-name (format "%s-%s" (symbol-name germ-name) (symbol-name v)))
+                          (sym (intern full-name)))
+                     (list v sym)))
+                 vars)
+     ,@body))
+
+;(defmacro with-germ-data (germ-name vars &rest body)
+;  "Bind local VARS to their prefixed germ equivalents and execute BODY."
+;  (declare (indent 2))
+;  (let ((germ-str (symbol-name germ-name)))
+;    `(let ,(mapcar (lambda (v)
+;                     (let ((full-var-name (intern (format "%s-%s" germ-str v))))
+;                       (list v full-var-name)))
+;                   vars)
+;       ,@body)))
+
+;(defmacro with-germ-data (germ-name vars &rest body)
+;  "Bind local VARS to their prefixed germ equivalents and execute BODY."
+;  (declare (indent 2))
+;  `(let ,(mapcar (lambda (v)
+;                   (list v (intern (format "%s-%s" germ-name v))))
+;                 vars)
+;     ,@body))
+
+;(defmacro with-germ-data (germ-name vars &rest body)
+;  "Create a local scope for GERM-NAME using VARS.
+;VARS should be a list of short symbols.
+;Example: (with-germ-data +ui/fonts (default-preset) (message default-preset))"
+;  (declare (indent 2))
+;  (let ((mappings (mapcar (lambda (v)
+;                            (list v (intern (format "%s-%s" germ-name v))))
+;                          vars)))
+;    `(cl-symbol-macrolet ,mappings
+;       ,@body)))
 
 (provide 'pathogen-infection)

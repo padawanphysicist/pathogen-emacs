@@ -23,15 +23,31 @@
   "The file containing the pathogen-layers! declaration.")
 
 (defun pathogen-propagate ()
-  "Express germs with deep lookup logging."
-  (let ((order (pathogen-sequence-dna)))
-    (dolist (germ-name order)
-      (let ((germ (pathogen-dna-get germ-name)))
-        (message "[Pathogen Trace] Attempting lookup for: %S -> Found: %s" 
-                 germ-name (if germ "YES" "NO"))
-        (if germ
-            (pathogen-infect germ)
-          (warn "[Pathogen] Ghost Germ detected: %S" germ-name))))))
+  "Express all symptoms only after all DNA has been injected."
+  (let ((sorted-germs (pathogen--topological-sort pathogen--genome)))
+    ;; 1. First Pass: Inject all DNA and load genomes
+    (dolist (germ-name sorted-germs)
+      (pathogen-infect (gethash germ-name pathogen--genome)))
+    
+    ;; 2. Second Pass: Express all Symptoms
+    (dolist (germ-name sorted-germs)
+      (let* ((germ (gethash germ-name pathogen--genome))
+             (symptoms-path (expand-file-name "symptoms.el" (slot-value germ 'path))))
+        (when (file-exists-p symptoms-path)
+          (load symptoms-path nil 'nomessage))))
+    
+    (message "🚀 [Pathogen] Host is now fully symptomatic and stable.")))
+
+;(defun pathogen-propagate ()
+;  "Express germs with deep lookup logging."
+;  (let ((order (pathogen-sequence-dna)))
+;    (dolist (germ-name order)
+;      (let ((germ (pathogen-dna-get germ-name)))
+;        (message "[Pathogen Trace] Attempting lookup for: %S -> Found: %s" 
+;                 germ-name (if germ "YES" "NO"))
+;        (if germ
+;            (pathogen-infect germ)
+;          (warn "[Pathogen] Ghost Germ detected: %S" germ-name))))))
 
 ;(defun pathogen-propagate ()
 ;  "Sequence and express all enabled Germs, with safety checks."

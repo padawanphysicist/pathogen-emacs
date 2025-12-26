@@ -7,27 +7,69 @@
 ;;; incubator.el --- Robust Expression Logic -*- lexical-binding: t; -*-
 
 (cl-defmethod pathogen-infect ((germ pathogen-germ))
-  "Directly infect the host, injecting namespaced variables first."
-  (with-slots (name enabled-p loaded-p variables) germ
-    (when (and enabled-p (not loaded-p))
-      ;; --- The Namespacing Injection ---
-      (cl-loop for (var val) on variables by #'cddr
-               do (let* ((clean-var (substring (symbol-name var) 1))
-                         ;; Result: 'germ-name-variable-name
-                         (scoped-symbol (intern (format "%s-%s" 
-                                                       (symbol-name name) 
-                                                       clean-var))))
-                    (set scoped-symbol val)
-                    (message "[Pathogen] Injected: %s" scoped-symbol)))
-      
-      ;; Proceed to load files
-      (if (pathogen--germ-load-files germ)
-          (progn
-            (oset germ :loaded-p t)
-            t)
-        (progn
-          (push name pathogen-quarantine-list)
-          nil)))))
+  "Inject DNA into the global namespace, ensuring overrides take hold."
+  (with-slots (name variables path) germ
+    ;; 🧬 DNA Injection Phase
+    (cl-loop for (var val) on variables by #'cddr
+             do (let* ((var-name (substring (symbol-name var) 1))
+                       (prefixed-name (format "%s-%s" name var-name))
+                       (sym (intern prefixed-name)))
+                  ;; Use 'set' to force the value even if defvar exists
+                  (set sym val)
+		  (message "🧬 [DNA] Injected %s = %s" prefixed-name val)))
+
+    ;; 🦠 Expression Phase
+    ;; We only load genome and enzymes here. 
+    ;; Symptoms are loaded later by pathogen-propagate.
+    (let ((core-files '("genome.el" "enzymes.el")))
+      (dolist (f core-files)
+        (let ((full-path (expand-file-name f path)))
+          (when (file-exists-p full-path)
+            (load full-path nil 'nomessage)))))))
+
+;;(cl-defmethod pathogen-infect ((germ pathogen-germ))
+;;  "Inject variables with prefixes and load germ files."
+;;  (with-slots (name variables path) germ
+;;    ;; 1. The "DNA Injection" phase
+;;    ;; Iterates through (:idle-delay 0.3) and creates +core/reflex-idle-delay
+;;    (cl-loop for (var val) on variables by #'cddr
+;;             do (let* ((var-name (substring (symbol-name var) 1)) ;; remove the ':'
+;;                       (prefixed-name (format "%s-%s" name var-name))
+;;                       (sym (intern prefixed-name)))
+;;                  (set sym val)
+;;		  ;; ADD THIS LINE FOR DEBUGGING:
+;;		  (message "DEBUG: Injecting DNA [%s] with value [%s]" sym val)
+;;		  (message "🧬 [DNA] Injected %s = %s" prefixed-name val)))
+;;
+;;    ;; 2. The "Expression" phase
+;;    (let ((files '("genome.el" "enzymes.el" "symptoms.el")))
+;;      (dolist (f files)
+;;        (let ((full-path (expand-file-name f path)))
+;;          (when (file-exists-p full-path)
+;;            (load full-path nil 'nomessage)))))))
+
+;(cl-defmethod pathogen-infect ((germ pathogen-germ))
+;  "Directly infect the host, injecting namespaced variables first."
+;  (with-slots (name enabled-p loaded-p variables) germ
+;    (when (and enabled-p (not loaded-p))
+;      ;; --- The Namespacing Injection ---
+;      (cl-loop for (var val) on variables by #'cddr
+;               do (let* ((clean-var (substring (symbol-name var) 1))
+;                         ;; Result: 'germ-name-variable-name
+;                         (scoped-symbol (intern (format "%s-%s" 
+;                                                       (symbol-name name) 
+;                                                       clean-var))))
+;                    (set scoped-symbol val)
+;                    (message "[Pathogen] Injected: %s" scoped-symbol)))
+;      
+;      ;; Proceed to load files
+;      (if (pathogen--germ-load-files germ)
+;          (progn
+;            (oset germ :loaded-p t)
+;            t)
+;        (progn
+;          (push name pathogen-quarantine-list)
+;          nil)))))
 
 ;; (cl-defmethod pathogen-infect ((germ pathogen-germ))
 ;;   "Directly infect the host, injecting variables first."
@@ -150,5 +192,45 @@
 ;;          success)
 ;;      (warn "[Pathogen] Directory not found for %s: %s" name dir)
 ;;      nil)))
+
+(defun pathogen-diagnose-germ (germ-name)
+  "Print all live variables associated with GERM-NAME."
+  (interactive "sGerm name (e.g. +ui/organoid): ")
+  (let ((found-vars nil)
+        (prefix (concat germ-name "-")))
+    (mapatoms
+     (lambda (atom)
+       (when (string-prefix-p prefix (symbol-name atom))
+         (push (cons atom (if (boundp atom) (symbol-value atom) "VOID")) 
+               found-vars))))
+    (if found-vars
+        (with-current-buffer (get-buffer-create "*Pathogen Diagnosis*")
+          (erase-buffer)
+          (insert (format "🔬 Diagnostic Report for Germ: %s\n" germ-name))
+          (insert "==========================================\n\n")
+          (dolist (pair found-vars)
+            (insert (format "%-30s : %s\n" (car pair) (cdr pair))))
+          (display-buffer (current-buffer)))
+      (message "❌ No variables found for germ: %s" germ-name))))
+
+(defun pathogen--topological-sort (genome)
+  "Sort germs in GENOME by their dependencies."
+  (let ((sorted '())
+        (visited (make-hash-table :test 'equal))
+        (temp-marks (make-hash-table :test 'equal)))
+    (cl-labels ((visit (name)
+                  (when (gethash name temp-marks)
+                    (error "🧬 [Mutation] Circular dependency detected in germ: %s" name))
+                  (unless (gethash name visited)
+                    (puthash name t temp-marks)
+                    (let ((germ (gethash name genome)))
+                      (when germ
+                        (dolist (dep (slot-value germ 'dependencies))
+                          (visit dep))))
+                    (puthash name nil temp-marks)
+                    (puthash name t visited)
+                    (push name sorted))))
+      (maphash (lambda (name _germ) (visit name)) genome)
+      (reverse sorted))))
 
 (provide 'pathogen-incubator)
