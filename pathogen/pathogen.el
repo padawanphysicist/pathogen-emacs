@@ -106,5 +106,32 @@
         (load pathogen-config-file nil 'nomessage))
     (warn "[Pathogen] Configuration file not found: %s" pathogen-config-file)))
 
+(defun pathogen--update-pathogen-example ()
+  (interactive)
+  (concat
+   "(infect!\n"
+   (mapconcat
+    (lambda (x) (format "  %s" x))
+    (let ((pathogen--germs-directory (expand-file-name "germs" user-emacs-directory)))
+      (seq-map
+       (lambda (path)
+         "Converts a full path into a 'Category/Germ' summary."
+         (let* ((clean-path (directory-file-name path))
+                (parts (split-string clean-path "/" t))
+                (len (length parts)))
+           (if (>= len 2)
+               (format "%s/%s" (nth (- len 2) parts) (nth (- len 1) parts))
+             clean-path)))
+       (seq-remove
+        (lambda (x)
+          (or
+           ;; Elisp files
+           (string-match "\.el" x)
+           (string-match "\.org" x)
+           (member x (seq-filter #'file-directory-p (directory-files pathogen--germs-directory t "^[^.]" t)))))
+        (directory-files-recursively pathogen--germs-directory  ".*"  t))))
+    "\n")
+    ")"))
+
 (provide 'pathogen)
 ;;; pathogen.el --- Final Assembly
