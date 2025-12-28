@@ -38,6 +38,36 @@
     
     (message "🚀 [Pathogen] Host is now fully symptomatic and stable.")))
 
+(defun pathogen-lint-germ (layer germ)
+  "Check if the DNA of a germ follows the naming convention.
+LAYER should be a symbol (e.g., '+ui) and GERM a symbol (e.g., 'organoid)."
+  (let* ((prefix (format "%s/%s-" layer germ))
+         (genome-file (pathogen--get-file-path layer germ "genome.el"))
+         (violations '()))
+    
+    (when (file-exists-p genome-file)
+      (with-temp-buffer
+        (insert-file-contents genome-file)
+        (goto-char (point-min))
+        ;; Search for defvar/defcustom that doesn't start with the prefix
+        (while (re-search-forward "(def\\(?:var\\|custom\\)\\s-+\\([^[:space:]\n)]+\\)" nil t)
+          (let ((var-name (match-string 1)))
+            (unless (string-prefix-p prefix var-name)
+              (push var-name violations))))))
+    
+    (if violations
+        (message "⚠️ [Mutation Alert] Germ %s/%s defines non-compliant variables: %s" 
+                 layer germ violations)
+      (message "✅ [Healthy] Germ %s/%s DNA is compliant." layer germ))))
+
+(defun pathogen-check-all-health ()
+  "Scan all loaded germs for naming health."
+  (interactive)
+  (maphash (lambda (id data)
+             (let ((parts (split-string (symbol-name id) "/")))
+               (pathogen-lint-germ (intern (car parts)) (intern (cadr parts)))))
+           pathogen--genome))
+
 ;(defun pathogen-propagate ()
 ;  "Express germs with deep lookup logging."
 ;  (let ((order (pathogen-sequence-dna)))

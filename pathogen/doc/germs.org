@@ -1,0 +1,70 @@
+* 🧬 The Layer Taxonomy
+
+Pathogen organizes germs into five distinct layers. The prefix of the directory determines the germ's priority in the "infection" sequence.
+
+| Layer     | Prefix      | Role                                               | Examples                      |
+|-----------+-------------+----------------------------------------------------+-------------------------------|
+| Bootstrap | +bootstrap/ | The "Stem Cells". Required to boot the engine.     | "package-manager, straight"   |
+| System    | +sys/       | Background homeostasis and low-level regulation.   | "homeostasis, metabolism"     |
+| Core      | +core/      | Global behaviors and the "Nervous System."         | "reflex, impulses, synapse"   |
+| UI        | +ui/        | Visual expression and the "Vortex".                | "organoid, protero, modeline" |
+| Language  | +lang/      | Specialized environments for specific code.        | "python, rust, org"           |
+
+* 🏷️ Variable Naming (The "DNA Marker")
+
+Since you are avoiding complex macros and using global variables, follow the Layer-Germ-Variable pattern. This prevents naming collisions and makes M-x describe-variable incredibly powerful.
+
+Pattern: +<layer>/<germ>-<variable-name>
+
+- Correct: +ui/organoid-theme
+- Correct: +core/reflex-leader
+- Incorrect: theme (Too generic, will be overwritten by other germs).
+- Incorrect: organoid-theme (Missing the layer marker).
+
+* 📂 Directory & File Structure
+
+Every germ must follow the same internal anatomy. This allows the pathogen-infect engine to find the files automatically.
+
+#+begin_example
+germs/
+└── +ui/
+    └── organoid/          <-- The Germ Directory
+        ├── genome.el      <-- DNA: defvars and settings
+        ├── symptoms.el    <-- Expression: use-package and config
+        └── enzymes.el     <-- Internal helpers (optional)
+#+end_example
+
+* ⌨️ Keymap Naming (The "Synapse" Marker)
+
+Since you are using C-c with native keymaps, name your sub-maps to reflect their global nature.
+
+- Sub-map Prefix: +reflex-<name>-map
+- Example: +reflex-file-map or +reflex-ui-map.
+
+When a germ adds a key to a map, it should wrap it in a with-eval-after-load to ensure the "Nervous System" (Reflex germ) is already active.
+
+* 🧪 Function Naming (The "Enzyme" Marker)
+
+Functions that are meant to be used by other germs should be treated as "Public Enzymes." Functions that are only for internal use within a germ should use a double-dash.
+
+- Public Enzyme: +ui/organoid-apply-transparency
+- Private/Internal: +ui/organoid--calculate-opacity
+
+* 📋 Summary Guide
+
+| Element   | Format           | Example                        |
+|-----------+------------------+--------------------------------|
+| Germ Path | +layer/germ-name | +lang/python                   |
+| Variable  | +layer/germ-var  | +sys/homeostasis-enable-winner |
+| Keymap    | +reflex-name-map | +reflex-buffer-map             |
+| Function  | +layer/germ-func | +core/impulses-jump-to-char    |
+
+* 📏 Official Convention Quick-Sheet
+
+| Category  | Convention            | Reasoning                                    |
+|-----------+-----------------------+----------------------------------------------|
+| Directory | +<type>/<name>/       | Hard-coded hierarchy for the infect! loader. |
+| Variables | +<type>/<name>-<var>  | Prevents collisions with Emacs built-ins.    |
+| Faces     | +<type>/<name>-<face> | Ensures UI elements are easily themed/found. |
+| Hooks     | +<type>/<name>-<hook> | Clarifies which germ is modifying a mode.    |
+| Functions | +<type>/<name>-<func> | Makes M-x completions grouped by germ.       |
