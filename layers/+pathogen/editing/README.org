@@ -1,7 +1,0 @@
-#+title: editing
-
-This layer adds packages to improve editing with Pathogen.
-
-Features:
-
-- Support for jumping to chars using a decision tree via avy.
