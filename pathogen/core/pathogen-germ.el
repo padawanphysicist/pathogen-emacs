@@ -96,7 +96,7 @@
 
 (cl-defmethod pathogen-germ--register ((obj pathogen-germ))
   "Register the germ in the global genome automatically."
-  (pathogen/log 'debug (format "🦠 Registering: %s (Path: %s)" (pathogen-germ-name obj) (pathogen-germ-path obj)))
+  (pathogen/log 'debug "🦠 Registering: %s (Path: %s)" (pathogen-germ-name obj) (pathogen-germ-path obj))
   (puthash (pathogen-germ-name obj) obj *pathogen-genome*)
   t)
 
@@ -110,7 +110,7 @@ Returns t if injection and loading were successful, nil otherwise."
                        (prefixed-name (format "%s-%s" name var-name))
                        (sym (intern prefixed-name)))
                   (set sym val)
-                  (pathogen/log 'debug (format "🦠 Injected %s = %s" prefixed-name val))))
+                  (pathogen/log 'debug "🦠 Injected %s = %s" prefixed-name val)))
 
     ;; 🦠 Expression Phase
     (let ((core-files pathogen-germ-core-files)
@@ -123,7 +123,7 @@ Returns t if injection and loading were successful, nil otherwise."
               (unless (load full-path nil 'message)
                 (setq all-loaded nil))
             ;; If a core file is missing, you might consider that a failure
-            (pathogen/log 'warn (format "%s ⚠️ Missing core file: %s" (pathogen-germ-name germ) f)))))
+            (pathogen/log 'warning "%s ⚠️ Missing core file: %s" (pathogen-germ-name germ) f))))
       
       ;; Final expression determines the return value of the method
       (setf loaded-p all-loaded)

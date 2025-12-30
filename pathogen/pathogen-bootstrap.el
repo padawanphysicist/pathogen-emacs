@@ -25,9 +25,9 @@
   "Load the layers defined in the PATHOGEN_CONFIG_FILE."
   (if (file-exists-p pathogen-config-file)
       (progn
-        (pathogen/log 'info (format "[Pathogen] Loading configuration from: %s" pathogen-config-file))
+        (pathogen/log 'info "Loading configuration from: %s" pathogen-config-file)
         (load pathogen-config-file nil 'nomessage))
-    (pathogen/log 'warn (format "Configuration file not found: %s" pathogen-config-file))))
+    (pathogen/log 'warning "Configuration file not found: %s" pathogen-config-file)))
 
 (provide 'pathogen-bootstrap)
 ;;; pathogen-bootstrap.el ends here
