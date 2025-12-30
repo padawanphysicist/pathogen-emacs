@@ -101,7 +101,7 @@
   (clrhash *pathogen-genome*)
   (let ((infection-status-p (pathogen-incubator--infect germs)))
     (if infection-status-p
-	(pathogen/log 'debug "Infection completed!")
+	(pathogen/log 'info "Infection completed!")
       (pathogen/log 'error "Infection did not spread correctly. Check `pathogen/display-logs'"))
     infection-status-p))
 

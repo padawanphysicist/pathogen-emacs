@@ -117,13 +117,14 @@ Returns t if injection and loading were successful, nil otherwise."
           (all-loaded t)) ; Start with the assumption of success
       (dolist (f core-files)
         (let ((full-path (expand-file-name f path)))
-	  (message (format "germ: %s, path: %s, full-path: %s" (pathogen-germ-name germ) path full-path))
           (if (file-exists-p full-path)
               ;; load returns t on success. If it fails, all-loaded becomes nil.
-              (unless (load full-path nil 'message)
-                (setq all-loaded nil))
+	      (progn
+                (unless (load full-path nil 'message)
+                  (setq all-loaded nil))
+	        (pathogen/log 'info "Loaded: %s" full-path))
             ;; If a core file is missing, you might consider that a failure
-            (pathogen/log 'warning "%s ⚠️ Missing core file: %s" (pathogen-germ-name germ) f))))
+            (pathogen/log 'warning "⚠️ [%s] Missing core file: %s" (pathogen-germ-name germ) f))))
       
       ;; Final expression determines the return value of the method
       (setf loaded-p all-loaded)
