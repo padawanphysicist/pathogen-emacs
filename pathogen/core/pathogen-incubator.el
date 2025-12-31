@@ -109,5 +109,46 @@
 (defmacro infect! (&rest germs)
   `(infect--run ',germs))
 
+(defmacro pathogen--defvaralias! (new-var original-var &optional value docstring)
+  "Define NEW-VAR with VALUE and create an alias to ORIGINAL-VAR.
+NEW-VAR is the symbol for the new variable being created.
+ORIGINAL-VAR is the symbol for the existing variable to be aliased.
+VALUE is the initial value (optional).
+DOCSTRING is an optional documentation string."
+  `(progn
+     (defvar ,new-var ,value ,docstring)
+     (defvaralias ',new-var ',original-var)
+     ;;(setq ,new-var ,value)
+     ))
+
+(defmacro pathogen--defvar-with-alias! (prefix original-var &optional value docstring)
+  "Define a prefixed variable with VALUE and create an alias to ORIGINAL-VAR.
+PREFIX is a symbol representing the prefix to add to the variable name.
+ORIGINAL-VAR should be a symbol for the original variable to alias.
+VALUE is the initial value (optional, defaults to nil).
+DOCSTRING is an optional documentation string."
+  (let* ((prefix-str (symbol-name prefix))
+         (prefix-str (if (string-match-p "[/-]$" prefix-str) prefix-str (concat prefix-str "-")))
+         (prefixed-var (intern (concat prefix-str (symbol-name original-var)))))
+    `(progn
+       (defvar ,prefixed-var ,value ,docstring)
+       (defvaralias ',prefixed-var ',original-var))))
+
+(defmacro pathogen--defvars-with-aliases! (prefix &rest var-specs)
+  "Define multiple prefixed variables with aliases.
+PREFIX is a symbol representing the prefix to add to variable names.
+VAR-SPECS is a list where each element is either:
+  - SYMBOL (uses nil as default value)
+  - (SYMBOL VALUE)
+  - (SYMBOL VALUE DOCSTRING)"
+  `(progn
+     ,@(mapcar
+        (lambda (spec)
+          (let* ((sym (if (listp spec) (car spec) spec))
+                 (value (when (listp spec) (cadr spec)))
+                 (docstring (when (and (listp spec) (cddr spec)) (caddr spec))))
+            `(pathogen--defvar-with-alias! ,prefix ,sym ,value ,docstring)))
+        var-specs)))
+
 (provide 'pathogen-incubator)
 ;;; pathogen-incubator.el ends here
