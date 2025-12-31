@@ -63,9 +63,17 @@
   "The base class for a Pathogen feature layer.")
 
 (defun pathogen-germ--get-path (germ)
-  (let ((name-str (format "%s" (if (symbolp germ) germ (car germ)));;(if (symbolp germ) germ (symbol-name germ))
-		  ))
-    (expand-file-name name-str pathogen-germs-directory)))
+  (let* ((name-str (format "%s" (if (symbolp germ) germ (car germ))))
+         ;; Ensure we are working with a list even if a single string is provided
+         (dirs (if (listp pathogen-germs-directories) 
+                   pathogen-germs-directories 
+                 (list pathogen-germs-directories)))
+         ;; Find the first directory that exists
+         (found-dir (seq-find (lambda (d) 
+                                (file-directory-p (expand-file-name name-str d)))
+                              dirs)))
+    ;; Return the found path, or fallback to the first dir if none exist
+    (expand-file-name name-str (or found-dir (car dirs)))))
 
 (defun pathogen-germ--get-dependencies (germ)
   "Extract dependencies from a file's ';; @dependencies:' comment line."

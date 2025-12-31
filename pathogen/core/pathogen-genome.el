@@ -15,10 +15,14 @@
 
 ;;; Code:
 
-(defvar pathogen-germs-directory
-  (let ((env-path (getenv "PATHOGEN_GERMS_DIRECTORY")))
-    (expand-file-name (or env-path "~/.emacs.d/germs/")))
-  "The directory containing the germs definitions.")
+(defvar pathogen-core-germs-directory 
+  )
+
+(defvar pathogen-germs-directories
+  `("~/.emacs.d/germs/"
+    "~/.pathogen.d/"
+    ,(getenv "PATHOGEN_GERMS_DIRECTORY"))
+  "List of directories containing the germs definitions.")
 
 (defvar pathogen-config-file
   (let ((env-path (getenv "PATHOGEN_CONFIG_FILE")))
