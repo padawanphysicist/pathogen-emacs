@@ -1,0 +1,8 @@
+This layer implements completion provided by combining the following packages:
+
+- vertico: vertical completion user interface
+- consult: useful commands using completing-read
+- embark: provides minibuffer actions
+- marginalia: annotations to completion candidates
+- orderless: filtering enhancements
+- corfu: 

@@ -1,0 +1,23 @@
+* 🧬 Germ: +ui/appearance
+
+The Organoid germ governs the physical appearance and structural interface of the host. It transforms a blank buffer into a complex, information-rich environment.
+
+* 🩺 Clinical Overview
+
+This germ manages the Modeline (the pulse of the editor) and the Dashboard (the face of the editor).
+
+** Included Organs
+
+- Doom-Modeline: A highly optimized, icon-rich status line.
+- Dashboard: A central hub for recent files and projects.
+- Nerd-Icons: The visual "cells" used by the UI.
+
+* 💉 Infection Example
+
+#+begin_src emacs-lisp
+(infect!
+ (+core/pkg-mgr :variables (:engine 'elpaca))
+ (+ui/appearance  :variables (:style 'doom
+                            :show-dashboard t
+                            :thin-borders t)))
+#+end_src

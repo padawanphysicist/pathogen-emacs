@@ -1,0 +1,50 @@
+* 🧬 Germ: +core/pkg-mgr
+
+The Package Manager germ is the foundation of the Pathogen framework. it acts as the host's Metabolism, converting external package repositories into functional "enzymes" that other germs can use.
+
+* 🩺 Clinical Overview
+
+This germ bootstraps the installation engine (Elpaca or Straight). It provides the germ-package macro, which acts as a universal interface, allowing all other germs to remain agnostic about which package manager is actually running.
+
+** Included Engines (Organelles)
+
+- Elpaca: An isolation-based, asynchronous package manager.
+- Straight.el: A functional, git-based package manager.
+
+* 🧬 Genome (Configuration)
+
+These traits dictate how the host will ingest new code.
+
+| Trait    | Type   | Default | Description                                                    |
+|----------+--------+---------+----------------------------------------------------------------|
+| :engine  | symbol | 'elpaca | Choice of installation engine ('elpaca or 'straight).          |
+| :install | bool   | t       | Whether to trigger immediate installation of missing packages. |
+
+* 🧪 Enzymes (Functions)
+
+This germ provides the most critical macro in the entire framework:
+
+- (germ-package name &rest args): This is the "Universal Catalyst." It wraps the underlying engine's install command. If you switch the :engine trait in your config, this macro automatically redirects all package installations across all germs to the new engine.
+
+* 💉 Infection Example
+
+#+begin_src emacs-lisp
+(infect!
+ (+core/pkg-mgr :variables (:engine 'elpaca)) ;; Metabolism first
+ (+core/reflex  :variables (:enable-avy t))   ;; Then sensory systems
+ )
+#+end_src
+
+* 🔬 Symptoms (Behavior)
+
+Upon expression, the host will:
+1. Self-Bootstrap: Automatically download and compile the chosen package manager if it is missing.
+2. Queue Management: Process package installations in the background (if using Elpaca).
+3. Dependency Fulfillment: Provide the necessary infrastructure for every other Germ's symptoms.el to run (germ-package ...).
+
+* ⚠️ Contraindications (Known Issues)
+
+- Network Connectivity: This germ requires an active internet connection during the initial "Primary Infection" to clone the package manager from GitHub.
+- Git Requirement: The host system must have git installed and available in the system PATH.
+
+

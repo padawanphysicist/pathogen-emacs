@@ -17,6 +17,13 @@
 
 (require 'pathogen-bootstrap)
 
+;; Base configuration (think this as a "metapackage")
+(infect! +bootstrap/package-manager
+         +distributions/base
+         +completion/compleseus
+         +ui/appearance)
+
+;; Load user config
 (pathogen--load-config)
 
 ;;; init.el ends here
