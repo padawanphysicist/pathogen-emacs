@@ -8,3 +8,4 @@ elpa/
 cache/
 *.bkp
 multisession/
+tramp
