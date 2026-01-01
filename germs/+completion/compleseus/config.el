@@ -18,10 +18,6 @@
 ;;   - Embark: Minibuffer actions and context menu
 ;;   - Orderless: Advanced completion style
 (use-package vertico
-  :custom
-  (vertico-cycle t "Enable cycling for `vertico-next' and `vertico-previous'")
-  (read-file-name-completion-ignore-case t "Ignores case during file name completion")
-  (read-buffer-completion-ignore-case t "Ignores case during buffer name completion")
   :init
   (vertico-mode))
 
@@ -58,12 +54,7 @@
 (use-package embark-consult
   :after vertico)
 
-(use-package orderless
-  :custom
-  (completion-styles '(orderless))
-  (completion-category-defaults nil)
-  (completion-category-overrides '((file (styles partial-completion))))
-  (orderless-matching-styles '(orderless-initialism orderless-regexp)))
+(use-package orderless)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; corfu
@@ -74,14 +65,6 @@
 ;; Completion Overlay Region FUnction
 ;; Modern in-buffer completion UI that works seamlessly with vertico/consult
 (use-package corfu
-  :custom
-  (corfu-auto t "Enable auto completion")
-  (corfu-auto-delay 0.2 "Delay before showing popup")
-  (corfu-auto-prefix 2 "Minimum prefix length for auto completion")
-  (corfu-cycle t "Enable cycling through candidates")
-  (corfu-quit-no-match 'separator "Don't quit if no match, except at separator")
-  (corfu-preview-current nil "Don't preview current candidate")
-  (corfu-preselect 'prompt "Preselect the prompt")
   :init
   (global-corfu-mode))
 
