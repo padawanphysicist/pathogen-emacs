@@ -368,3 +368,4 @@
 (when +distributions/base-unkillable-scratch
   (add-hook 'kill-buffer-query-functions #'+distributions/base-make-scratch-unkillable))
 
+(use-package ultra-scroll)
