@@ -117,9 +117,7 @@ VALUE is the initial value (optional).
 DOCSTRING is an optional documentation string."
   `(progn
      (defvar ,new-var ,value ,docstring)
-     (defvaralias ',new-var ',original-var)
-     ;;(setq ,new-var ,value)
-     ))
+     (defvaralias ',new-var ',original-var)))
 
 (defmacro pathogen--defvar-with-alias! (prefix original-var &optional value docstring)
   "Define a prefixed variable with VALUE and create an alias to ORIGINAL-VAR.
@@ -132,7 +130,8 @@ DOCSTRING is an optional documentation string."
          (prefixed-var (intern (concat prefix-str (symbol-name original-var)))))
     `(progn
        (defvar ,prefixed-var ,value ,docstring)
-       (defvaralias ',prefixed-var ',original-var))))
+       (defvaralias ',prefixed-var ',original-var)
+       (setq ,prefixed-var ,value))))
 
 (defmacro pathogen--defvars-with-aliases! (prefix &rest var-specs)
   "Define multiple prefixed variables with aliases.
