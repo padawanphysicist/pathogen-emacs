@@ -47,6 +47,11 @@
 ;; (require '05-setup-keybindings)
 
 (require 'better-defaults)
+(require 'package-management)
+(require 'builtin-packages)
+(require 'better-editing)
+(require 'compleseus)
+(require 'look-and-feel)
 
 ;; ;; Load additional settings
 ;; (when (file-exists-p pathogen-config-directory)

@@ -21,3 +21,4 @@ anaconda-mode/
 .lsp-session*
 var/
 projects
+elpaca/
