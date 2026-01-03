@@ -1,4 +1,4 @@
-;;; 00-user-interface.el --- UI optimizations and tweaks -*- lexical-binding: t; -*-
+;;; better-defaults.el --- UI optimizations and tweaks -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2021 Victor Santos
 ;;
@@ -14,34 +14,6 @@
 ;; not too opiniated.
 ;;
 ;;; Code:
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Disable toolbar, menubar, and scrollbars
-;;
-;;
-;; To prevent the glimpse of un-styled Emacs we disable these UI elements early
-;; by directly setting the variable `default-frame-alist', which keeps the
-;; default values used when creating a frame (window in the modern parlance):
-(push '(menu-bar-lines . 0)   default-frame-alist)
-(push '(tool-bar-lines . 0)   default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
-;; However, doing this only creates a problem: since their respective varibles
-;; are not set, if the user wants to enable the tool-bar for example, it would
-;; be necessary to use the cycle twice the command `tool-bar-mode' to enable.
-;;
-;; Therefore we need to unset their variables too:
-(setq
- menu-bar-mode nil
- tool-bar-mode nil
- scroll-bar-mode nil)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Disable startup screen
-;;
-;;
-;; Let's be honest: if you are using Emacs by now I don't think you are really
-;; interested in the info on the startup screen.
-(setq inhibit-startup-screen t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Smooth scrolling
@@ -91,5 +63,15 @@
 ;;(setq resize-mini-windows 'grow-only)
 (setq resize-mini-windows nil)
 
-(provide '00-user-interface)
-;;; 00-user-interface.el ends here
+;; Enable pixel-scroll-precision-mode for smooth scrolling (Emacs 29+)
+;; This provides smooth pixel-level scrolling with mouse/trackpad instead of
+;; jumping line-by-line. Significantly improves the scrolling experience on
+;; modern displays and input devices.
+(when (and (>= emacs-major-version 29)
+	   (fboundp 'pixel-scroll-precision-mode))
+  (pixel-scroll-precision-mode 1))
+
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
+(provide 'better-defaults)
+;;; better-defaults.el ends here

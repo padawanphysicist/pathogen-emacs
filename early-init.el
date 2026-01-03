@@ -15,6 +15,45 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Variables
+;;
+;;
+(defvar pathogen--file-name-handler-alist file-name-handler-alist
+  "Backup of file-name-handler-alist for restoration after init.")
+
+(defvar pathogen--gc-cons-threshold 67108864 ; 64MB
+  "The default value to use for `gc-cons-threshold' after initialization.
+During startup, GC threshold is set very high to speed up initialization.
+After startup completes, this value is restored for normal operation.
+
+If you experience freezing, decrease this value.
+If you experience stuttering, increase this value.
+
+Default: 64MB (67108864 bytes)")
+
+(defvar pathogen--gc-cons-percentage 0.5 ; 50%
+  "The default value to use for `gc-cons-percentage' after initialization.
+This controls how much heap growth triggers garbage collection.
+
+Default: 0.5 (50% growth triggers GC)")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; File name handler optimization
+;;
+;;
+;; Disable file-name-handler-alist during initialization for significant
+;; performance improvement (30-50% faster startup). Handlers check for remote
+;; files, archives, compression, etc., which are not needed during init.
+;; The original list is restored after startup completes.
+(setq file-name-handler-alist nil)
+
+;; Restore after initialization
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq file-name-handler-alist pathogen--file-name-handler-alist)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Modify garbage collector
 ;;
 ;;
@@ -49,10 +88,6 @@
 
 ;; For step 'b', I proceed as follows: since the default value of
 ;; `gc-cons-threshold' is 800000 (800KB), I define a new value to be default,
-(defvar pathogen/gc-cons-threshold 67108864 ; 64mb
-  "The default value to use for `gc-cons-threshold'.
-If you experience freezing, decrease this. If you experience stuttering, increase this.")
-
 ;; and add a function to restore GC as a hook:
 ;;
 ;; * `emacs-startup-hook' functions are evaluated later than `after-init-hook'
@@ -60,7 +95,8 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Startup-Summary.html#Startup-Summary):
 (defun pathogen--restore-gc ()
   "Restore garbage collection."
-  (setq gc-cons-threshold pathogen/gc-cons-threshold))
+    (setq gc-cons-threshold pathogen--gc-cons-threshold)
+  (setq gc-cons-percentage pathogen--gc-cons-percentage))
 (add-hook 'emacs-startup-hook #'pathogen--restore-gc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -86,6 +122,19 @@ If you experience freezing, decrease this. If you experience stuttering, increas
               (add-hook 'after-focus-change-function 'garbage-collect))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Improve subprocess communication
+;;
+;;
+;; Increase the amount of data which Emacs reads from subprocesses in a single
+;; chunk. This is especially important for LSP servers and other tools that
+;; communicate via stdout/stdin.
+;;
+;; The default value is 4096 bytes (4KB), which is far too low for modern
+;; systems. Setting this to 1MB significantly improves performance of language
+;; servers, tree-sitter parsers, and other external tools.
+(setq read-process-output-max (* 1024 1024)) ; 1MB
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Improve loading of files
 ;;
 ;;
@@ -101,6 +150,76 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 ;; Package initialization occurs before `user-init-file' is loaded, but after
 ;; `early-init-file'. This prevent Emacs from doing it early:
 (setq package-enable-at-startup nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Warning level configuration
+;;
+;;
+;; Set to :error instead of :emergency to avoid suppressing important warnings
+;; about configuration issues, deprecated functions, or package loading errors.
+;; This still prevents minor warnings from interrupting startup while keeping
+;; you informed about actual problems.
+;;
+;; Warning levels (least to most severe):
+;;   :debug < :info < :warning < :error < :emergency
+;;
+;; - :emergency suppresses almost everything (previous setting)
+;; - :error shows errors but hides routine warnings (current setting)
+;; - :warning shows all warnings (Emacs default, can be noisy)
+(setq warning-minimum-level :error)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Ignore X resources
+;;
+;;
+;; This setting would be redundant with the other settings
+;; in this file and can conflict with later config (particularly where the
+;; cursor color is concerned).
+(advice-add #'x-apply-session-resources :override #'ignore)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Early UI optimizations
+;;
+;;
+;; Disable the startup screen to prevent it from flashing briefly during
+;; initialization. Setting this in early-init.el ensures it never appears,
+;; rather than appearing and then being hidden when init.el loads.
+;; Let's be honest: if you are using Emacs by now I don't think you are really
+;; interested in the info on the startup screen.
+(setq inhibit-startup-screen t)
+
+;; Bell configuration: Flash the mode line instead of the entire screen
+;; or making an audible beep. The default visual bell flashes the whole
+;; screen which can be jarring and distracting. This subtle mode-line
+;; flash provides feedback without being intrusive.
+(setq visible-bell nil)  ; Disable default visual bell
+(setq ring-bell-function
+      (lambda ()
+        (let ((orig-fg (face-foreground 'mode-line)))
+          (set-face-foreground 'mode-line "#F2804F")
+          (run-with-idle-timer 0.1 nil
+                               (lambda (fg) (set-face-foreground 'mode-line fg))
+                               orig-fg))))
+
+;;; Disable toolbar, menubar, and scrollbars
+;;
+;;
+;; To prevent the glimpse of un-styled Emacs we disable these UI elements early
+;; by directly setting the variable `default-frame-alist', which keeps the
+;; default values used when creating a frame (window in the modern parlance):
+(push '(menu-bar-lines . 0)   default-frame-alist)
+(push '(tool-bar-lines . 0)   default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+(push '(horizontal-scroll-bars) default-frame-alist)
+;; However, doing this only creates a problem: since their respective varibles
+;; are not set, if the user wants to enable the tool-bar for example, it would
+;; be necessary to use the cycle twice the command `tool-bar-mode' to enable.
+;;
+;; Therefore we need to unset their variables too:
+(setq
+ menu-bar-mode nil
+ tool-bar-mode nil
+ scroll-bar-mode nil)
 
 (provide 'early-init)
 ;;; early-init.el ends here
