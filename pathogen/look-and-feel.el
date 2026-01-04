@@ -1,4 +1,13 @@
-;; 1. The Modeline (The Primary Organ)
+;;; Custom variables for this module
+
+(defvar pathogen-font-family "GeistMono Nerd Font"
+  "The default font family.")
+
+(defvar pathogen-font-size 130
+  "The default font height.")
+
+;;; Package configuration
+
 (use-package doom-modeline
   :ensure t
   :custom
@@ -23,7 +32,7 @@
   ;; - Evaluate `(info "(ef-themes) Working with other Modus themes or taking over Modus")'
   ;; - Visit <https://protesilaos.com/emacs/ef-themes#h:6585235a-5219-4f78-9dd5-6a64d87d1b6e>
   (with-eval-after-load 'modus-themes
-  (ef-themes-take-over-modus-themes-mode 1))
+    (ef-themes-take-over-modus-themes-mode 1))
   ;; :custom
   ;; Define the two themes you want to toggle between
   ;; (ef-themes-to-toggle '(ef-dark ef-eleutheria-dark))
@@ -34,16 +43,30 @@
 ;; 2. Cellular Structure (Fonts)
 (use-package fontaine
   :ensure t
-  :custom
-  (fontaine-presets
-   `((regular
-      :default-family "GeistMono Nerd Font"
-      :default-height 110
-     (presentation :default-height 180 :default-weight bold)
-     (small :default-height 90))))
+  :init
+  (defun pathogen--fontaine-update-presets ()
+    "Update fontaine presets with current variable values and reload."
+    (setq fontaine-presets
+          `((regular
+             :default-family ,pathogen-font-family
+             :default-height ,pathogen-font-size)
+            (presentation
+             :default-height 180
+             :default-weight bold)
+            (small
+             :default-height 90)))
+    (fontaine-set-preset 'regular))
+
+  ;; Variable watcher function with deferred execution
+  (defun pathogen--fontaine-variable-watcher (_symbol _newval _operation _where)
+    "Automatically update fontaine when font variables change."
+    (run-at-time 0 nil #'pathogen--fontaine-update-presets))
   :config
-  (fontaine-set-preset 'regular)
-  (fontaine-mode 1))
+  (pathogen--fontaine-update-presets)
+  (fontaine-mode 1)
+  ;; Add watchers to automatically refresh when variables change
+  (add-variable-watcher 'pathogen-font-family #'pathogen--fontaine-variable-watcher)
+  (add-variable-watcher 'pathogen-font-size #'pathogen--fontaine-variable-watcher))
 
 (use-package nerd-icons :ensure t)
 
@@ -54,12 +77,12 @@
   :demand
   :after nerd-icons
   :custom
-   (centaur-tabs-style "bar")
- (centaur-tabs-height 35)
- (centaur-tabs-set-icons t)
- (centaur-tabs-icon-type 'nerd-icons)
- (centaur-tabs-set-bar 'over)
- (centaur-tabs-set-modified-marker t)
+  (centaur-tabs-style "bar")
+  (centaur-tabs-height 35)
+  (centaur-tabs-set-icons t)
+  (centaur-tabs-icon-type 'nerd-icons)
+  (centaur-tabs-set-bar 'over)
+  (centaur-tabs-set-modified-marker t)
   :bind
   (("C-<prior>" . centaur-tabs-backward)
    ("C-<next>" . centaur-tabs-forward)
