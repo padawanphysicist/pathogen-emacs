@@ -173,16 +173,106 @@ Users can customize this to store cache in a different location. Can be configur
 ;;
 (use-package emacs
   :ensure nil
-  :init
-  
+  :custom
+    
   ;; Enable modern auto-save
-  (auto-save-visited-mode 1)          
+  (auto-save-visited-mode 1)
+  (auto-save-default nil)        ; Disable traditional auto-save  
+  (auto-save-visited-interval 5) ; Save every 5 seconds
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;; Custom init file
+  ;;
+  ;;
+  ;; By default, Emacs stores any configuration you make through its UI by writing
+  ;; custom-set-variables invocations to your init file, or to the file specified
+  ;; by custom-file. Though this is convenient, it's also an excellent way to
+  ;; cause aggravation when the variable you keep trying to modify is being set in
+  ;; some custom-set-variables invocation.
+  ;;
+  ;; We set custom-file to a separate file to keep init.el clean. Using
+  ;; user-emacs-directory ensures portability across different systems.
+  (custom-file (concat user-emacs-directory "custom.el"))
+
+  
+ ;; Store all backup and autosave files in the tmp dir
+ (backup-directory-alist `((".*" . ,temporary-file-directory)))
+ (auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;;; Just-in-time syntax highlighting
+ ;;
+ ;;
+ ;; JIT Lock mode is the default font-lock support mode in Emacs. It fontifies
+ ;; (highlights syntax) text on-demand as it becomes visible.
+ ;;
+ ;; The `jit-lock-stealth-time' variable controls when Emacs fontifies text that
+ ;; is not currently visible. By default, it's set to a high value (16 seconds),
+ ;; meaning Emacs waits a long time before fontifying off-screen text.
+ ;;
+ ;; Setting this to a lower value (0.2 seconds) improves responsiveness when
+ ;; scrolling through large files, as more text will already be fontified.
+ ;;
+ ;; Trade-off:
+ ;;   - Lower values: Better scrolling experience, slightly more CPU usage
+ ;;   - Higher values: Less CPU usage, potential delay when scrolling
+ ;;
+ ;; For modern systems, 0.2 seconds provides a good balance.
+ (jit-lock-stealth-time 0.2)
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;; Clipboard/kill-ring
+ ;;
+ ;;
+ ;; Remove duplicates in the kill ring to reduce bloat
+ ;; and make the kill ring easier to peruse (with
+ ;; `counsel-yank-pop' or `helm-show-kill-ring'.
+ (kill-do-not-save-duplicates t)
+ 
+ ;; Allow UTF or composed text from the clipboard, even
+ ;; in the terminal or on non-X systems (like Windows or
+ ;; macOS), where only `STRING' is used.
+ (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+
+ ;; Display current column in modeline
+ (column-number-mode t)
+ 
+  ;; uses shorter answers "y" or "n".
+ (use-short-answers t)
+ ;; `vertico-multiform-mode' adds a menu in the minibuffer
+ ;; to switch display modes.
+ (context-menu-mode t "Enable context menu.")
+ (enable-recursive-minibuffers t "Enable recursive minibuffers")
+ ;; Hide commands in M-x which do not work in the current mode.
+ ;; Vertico commands are hidden in normal buffers.
+ (read-extended-command-predicate #'command-completion-default-include-p)
+ ;; Do not allow the cursor in the minibuffer prompt
+ (minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
+
+ ;; TAB cycle if there are only few candidates
+ ;;(setq completion-cycle-threshold 3)
+ ;; Enable indentation+completion using the TAB key.
+ ;; `completion-at-point' is often bound to M-TAB.
+ (tab-always-indent 'complete)
+
+ ;; The POSIX standard defines a line is "a sequence of zero or more
+ ;; non-newline characters followed by a terminating newline", so files
+ ;; should end in a newline. Windows doesn't respect this (because it's
+ ;; Windows), but we should, since programmers' tools tend to be POSIX
+ ;; compliant (and no big deal if not).
+ (require-final-newline t)
+
+
+
+
+
+  :init
   
   ;; Add prompt indicator to `completing-read-multiple'.
   ;; Alternatively try `consult-completing-read-multiple'.  
   ;;(advice-add #'completing-read-multiple :filter-args #'+distributions/base-crm-indicator)
 
-  (global-completion-preview-mode)
+ (global-completion-preview-mode)
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; Death to tabs

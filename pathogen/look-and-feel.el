@@ -87,8 +87,9 @@
   (("C-<prior>" . centaur-tabs-backward)
    ("C-<next>" . centaur-tabs-forward)
    ("C-c t t" . centaur-tabs-mode))
-  :config
-  (centaur-tabs-mode t))
+  ;; :config
+  ;; (centaur-tabs-mode t)
+  )
 
 (provide 'look-and-feel)
 ;;; look-and-feel.el ends here
