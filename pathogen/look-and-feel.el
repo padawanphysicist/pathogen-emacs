@@ -1,9 +1,9 @@
 ;;; Custom variables for this module
 
-(defvar pathogen-font-family "GeistMono Nerd Font"
+(defvar pathogen-font-family "Inconsolata LGC Nerd Font"
   "The default font family.")
 
-(defvar pathogen-font-size 130
+(defvar pathogen-font-size 150
   "The default font height.")
 
 ;;; Package configuration
@@ -86,7 +86,8 @@
   :bind
   (("C-<prior>" . centaur-tabs-backward)
    ("C-<next>" . centaur-tabs-forward)
-   ("C-c t t" . centaur-tabs-mode))
+   ;; ("C-c t t" . centaur-tabs-mode)
+   )
   ;; :config
   ;; (centaur-tabs-mode t)
   )
