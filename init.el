@@ -16,6 +16,12 @@
 
 (add-to-list 'load-path (concat user-emacs-directory "pathogen/"))
 
+(require 'pathogen-variables)
+
+;; Load custom-file after pathogen-variables has defined it
+(when (file-exists-p custom-file)
+  (load custom-file 'noerror))
+
 (require 'better-defaults)
 (require 'package-management)
 (require 'builtin-packages)
@@ -23,14 +29,7 @@
 (require 'compleseus)
 (require 'look-and-feel)
 
-(defvar pathogen-config-file (substitute-in-file-name "$HOME/.pathogen.el")
-  "User's personal configuration file.
-This file is loaded after all Pathogen modules if it exists. Use this
-for personal customizations without modifying Pathogen core files.")
-
 ;; Load additional settings
-;; (when (file-exists-p pathogen-config-directory)
-;;   (mapc #'load-file (file-expand-wildcards (concat pathogen-config-directory "*.el"))))
 (when (file-exists-p pathogen-config-file)
   (load-file pathogen-config-file))
 

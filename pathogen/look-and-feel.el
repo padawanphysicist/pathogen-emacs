@@ -1,13 +1,3 @@
-;;; Custom variables for this module
-
-(defvar pathogen-font-family "Inconsolata LGC Nerd Font"
-  "The default font family.")
-
-(defvar pathogen-font-size 150
-  "The default font height.")
-
-;;; Package configuration
-
 (use-package doom-modeline
   :ensure t
   :custom

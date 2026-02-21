@@ -221,5 +221,8 @@ Default: 0.5 (50% growth triggers GC)")
  tool-bar-mode nil
  scroll-bar-mode nil)
 
+;; Suppress native compilation warnings
+(setq native-comp-async-report-warnings-errors 'silent)
+
 (provide 'early-init)
 ;;; early-init.el ends here

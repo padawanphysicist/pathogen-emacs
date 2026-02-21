@@ -73,5 +73,9 @@
 
 (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
+(unless (file-exists-p custom-file)
+  (write-region "" nil custom-file))
+(load custom-file 'noerror)
+
 (provide 'better-defaults)
 ;;; better-defaults.el ends here
