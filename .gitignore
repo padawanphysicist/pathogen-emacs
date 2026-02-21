@@ -26,3 +26,4 @@ multisession/
 custom.el
 eshell/
 ellama-sessions/
+persist-text-scale
