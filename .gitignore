@@ -7,3 +7,8 @@ elpaca/
 elpa/
 cache/
 *.bkp
+custom.el
+elfeed/
+eshell/
+var/
+tramp
