@@ -33,6 +33,19 @@
 (defvaralias 'pathogen-user-name 'user-full-name)
 (defvaralias 'pathogen-user-email 'user-mail-address)
 
+
+(defcustom pathogen-cache-directory
+  (expand-file-name "cache/" user-emacs-directory)
+  "Base directory for Emacs cache files."
+  :type `(choice
+          (const     :tag "Inside Emacs config  (cache/ in user-emacs-directory)"
+                     ,(expand-file-name "cache/" user-emacs-directory))
+          (const     :tag "System temp          (/tmp/emacs-cache/)" "/tmp/emacs-cache/")
+          (directory :tag "Custom directory"))
+  :group 'pathogen-emacs)
+
+
+
 (provide 'configure-environment)
 ;;; configure-enviroment.el ends here
 

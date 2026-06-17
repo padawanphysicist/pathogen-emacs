@@ -45,4 +45,5 @@
 ;; outline-regexp: ";;;+"
 ;; outline-minor-mode-use-buttons: t
 ;; outline-minor-mode-cycle: t
+;; fill-column: 80
 ;; End:
