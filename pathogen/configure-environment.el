@@ -27,12 +27,18 @@
 
 ;;; Code:
 
-(defcustom pathogen-days-between-package-manager-cache-updates 2
-  "Days to keep package manager cache")
+(defgroup pathogen nil
+  "Customization group for Pathogen Emacs configuration."
+  :group 'local
+  :prefix "pathogen-")
+
+(defcustom pathogen-days-between-package-manager-cache-updates
+  2
+  "Days to keep package manager cache"
+  :group 'pathogen)
 
 (defvaralias 'pathogen-user-name 'user-full-name)
 (defvaralias 'pathogen-user-email 'user-mail-address)
-
 
 (defcustom pathogen-cache-directory
   (expand-file-name "cache/" user-emacs-directory)
@@ -42,9 +48,17 @@
                      ,(expand-file-name "cache/" user-emacs-directory))
           (const     :tag "System temp          (/tmp/emacs-cache/)" "/tmp/emacs-cache/")
           (directory :tag "Custom directory"))
-  :group 'pathogen-emacs)
+  :group 'pathogen)
 
+(defcustom pathogen-local-config-file
+  (expand-file-name ".pathogen.el" (getenv "HOME"))
+  "Path for additional configuration. Can be used for testing new features."
+  :group 'pathogen)
 
+;;;; Predicate variables
+
+(defconst pathogen-local-config-file-enabled-p
+  (not (getenv "PATHOGEN_DISABLE")))
 
 (provide 'configure-environment)
 ;;; configure-enviroment.el ends here

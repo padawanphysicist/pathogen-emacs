@@ -1,4 +1,4 @@
-;;; init-pathogen-bootstrap.el --- Startup core pathogen configuration  -*- lexical-binding: t; -*-
+;;; init-pathogen-bootstrap.el --- Core built-in and fundamental Emacs configuration  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2026  Victor Santos
 
@@ -23,7 +23,14 @@
 
 ;;; Commentary:
 
-;; 
+;; This file defines the core configuration for fundamental Emacs
+;; features. Everything configured here relies exclusively on built-in packages
+;; or essential local modules.
+
+;; Philosophy: This is pure, standard Emacs customization. The code is
+;; structured so that anyone can copy and paste individual blocks directly into
+;; their own configuration. No external package dependencies, no (I hope)
+;; complex setup. It just works out of the box.
 
 ;;; Code:
 
@@ -377,8 +384,6 @@
   (("M-o" . other-window)
    ("C-z" . nil)                              ; Disable accidental frame minimization
    ("C-x C-z" . nil)))
-
-
 
 ;;;; Uncategorized configurations
 

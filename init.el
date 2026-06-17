@@ -34,9 +34,20 @@
 (when (version< emacs-version "27.1")
   (load (expand-file-name "early-init.el" user-emacs-directory)))
 
+;;;; Core configuration
 (require 'init-pathogen-bootstrap)
 (require 'setup-built-in-package-manager)
-(require 'configure-memex)
+(require 'setup-icr-vompeccc)
+(require 'setup-modeline)
+(require 'setup-navigation)
+
+;;;; Load local custom configuration
+
+;; The file is NOT loaded if you set PATHOGEN_DISABLE envvar
+(when (and
+       (file-exists-p pathogen-local-config-file)
+       pathogen-local-config-file-enabled-p)
+  (load-file pathogen-local-config-file))
 
 (provide 'init)
 ;;; init.el ends here
