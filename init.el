@@ -35,9 +35,11 @@
   (load (expand-file-name "early-init.el" user-emacs-directory)))
 
 ;;;; Core configuration
-(require 'init-pathogen-bootstrap)
 (require 'setup-built-in-package-manager)
-(require 'setup-icr-vompeccc)
+
+(require 'init-pathogen-bootstrap)
+(when (version< "29.1" emacs-version)
+  (require 'setup-icr-vompeccc))
 (require 'setup-modeline)
 (require 'setup-navigation)
 
