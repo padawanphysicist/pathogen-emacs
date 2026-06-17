@@ -172,9 +172,7 @@ increase this.")
 ;; Android specific settings
 (when (eq system-type 'android)
   ;; Ensure automatic appearance of virtual keyboard when editing buffers
-  (setq touch-screen-display-keyboard t)
-  (tool-bar-mode 1)
-  (menu-bar-mode 1))
+  (setq touch-screen-display-keyboard t))
 
 (provide 'early-init)
 
