@@ -34,6 +34,8 @@
 (when (version< emacs-version "27.1")
   (load (expand-file-name "early-init.el" user-emacs-directory)))
 
+(require 'setup-built-in-package-manager)
+
 (provide 'init)
 ;;; init.el ends here
 
