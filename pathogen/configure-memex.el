@@ -1,12 +1,8 @@
-;;; init.el --- Main initialization file for Emacs -*- lexical-binding: t; -*-
+;;; configure-memex.el --- Personal Knowledge Management system configuration  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021  Victor Santos
+;; Copyright (C) 2026  Victor Santos
 
-;; Author: Victor Santos <victor_santos@fisica.ufc.br>
-;; URL: https://codeberg.org/padawanphysicist/pathogen-emacs
-;; Package-Requires: ((emacs "27.1"))
-
-;;; License:
+;; Author: Victor Santos <vct.santos@protonmail.com>
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,23 +19,22 @@
 
 ;;; Commentary:
 
-;; Code that you want to execute when you start Emacs.
-
-;; References:
-;; - https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html
+;; 
 
 ;;; Code:
 
-;; Ensures the early init file is always loaded
-(when (version< emacs-version "27.1")
-  (load (expand-file-name "early-init.el" user-emacs-directory)))
 
-(require 'init-pathogen-bootstrap)
-(require 'setup-built-in-package-manager)
-(require 'configure-memex)
 
-(provide 'init)
-;;; init.el ends here
+
+(use-package hyperbole
+  :ensure t
+  :defer nil
+  :demand t
+  :config
+  (hyperbole-mode 1))
+
+(provide 'configure-memex)
+;;; configure-memex.el ends here
 
 ;; Local Variables:
 ;; eval: (outline-minor-mode 1)
@@ -48,3 +43,4 @@
 ;; outline-minor-mode-cycle: t
 ;; fill-column: 80
 ;; End:
+
