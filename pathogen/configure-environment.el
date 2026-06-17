@@ -1,6 +1,6 @@
-;;; init.el --- Main initialization file for Emacs -*- lexical-binding: t; -*-
+;;; configure-environment.el --- Configure variables  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021  Victor Santos
+;; Copyright (C) 2026  Victor Santos
 
 ;; Author: Victor Santos <victor_santos@fisica.ufc.br>
 ;; URL: https://codeberg.org/padawanphysicist/pathogen-emacs
@@ -23,22 +23,18 @@
 
 ;;; Commentary:
 
-;; Code that you want to execute when you start Emacs.
-
-;; References:
-;; - https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html
+;; Configure environment variables for Pathogen 
 
 ;;; Code:
 
-;; Ensures the early init file is always loaded
-(when (version< emacs-version "27.1")
-  (load (expand-file-name "early-init.el" user-emacs-directory)))
+(defcustom pathogen-days-between-package-manager-cache-updates 2
+  "Days to keep package manager cache")
 
-(require 'init-pathogen-bootstrap)
-(require 'setup-built-in-package-manager)
+(defvaralias 'pathogen-user-name 'user-full-name)
+(defvaralias 'pathogen-user-email 'user-mail-address)
 
-(provide 'init)
-;;; init.el ends here
+(provide 'configure-environment)
+;;; configure-enviroment.el ends here
 
 ;; Local Variables:
 ;; eval: (outline-minor-mode 1)

@@ -1,6 +1,6 @@
-;;; init.el --- Main initialization file for Emacs -*- lexical-binding: t; -*-
+;;; init-pathogen-bootstrap.el --- Startup core pathogen configuration  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021  Victor Santos
+;; Copyright (C) 2026  Victor Santos
 
 ;; Author: Victor Santos <victor_santos@fisica.ufc.br>
 ;; URL: https://codeberg.org/padawanphysicist/pathogen-emacs
@@ -23,26 +23,17 @@
 
 ;;; Commentary:
 
-;; Code that you want to execute when you start Emacs.
-
-;; References:
-;; - https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html
+;; 
 
 ;;; Code:
 
-;; Ensures the early init file is always loaded
-(when (version< emacs-version "27.1")
-  (load (expand-file-name "early-init.el" user-emacs-directory)))
+(require 'configure-environment)
 
-(require 'init-pathogen-bootstrap)
-(require 'setup-built-in-package-manager)
+(use-package emacs
+  :ensure nil
+  :custom
+  (pathogen-user-name "Victor Santos")
+  (pathogen-user-email "vct.santos@protonmail.com"))
 
-(provide 'init)
-;;; init.el ends here
-
-;; Local Variables:
-;; eval: (outline-minor-mode 1)
-;; outline-regexp: ";;;+"
-;; outline-minor-mode-use-buttons: t
-;; outline-minor-mode-cycle: t
-;; End:
+(provide 'init-pathogen-bootstrap)
+;;; init-pathogen-bootstrap.el ends here

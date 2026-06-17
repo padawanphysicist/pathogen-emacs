@@ -32,6 +32,8 @@
 
 ;;; Code:
 
+(require 'configure-environment)
+
 (when (version<= "26.3" emacs-version)
   (require 'package)
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -39,7 +41,7 @@
 
 ;; Refresh package contents periodically (e.g., every 2 days)
 (let* ((archive-dir (expand-file-name "elpa/archives/melpa/archive-contents" user-emacs-directory))
-       (days-between-updates 2) ; TODO add as a defcustom variable
+       (days-between-updates pathogen-days-between-package-manager-cache-updates)
        (seconds-between-updates (* days-between-updates 24 60 60)))
 
   (if (or (not package-archive-contents) ; if no cache
