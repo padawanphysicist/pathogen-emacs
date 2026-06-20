@@ -60,8 +60,7 @@
   :config
   (setq uniquify-buffer-name-style 'forward))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Which-key
+;;;; Which-key (Built-in on Emacs >=30.1)
 ;;
 ;; https://github.com/justbur/emacs-which-key
 ;;
@@ -74,9 +73,9 @@
 ;; `which-key' is a minor mode that solves this by displaying a popup with
 ;; all possible key bindings that can follow your currently entered prefix.
 ;; It provides an excellent, contextual way to discover shortcuts globally.
-;;
+
 (use-package which-key
-  :ensure ;; `,(version<= emacs-version "30.1")
+  :ensure
   :defer t
   :hook
   (after-init-hook . which-key-mode)
@@ -158,7 +157,49 @@
     "M-s" "search-map")
   (which-key-mode 1))
 
+;;;; Dired (Directory Editor)
+;;
+;; Dired is Emacs' built-in, visual directory editor. Far more than a simple
+;; file browser, it treats directory listings as editable buffers where you
+;; can copy, move, delete, and rename files using standard Emacs commands.
+;;
+;; Key workflows enabled below:
+;; - `wdired' (Writable Dired): Press `C-x C-q' to edit filenames like text,
+;;   allowing powerful multi-file renaming using multiple cursors or regex.
+;; - Reuse buffers: Prevent Dired from spawning a new buffer for every single
+;;   directory you navigate into, keeping the buffer list clean.
+;; - Modern defaults: Enable human-readable file sizes, sort directories first,
+;;   and handle automatic updates when files change on disk.
+;;
 
+(use-package dired
+  :ensure 
+  :defer t
+  :custom
+  ;; Behavior & Performance
+  (dired-auto-revert-buffer t)
+  (dired-dwim-target t)                                    ; Guess target directory if 2 dired buffers are open
+  (dired-kill-when-opening-new-dired-buffer t)             ; Keep buffer list clean (Emacs 28+)
+
+  ;; Visuals & Sorting
+  (dired-listing-switches "-alh --group-directories-first")
+  (dired-hide-details-hide-absolute-location t)            ; Clean header (Emacs 31+)
+  (image-dired-dir pathogen-cache-directory)
+
+  ;; Wdired (Writable Dired - integrated settings)
+  (wdired-allow-to-change-permissions t)
+  (wdired-create-parent-directories t)
+
+  :config
+  ;; Enable Dired-X features (like omitting files)
+  (use-package dired-x
+    :ensure nil
+    :custom
+    ;; Hide dotfiles but preserve navigation to `.` and `..`
+    (dired-omit-files "^\\.?#\\|^\\.[^.]"))
+
+  ;; Automatically enable omitting when opening Dired (C-x M-o)
+  :hook (dired-mode . dired-omit-mode))
 
 (provide 'pathogen-core)
 ;;; pathogen-core.el ends here
