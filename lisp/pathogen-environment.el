@@ -40,6 +40,17 @@
   :group 'convenience
   :prefix "pathogen-")
 
+(defconst pathogen-min-emacs-version
+  "27.2"
+  "Minimum emacs version required for a proper loading of the configuration.
+
+This is the lowest version tested.")
+
+(defcustom pathogen-days-between-package-manager-cache-updates
+  2
+  "Days to keep package manager cache."
+  :group 'pathogen)
+
 (defcustom pathogen-cache-directory
   (expand-file-name "cache/" user-emacs-directory)
   "Base directory for Emacs cache files."
@@ -50,4 +61,9 @@
          (unless (file-directory-p value)
            (make-directory value t)))) ; Automatic creation of directory
 
+(customize-set-variable
+ 'custom-file
+ (expand-file-name ".pathogen.el" (getenv "HOME")))
+
 (provide 'pathogen-environment)
+;;; pathogen-environment.el ends here

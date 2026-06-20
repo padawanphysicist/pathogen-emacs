@@ -32,7 +32,23 @@
 
 ;;; Code:
 
-;; (require 'pathogen-bootstrap)
+;; Ensure the early init file is always loaded
+(when (version< emacs-version "27.1")
+  (load
+   (expand-file-name "early-init.el" user-emacs-directory)))
+
+;; Check minimum version for proper loading of this config:
+(when (version< emacs-version pathogen-min-emacs-version)
+  (display-warning
+   'pathogen
+   (format "
+Minimum required version: %s
+Current version: %s"
+	   pathogen-min-emacs-version
+	   emacs-version)
+   :warning))
+
+(require 'pathogen-package-manager)
 
 ;; (pathogen--load-config)
 
