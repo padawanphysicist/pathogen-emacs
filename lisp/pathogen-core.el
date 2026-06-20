@@ -109,7 +109,6 @@
   :ensure nil
   :demand t)
 
-
 (use-package saveplace
   :ensure nil
   :init
@@ -118,9 +117,7 @@
 (use-package icomplete
   :ensure nil
   :config
-  (fido-mode 1)  
-  (when (version<= "28.1" emacs-version)
-    (fido-vertical-mode 1)))
+  (fido-mode 1))
 
 (use-package ibuffer
   :ensure nil
@@ -225,9 +222,7 @@
     "C-x" "extra-commands"
     "M-g" "goto-map"
     "M-s h" "search-highlight"
-    "M-s" "search-map")
-  ;; (which-key-mode 1)
-  )
+    "M-s" "search-map"))
 
 ;;;; Dired (Directory Editor)
 ;;
