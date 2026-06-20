@@ -1,12 +1,28 @@
-;;; early-init.el --- Early initialization file -*- no-byte-compile: t; lexical-binding: t; fill-column: 79; -*-
-;;
-;; Copyright (C) 2021 Victor Santos
-;;
+;;; early-init.el --- Early initialization file -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2021-2026 Victor Santos
+
 ;; Author: Victor Santos <victor_santos@fisica.ufc.br>
-;; Package-Requires: ((emacs 27))
-;;
+;; Package-Requires: ((emacs "27.2"))
+;; Keywords: config
+;; SPDX-License-Identifier: GPL-3.0-or-later
+;; URL: https://codeberg.org/padawanphysicist/pathogen-emacs
+
 ;; This file is not part of GNU Emacs.
-;;
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 ;;; Commentary:
 ;;
 ;; This file is loaded very early in the startup process, before the package
@@ -16,15 +32,13 @@
 ;; For most customizations, especially those related to GUI features, use the
 ;; regular init.el file instead.
 ;;
-;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html
-;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html
+;; Reference (emacs info):
+;;   (emacs)Top > Customization > Init File > Early Init File
 
 ;;; Code:
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Defer package initialization
-;;
-;;
+;;;; Defer package initialization
+
 ;; Prior to Emacs 27, the init file was responsible for initializing the
 ;; package manager by explicitly calling `package-initialize'. Starting with
 ;; Emacs 27, the default behavior changed: `package-initialize' is now
@@ -34,38 +48,11 @@
 ;; automatically, we set `package-enable-at-startup' to nil:
 (setq package-enable-at-startup nil)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Warning level configuration
-;;
-;;
-;; Set to :error instead of :emergency to avoid suppressing important warnings
-;; about configuration issues, deprecated functions, or package loading errors.
-;; This still prevents minor warnings from interrupting startup while keeping
-;; you informed about actual problems.
-;;
-;; Warning levels (least to most severe):
-;;   :debug < :info < :warning < :error < :emergency
-;;
-;; - :emergency suppresses almost everything (previous setting)
-;; - :error shows errors but hides routine warnings (current setting)
-;; - :warning shows all warnings (Emacs default, can be noisy)
-(setq warning-minimum-level :error)
+;;;; Add Pathogen directories to `load-path'
 
+(let ((default-directory (expand-file-name "pathogen/" user-emacs-directory)))
+  (add-to-list 'load-path default-directory)
+  (normal-top-level-add-subdirs-to-load-path))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Add Pathogen directories to `load-path'
-;;
-(defun add-to-load-path (path)
-  "Add PATH to `load-path` if it exists.
-If PATH does not exist, emit a warning."
-  (let ((expanded-path (expand-file-name path)))
-    (if (file-directory-p expanded-path)
-        (add-to-list 'load-path expanded-path)
-      (display-warning
-       'pathogen
-       (format "⛔ Directory does not exist; could not add to load-path: %s" expanded-path)
-       :warning))))
-
-(add-to-load-path (expand-file-name "pathogen" (file-name-directory load-file-name)))
-
+(provide 'early-init)
 ;;; early-init.el ends here
