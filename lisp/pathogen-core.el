@@ -48,6 +48,7 @@
   :ensure nil
   :config
   (fido-mode 1)
+  (fido-vertical-mode 1)
   (when (version<= "28.1" emacs-version)
     (icomplete-vertical-mode 1)))
 
@@ -173,7 +174,7 @@
 ;;
 
 (use-package dired
-  :ensure 
+  :ensure nil
   :defer t
   :custom
   ;; Behavior & Performance
