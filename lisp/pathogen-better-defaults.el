@@ -38,12 +38,62 @@
 ;;; Standardizing defaults
 (use-package emacs
   :ensure nil
-  :config
+  :custom
   ;; UI: Cleanup visual clutter
   ;; (menu-bar-mode -1)
   ;; (tool-bar-mode -1)
   ;; (scroll-bar-mode -1)
-  (column-number-mode t)
+  ;;(column-number-mode t)
+
+    ;; --- Visuals & Cursor ---
+  (x-stretch-cursor nil)                      ; Do not stretch cursor to fit wide characters
+  ;; Set indicators for wrapped lines in the fringe margins
+  (visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
+  ;; --- Mouse & Keyboard Scrolling ---
+  ;; Ensure the mouse wheel scrolls the window directly underneath the pointer
+  (mouse-wheel-follow-mouse t)
+  ;; Scroll exactly 1 line at a time to prevent jarring page jumps
+  (mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+  ;; Horizontal scrolling increment
+  (mouse-wheel-scroll-amount-horizontal 2)
+  ;; Disable progressive speed (prevents acceleration based on scroll velocity)
+  (mouse-wheel-progressive-speed nil)
+  ;; Keyboard scrolling step increment (1 line at a time)
+  (scroll-step 1)
+  ;; Prevent sudden view recentering when the cursor moves past window edges
+  (scroll-conservatively 101)
+  (scroll-margin 0)
+  ;; Keep the cursor at the same screen position when page-scrolling
+  (scroll-preserve-screen-position t)
+
+  (project-list-file (expand-file-name "project" pathogen-cache-directory))
+
+  ;; --- Interface & Minibuffer ---
+  (column-number-mode t)                      ; Show column number in the mode-line
+  (use-short-answers t)                       ; Use short "y/n" answers instead of "yes/no"
+  (context-menu-mode t)                       ; Enable right-click context menu
+  (enable-recursive-minibuffers t)            ; Allow opening a minibuffer within another minibuffer
+  ;; Hide commands that do not work in the current major mode from `M-x'
+  (read-extended-command-predicate #'command-completion-default-include-p)
+  (use-dialog-box nil)                        ; Avoid graphical GUI dialog boxes
+  (echo-keystrokes 0.02)                      ; Show current key sequence in minibuffer immediately
+  (resize-mini-windows nil)                   ; Keep the echo/minibuffer area at a fixed height
+     ;; --- Backup & Auto-Save ---
+  ;; Activate standard auto-save safety mechanism
+  (auto-save-default t)
+
+  ;; Save the buffer directly upon 5 seconds of inactivity
+  (auto-save-visited-mode 1)
+  (auto-save-visited-interval 5)
+
+  ;; Centralize all auto-save (#file#) files into the custom cache directory
+  (auto-save-file-name-transforms `((".*" ,pathogen-cache-directory t)))
+
+  ;; Centralize all backup (file~) files into the custom cache directory
+  (backup-directory-alist `((".*" . ,pathogen-cache-directory)))
+
+  :config
 
   ;; Editing: Modern habits
   (setq-default indent-tabs-mode nil)
@@ -56,10 +106,7 @@
   (setq select-enable-clipboard t
         mouse-yank-at-point t)
 
-  ;; Files: Redirect backups and enable auto-revert
-  (let ((backup-dir (expand-file-name "backups/" pathogen-cache-directory)))
-    (setq backup-directory-alist `(("." . ,backup-dir))
-          auto-save-file-name-transforms `((".*" ,backup-dir t))))
+
   (global-auto-revert-mode t))
 
 (provide 'pathogen-better-defaults)

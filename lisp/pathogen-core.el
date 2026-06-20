@@ -29,15 +29,86 @@
 ;;; Code
 
 ;;;; Built-in package configuration
+
+;;;; Minibuffer & Command History Persistence (Savehist)
+;;
+;; `savehist' is a built-in feature that provides Emacs with a long-term memory.
+;; It persists your minibuffer history, search inputs, and complex variables
+;; across sessions, ensuring you never lose your command context when restarting.
+;;
+;; Key features enabled below:
+;; - Persistence: Saves all historical data into the Emacs directory.
+;; - Auto-save: Periodically flushes history to disk every 5 minutes to prevent
+;;   data loss during sudden closures.
+;; - Extended Context: Beyond basic commands, it explicitly backs up crucial
+;;   global states including the `kill-ring' (clipboard history), registers,
+;;   markers, and search rings (both standard and regex).
+
 (use-package savehist
   :ensure nil
-  :init (savehist-mode 1))
+  :custom
+  (savehist-file (expand-file-name "savehist" pathogen-cache-directory))
+  (savehist-save-minibuffer-history t)
+  ;; Automatically save at each 5min
+  (savehist-autosave-interval 300)
+  (savehist-additional-variables
+   '(kill-ring
+     register-alist
+     mark-ring global-mark-ring
+     search-ring regexp-search-ring))
+  :init
+  (savehist-mode 1))
+
+;;;; Recent Files History (Recentf)
+;;
+;; `recentf' is a built-in minor mode that maintains a persistent history of
+;; recently opened files across Emacs sessions. It acts as an editing dashboard,
+;; allowing you to quickly jump back into past workflows.
+;;
+;; Key features enabled below:
+;; - Persistence: Saves your recent file list directly into the Emacs directory.
+;; - Capacity: Increases the tracked history limit to 50 items for both menus
+;;   and saved lists.
+;; - Idle Cleanup: Automatically prunes non-existent or deleted files from the
+;;   history after 10 minutes of inactivity to keep the list clean.
+;; - Fast Access: Binds `C-x C-r' to provide an instant interface for searching
+;;   and reopening your recent files.
 
 (use-package recentf
-  :config
+  :ensure nil
+  :custom
+  (recentf-save-file (expand-file-name "recentf" pathogen-cache-directory))
+  (recentf-max-menu-items 50)
+  (recentf-max-saved-items 50)
+  ;; Automatic file cleaning after 10min inactivity
+  (recentf-auto-cleanup 600)
+  :init
   (recentf-mode 1)
   :bind
-  ("C-x C-r" . recentf-open-files))
+  ("C-x C-r" . recentf))
+
+;;;; Window Layout History & Undo/Redo (Winner Mode)
+;;
+;; `winner' is a built-in global minor mode that records changes in the window
+;; configurations (how your screen is split). It allows you to "undo" and
+;; "redo" window layouts seamlessly if a package or command accidentally
+;; disrupts your preferred workspace setup.
+;;
+;; Default Keybindings:
+;; - `C-c <left>'  : Undo the last window change (restore previous layout).
+;; - `C-c <right>' : Redo the window change (go forward in layout history).
+
+(use-package winner
+  :ensure nil
+  :config
+  (winner-mode 1))
+
+;;;; project.el
+
+(use-package project
+  :ensure nil
+  :demand t)
+
 
 (use-package saveplace
   :ensure nil
