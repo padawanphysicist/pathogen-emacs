@@ -1,0 +1,60 @@
+;;; init.el --- Main customization file -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2021  Victor Santos
+
+;; Author: Victor Santos <victor_santos@fisica.ufc.br>
+;; URL: https://codeberg.org/padawanphysicist/pathogen-emacs
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; Code that you want to execute when you start Emacs.
+
+;;; Code:
+
+;; Ensure the early init file is always loaded
+(when (version< emacs-version "27.1")
+  (load
+   (expand-file-name "early-init.el" user-emacs-directory)))
+
+(when (version< emacs-version pathogen-min-emacs-version)
+  (display-warning
+   'pathogen
+   (format "
+Min emacs version: %s
+Emacs version: %s"
+    pathogen-min-emacs-version
+    emacs-version)
+   :warning))
+
+;;; Core configuration
+(require 'package-manager)
+(require 'better-defaults)
+(require 'compleseus)
+
+
+(require 'emacs-lisp-settings)
+(require 'org-mode-settings)
+
+;;;; Load local custom configuration
+(if (file-exists-p pathogen-custom-file)
+    (load pathogen-custom-file)
+  (display-warning
+   'pathogen
+   (format "File %s does not exist" pathogen-custom-file)
+   :warning))
+
+(provide 'init)
+;;; init.el ends here

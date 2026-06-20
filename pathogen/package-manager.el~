@@ -1,0 +1,62 @@
+;;; package-manager.el --- Setup package manager system -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2026  Victor Santos
+
+;; Author: Victor Santos <victor_santos@fisica.ufc.br>
+;; URL: https://codeberg.org/padawanphysicist/pathogen-emacs
+;; Package-Requires: ((emacs "27.1"))
+
+;;; License:
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; Initialize the built-in package system and configure the MELPA repository for
+;; Emacs 24.1 and above. To optmize startup, we first activate installed
+;; packages using the version-appropriate method (`package-activate-all' for
+;; Emacs 27+ or `package-initialize' for older versions). We then load the local
+;; cache from disk; if no local archive metadata is found (e.g., on a fresh
+;; installation), a network refresh is automatically triggered.
+
+;;; Code:
+
+(require 'environment)
+
+(when (version<= "26.3" emacs-version)
+  (require 'package)
+  (setq package-check-signature nil)
+  (package-initialize))
+
+
+
+;; Refresh package contents periodically (e.g., every 2 days)
+(let* ((archive-dir (expand-file-name "elpa/archives/gnu/archive-contents" user-emacs-directory))
+       (days-between-updates pathogen-days-between-package-manager-cache-updates)
+       (seconds-between-updates (* days-between-updates 24 60 60)))
+
+  (if (or (not package-archive-contents) ; if no cache
+	  (not (file-exists-p archive-dir)) ; if there is no file
+	  (> (float-time (time-since (file-attribute-modification-time (file-attributes archive-dir))))
+	     seconds-between-updates)) ; if file is older than interval
+      (progn
+	(message "ELPA cache is deprecated. Updating index...")
+	(package-refresh-contents))
+        (message "ELPA cache is up-to-date (< %d days)." days-between-updates)))
+
+;; Activate packages according the installed emacs version
+(if (version<= "27.1" emacs-version)
+    (package-activate-all))
+
+(provide 'package-manager)

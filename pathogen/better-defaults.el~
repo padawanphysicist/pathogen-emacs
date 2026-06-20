@@ -1,0 +1,14 @@
+
+(use-package recentf
+  :config
+  (recentf-mode 1)
+  :custom
+  ("C-x C-r" . recentf-open-files))
+
+(use-package emacs
+  :config
+  ;; Answer questions with y or n instead of yes or no
+  (fset 'yes-or-no-p #'y-or-n-p))
+
+
+(provide 'better-defaults)
