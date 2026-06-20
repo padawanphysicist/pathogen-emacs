@@ -50,8 +50,16 @@ Current version: %s"
 
 (require 'pathogen-package-manager)
 (require 'pathogen-better-defaults)
+(require 'pathogen-core)
 
-;; (pathogen--load-config)
+;;;; Load local custom configuration
+
+(if (file-exists-p custom-file)
+    (load custom-file)
+  (display-warning
+   'pathogen
+   (format "File %s does not exist" custom-file)
+   :warning))
 
 (provide 'init)
 ;;; init.el ends here
