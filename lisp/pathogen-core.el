@@ -155,7 +155,8 @@
     "M-g" "goto-map"
     "M-s h" "search-highlight"
     "M-s" "search-map")
-  (which-key-mode 1))
+  ;; (which-key-mode 1)
+  )
 
 ;;;; Dired (Directory Editor)
 ;;
@@ -200,6 +201,32 @@
 
   ;; Automatically enable omitting when opening Dired (C-x M-o)
   :hook (dired-mode . dired-omit-mode))
+
+;;;; Syntax Delineation & Auto-Pairing (Electric & Paren)
+;;
+;; This section manages the automatic pairing and visual highlighting of
+;; structural delimiters (parentheses, brackets, braces, and quotes).
+;;
+;; Packages configured:
+;; - `electric-pair': Automatically inserts matching closing delimiters as you
+;;   type, keeping code structures balanced without manual repetition.
+;; - `paren' (`show-paren-mode'): Instantly highlights the matching counterpart
+;;   of the delimiter under the cursor. It includes offscreen context support
+;;   to show matching headers when the opening pair is out of view.
+
+(use-package electric-pair
+  :ensure nil
+  :defer
+  :hook (after-init-hook . electric-pair-mode))
+
+(use-package paren
+  :ensure nil
+  :hook (after-init-hook . show-paren-mode)
+  :custom
+  (show-paren-delay 0)
+  (show-paren-style 'mixed)
+  (show-paren-context-when-offscreen t))
+
 
 (provide 'pathogen-core)
 ;;; pathogen-core.el ends here
