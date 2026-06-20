@@ -49,6 +49,7 @@ Current version: %s"
    :warning))
 
 (require 'pathogen-package-manager)
+(require 'pathogen-better-defaults)
 
 ;; (pathogen--load-config)
 
