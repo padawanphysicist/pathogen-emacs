@@ -47,10 +47,9 @@
 (use-package icomplete
   :ensure nil
   :config
-  (fido-mode 1)
-  (fido-vertical-mode 1)
+  (fido-mode 1)  
   (when (version<= "28.1" emacs-version)
-    (icomplete-vertical-mode 1)))
+    (fido-vertical-mode 1)))
 
 (use-package ibuffer
   :ensure nil
