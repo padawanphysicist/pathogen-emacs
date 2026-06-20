@@ -28,10 +28,22 @@
 
 ;;; Code
 
-;;; Built-in package configuration
-(use-package savehist  :ensure nil :init (savehist-mode 1))
-(use-package recentf   :ensure nil :init (recentf-mode 1))
-(use-package saveplace :ensure nil :init (save-place-mode 1))
+;;;; Built-in package configuration
+(use-package savehist
+  :ensure nil
+  :init (savehist-mode 1))
+
+(use-package recentf
+  :config
+  (recentf-mode 1)
+  :bind
+  ("C-x C-r" . recentf-open-files))
+
+(use-package saveplace
+  :ensure nil
+  :init
+  (save-place-mode 1))
+
 (use-package icomplete
   :ensure nil
   :config
@@ -47,6 +59,105 @@
   :ensure nil
   :config
   (setq uniquify-buffer-name-style 'forward))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Which-key
+;;
+;; https://github.com/justbur/emacs-which-key
+;;
+;; One of the core philosophies of Emacs is discoverability; it is a famously
+;; self-documenting editor (try `C-h ?` to see this in action).
+;;
+;; However, as you enable more packages and features, keeping track of the
+;; absolute plethora of available shortcuts can become overwhelming.
+;;
+;; `which-key' is a minor mode that solves this by displaying a popup with
+;; all possible key bindings that can follow your currently entered prefix.
+;; It provides an excellent, contextual way to discover shortcuts globally.
+;;
+(use-package which-key
+  :ensure ;; `,(version<= emacs-version "30.1")
+  :defer t
+  :hook
+  (after-init-hook . which-key-mode)
+  :custom
+  (which-key-add-column-padding 2)
+  (which-key-allow-multiple-replacements t)
+  (which-key-echo-keystrokes 0.02)
+  (which-key-idle-delay 0.4)
+  (which-key-idle-secondary-delay 0.01)
+  (which-key-max-description-length 32)
+  (which-key-max-display-columns nil)
+  (which-key-min-display-lines 6)
+  (which-key-prevent-C-h-from-cycling t)
+  (which-key-sort-order 'which-key-prefix-then-key-order)
+  (which-key-sort-uppercase-first nil)
+  (which-key-special-keys nil)
+  (which-key-use-C-h-for-paging t)
+  :config
+  ;; Inspired by: https://gist.github.com/mmarshall540/a12f95ab25b1941244c759b1da24296d
+  ;;
+  ;; By default, Which-key doesn't give much help for prefix-keys. It
+  ;; either shows the generic description, "+prefix", or the name of a
+  ;; prefix-command, which usually isn't as descriptive as we'd like.
+  ;;
+  ;; Here are some descriptions for the default bindings in `global-map'
+  ;; and `org-mode-map'.
+  (which-key-add-key-based-replacements
+    "<f1> 4" "help-other-win"
+    "<f1>" "help"
+    "<f2>" "2column"
+    "C-c" "mode-and-user"
+    "C-c !" "flymake"
+    "C-c g" "git-gutter"
+    "C-h 4" "help-other-win"
+    "C-h" "help"
+    "C-x 4" "other-window"
+    "C-x 5" "other-frame"
+    "C-x 6" "2-column"
+    "C-x 8" "insert-special"
+    "C-x 8 ^" "superscript (⁰, ¹, ², …)"
+    "C-x 8 _" "subscript (₀, ₁, ₂, …)"
+    "C-x 8 a" "arrows & æ (←, →, ↔, æ)"
+    "C-x 8 e" "emojis (🫎, 🇧🇷, 🇮🇹, …)"
+    "C-x 8 *" "common symbols ( , ¡, €, …)"
+    "C-x 8 =" "macron (Ā, Ē, Ḡ, …)"
+    "C-x 8 N" "macron (№)"
+    "C-x 8 O" "macron (œ)"
+    "C-x 8 ~" "tilde (~, ã, …)"
+    "C-x 8 /" "stroke (÷, ≠, ø, …)"
+    "C-x 8 ." "dot (·, ż)"
+    "C-x 8 ," "cedilla (¸, ç, ą, …)"
+    "C-x 8 '" "acute (á, é, í, …)"
+    "C-x 8 `" "grave (à, è, ì, …)"
+    "C-x 8 \"" "quotation/dieresis (\", ë, ß, …)"
+    "C-x 8 1" "†, 1/…"
+    "C-x 8 2" "‡"
+    "C-x 8 3" "3/…"
+    "C-x C-k C-q" "kmacro-counters"
+    "C-x C-k C-r a" "kmacro-add"
+    "C-x C-k C-r" "kmacro-register"
+    "C-x C-k" "keyboard-macros"
+    "C-x RET" "encoding/input"
+    "C-x a i" "abbrevs-inverse-add"
+    "C-x a" "abbrevs"
+    "C-x n" "narrowing"
+    "C-x p" "projects"
+    "C-x r" "reg/rect/bkmks"
+    "C-x t ^" "tab-bar-detach"
+    "C-x t" "tab-bar"
+    "C-x v M" "vc-mergebase"
+    "C-x v b" "vc-branch"
+    "C-x v" "version-control"
+    "C-x w ^" "window-detach"
+    "C-x w" "window-extras"
+    "C-x x" "buffer-extras"
+    "C-x" "extra-commands"
+    "M-g" "goto-map"
+    "M-s h" "search-highlight"
+    "M-s" "search-map")
+  (which-key-mode 1))
+
 
 
 (provide 'pathogen-core)
