@@ -114,10 +114,6 @@
   :init
   (save-place-mode 1))
 
-(use-package icomplete
-  :ensure nil
-  :config
-  (fido-mode 1))
 
 (use-package ibuffer
   :ensure nil
@@ -292,6 +288,11 @@
   (show-paren-delay 0)
   (show-paren-style 'mixed)
   (show-paren-context-when-offscreen t))
+
+(use-package pathogen-goto-line-numbers
+  :load-path "utils/"
+  :config
+  (pathogen-goto-line-numbers-mode))
 
 
 (provide 'pathogen-core)

@@ -106,7 +106,6 @@
   (setq select-enable-clipboard t
         mouse-yank-at-point t)
 
-
   (global-auto-revert-mode t))
 
 (provide 'pathogen-better-defaults)

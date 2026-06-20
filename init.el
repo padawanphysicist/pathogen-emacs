@@ -48,9 +48,15 @@ Current version: %s"
 	   emacs-version)
    :warning))
 
+;;;; Core features
 (require 'pathogen-package-manager)
 (require 'pathogen-better-defaults)
 (require 'pathogen-core)
+
+(require 'pathogen-completion)
+
+;;;; Programming
+;;(require 'pathogen-emacs-lisp)
 
 ;;;; Load local custom configuration
 
