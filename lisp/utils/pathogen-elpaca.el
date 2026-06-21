@@ -25,7 +25,7 @@
 
 ;;; Code:
 
-(defvar elpaca-installer-version 0.12)
+(defvar elpaca-installer-version (if (version<= "28.1" emacs-version) 0.12 0.11))
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-sources-directory (expand-file-name "sources/" elpaca-directory))
