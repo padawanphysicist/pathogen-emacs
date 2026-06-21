@@ -53,6 +53,7 @@ Current version: %s"
 (require 'pathogen-better-defaults)
 (require 'pathogen-core)
 
+(require 'pathogen-ui)
 (require 'pathogen-completion)
 
 ;;;; Programming

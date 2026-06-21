@@ -25,68 +25,14 @@
 
 ;;; Commentary:
 ;;
-;; Initialize the built-in package system and configure the MELPA repository for
-;; Emacs 24.1 and above. To optimize startup, we first activate installed
-;; packages using the version-appropriate method (`package-activate-all' for
-;; Emacs 27+ or `package-initialize' for older versions). We then load the local
-;; cache from disk; if no local archive metadata is found (e.g., on a fresh
-;; installation), a network refresh is automatically triggered.
+;; Configure package manager system.
 
-;;; Code
+;;; Code:
 
-(when (version<= "26.3" emacs-version)
-  (require 'package)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  (package-initialize))
-
-;; Refresh package contents periodically (e.g., every 2 days)
-(let* ((archive-dir (expand-file-name "elpa/archives/melpa/archive-contents" user-emacs-directory))
-       (days-between-updates pathogen-days-between-package-manager-cache-updates)
-       (seconds-between-updates (* days-between-updates 24 60 60)))
-
-  (if (or (not package-archive-contents) ; if no cache
-          (not (file-exists-p archive-dir)) ; if there is no file
-          (> (float-time (time-since (file-attribute-modification-time (file-attributes archive-dir))))
-             seconds-between-updates)) ; if file is older than interval
-      (progn
-        (message "MELPA cache is deprecated. Updating index...")
-        (package-refresh-contents))
-    (message "MELPA cache is up-to-date (< %d days)." days-between-updates)))
-
-;; Activate packages according the installed emacs version
 (if (version<= "27.1" emacs-version)
-    (package-activate-all))
-
-;; Declarative Package Management (use-package)
-
-;; Configure `use-package' to enable clean, declarative package isolation.
-;; Since `use-package' is built-in starting with Emacs 29.1, we conditionally
-;; install it from downstream repositories only when running on older Emacs
-;; versions. Additionally, `use-package-always-ensure' is enabled globally to
-;; automatically fetch and install missing packages during startup without
-;; requiring explicit `:ensure t' keywords in every declaration.
-
-;; Install use-package if it's not already there
-(when (version< emacs-version "29.1")
-  (unless (package-installed-p 'use-package)
-    (condition-case nil
-        (package-install 'use-package)
-      (error
-       (message "Failed upon installing use-package. Updating MELPA index...")
-       (package-refresh-contents)
-       (package-install 'use-package)))))
-
-;; Activates use-package
-(require 'use-package)
-(setq use-package-always-ensure t)
-
-;; If any package declared with `use-package' fails to install, this hook forces
-;; an update of MELPA and attempts to install again automatically.
-(add-hook 'use-package-ensure-failed-hook
-          (lambda (package error)
-            (message "Failed installing %s due to: %s. Trying to update MELPA..." package error)
-            (package-refresh-contents)
-            (package-install package)))
+    (require 'pathogen-elpaca)
+  (require 'pathogen-package))
 
 (provide 'pathogen-package-manager)
 ;;; pathogen-package-manager.el ends here
+

@@ -187,34 +187,34 @@
          ("C-c i" . consult-info)
          ([remap Info-search] . consult-info)
          ([f9] . consult-theme)
-         
+
          ;; Global Control Navigation Map (C-x)
-         ("C-x C-r" . consult-recent-file)                
-         ("C-x M-:" . consult-complex-command)     
-         ("C-x b" . consult-buffer)                
-         ("C-x 4 b" . consult-buffer-other-window) 
-         ("C-x 5 b" . consult-buffer-other-frame)  
-         ("C-x t b" . consult-buffer-other-tab)    
-         ("C-x r b" . consult-bookmark)            
-         
+         ("C-x C-r" . consult-recent-file)
+         ("C-x M-:" . consult-complex-command)
+         ("C-x b" . consult-buffer)
+         ("C-x 4 b" . consult-buffer-other-window)
+         ("C-x 5 b" . consult-buffer-other-frame)
+         ("C-x t b" . consult-buffer-other-tab)
+         ("C-x r b" . consult-bookmark)
+
          ;; Registers and Editing (M-# / M-y)
          ("M-#" . consult-register-load)
-         ("M-'" . consult-register-store)          
+         ("M-'" . consult-register-store)
          ("C-M-#" . consult-register)
-         ("M-y" . consult-yank-pop)                
-         
+         ("M-y" . consult-yank-pop)
+
          ;; Code Navigation Map (M-g)
          ("M-g e" . consult-compile-error)
          ("M-g r" . consult-grep-match)
-         ("M-g f" . consult-flymake)                
-         ("M-g o" . consult-outline)                
+         ("M-g f" . consult-flymake)
+         ("M-g o" . consult-outline)
          ("M-g m" . consult-mark)
          ("M-g k" . consult-global-mark)
          ("M-g i" . consult-imenu)
          ("M-g I" . consult-imenu-multi)
-         
+
          ;; Asynchronous System Search Map (M-s)
-         ("M-s d" . consult-find)                  
+         ("M-s d" . consult-find)
          ("M-s c" . consult-locate)
          ("M-s g" . consult-grep)
          ("M-s G" . consult-git-grep)
@@ -223,18 +223,18 @@
          ("M-s L" . consult-line-multi)
          ("M-s k" . consult-keep-lines)
          ("M-s u" . consult-focus-lines)
-         
+
          ;; Optimized Isearch Hijack
          ("M-s e" . consult-isearch-history)
          :map isearch-mode-map
-         ("M-e" . consult-isearch-history)         
-         ("M-s e" . consult-isearch-history)       
-         ("M-s l" . consult-line)                  
-         ("M-s L" . consult-line-multi)            
-         
+         ("M-e" . consult-isearch-history)
+         ("M-s e" . consult-isearch-history)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+
          ;; Live Minibuffer History Scrolling
          :map minibuffer-local-map
-         ("M-s" . consult-history)                 
+         ("M-s" . consult-history)
          ("M-r" . consult-history))
   :init
   ;; Improvement: Use the "<" character for rapid category narrowing (e.g. within buffers)
