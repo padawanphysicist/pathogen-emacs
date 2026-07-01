@@ -75,16 +75,15 @@
 
 (use-package emacs
   :config
-(defun pathogen/shell-pop ()
-  (interactive)
-  ;; (split-window-below &optional SIZE WINDOW-TO-SPLIT)
-  (split-window-below) ;; 1. Cria nova janela abaixo
-  (other-window 1) ;; 2. vai para a outra janela
-  (eat)
-  (shrink-window 10))
-:bind
-("C-c t" . pathogen/shell-pop)
-)
+  (defun pathogen/shell-pop ()
+    (interactive)
+    ;; (split-window-below &optional SIZE WINDOW-TO-SPLIT)
+    (split-window-below) ;; 1. Cria nova janela abaixo
+    (other-window 1) ;; 2. vai para a outra janela
+    (eat)
+    (shrink-window 10))
+  :bind
+  ("C-c t" . pathogen/shell-pop))
 ;; (use-package shell-pop
 ;;   :ensure t
 ;;   :bind (("C-c t" . shell-pop))

@@ -24,9 +24,7 @@
   (google-translate-translation-directions-alist
    '(("pt-br" . "en") ("en" . "pt-br")))
   :config
-  (require 'google-translate-smooth-ui)
-  :bind
-  ("C-c g" . google-translate-smooth-translate))
+  (require 'google-translate-smooth-ui))
 
 (use-package olivetti
   :ensure t
