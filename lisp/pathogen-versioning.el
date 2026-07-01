@@ -1,4 +1,4 @@
-;;; pathogen-completion.el --- Setup completion system -*- lexical-binding: t; -*-
+;;; pathogen-versioning.el --- Version Control Configuration -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2026 Victor Santos
 
@@ -23,18 +23,16 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-;;; Commentary:
-;;
-;; Configure completion system. For Emacs 29+ builds the ICR framework described in
-;; - https://www.chiply.dev/post-vompeccc#vompeccc-framework
+;;; Code
 
-;;; Code:
+;; Transient: Required dependency for Magit to prevent version mismatches
+(use-package transient
+  :ensure t)
 
-(if (version<= "29" emacs-version)
-    (require 'pathogen-icr-vompeccc)
-  (require 'pathogen-icr-builtin))
+;; Magit: A spectacular Git interface for Emacs
+(use-package magit
+  :ensure t
+  :bind ("C-x g" . magit-status))
 
-(require 'pathogen-avy)
-
-(provide 'pathogen-completion)
-;;; pathogen-completion.el ends here
+(provide 'pathogen-versioning)
+;;; pathogen-versioning.el ends here

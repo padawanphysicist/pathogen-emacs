@@ -38,10 +38,10 @@
 ;;  (display-fill-column-indicator-mode 1)
 ;;  (setq fill-column 70))
 ;;
-;;(use-package emacs
-;;  :ensure nil
-;;  :hook
-;;  (emacs-lisp-mode . #'pathogen-elisp-mode-hook))
+(use-package emacs
+ :ensure nil
+ :hook
+ (emacs-lisp-mode . outline-minor-mode))
 
 (provide 'pathogen-emacs-lisp)
 ;;; pathogen-emacs-lisp.el ends here

@@ -97,7 +97,7 @@
 
   ;; Editing: Modern habits
   (setq-default indent-tabs-mode nil)
-  (setq-default show-trailing-whitespace t)
+  ;; (setq-default show-trailing-whitespace t)
   (delete-selection-mode 1)
   (show-paren-mode 1)
   (fset 'yes-or-no-p #'y-or-n-p)

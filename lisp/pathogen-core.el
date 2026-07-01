@@ -111,6 +111,8 @@
 
 (use-package saveplace
   :ensure nil
+  :custom
+  (save-place-file (expand-file-name "places" pathogen-cache-directory))
   :init
   (save-place-mode 1))
 
@@ -294,6 +296,8 @@
   :config
   (pathogen-goto-line-numbers-mode))
 
+(use-package pathogen-dired
+  :load-path "utils/")
 
 (provide 'pathogen-core)
 ;;; pathogen-core.el ends here

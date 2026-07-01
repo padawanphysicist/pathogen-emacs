@@ -25,7 +25,7 @@
 
 ;;; Code:
 
-(defvar elpaca-installer-version (if (version<= "28.1" emacs-version) 0.12 0.11))
+(defvar elpaca-installer-version 0.12)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-sources-directory (expand-file-name "sources/" elpaca-directory))
@@ -63,6 +63,20 @@
     (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
+
+(defun +elpaca-safe-close-log-buffer ()
+  "Fecha a janela do buffer de log do Elpaca após um curto intervalo."
+  (when-let ((buf (get-buffer "*elpaca-log*"))
+             (win (get-buffer-window buf)))
+    ;; Fecha a janela sem interferir no processamento do Elpaca
+    (quit-window nil win)))
+
+(defun +elpaca-queue-finished-callback (&rest _)
+  "Agenda o fechamento do log após o processamento da fila."
+  (run-with-timer 2 nil #'+elpaca-safe-close-log-buffer))
+
+;; O hook `elpaca-post-queue-hook' é o ponto de entrada correto
+(add-hook 'elpaca-post-queue-hook #'+elpaca-queue-finished-callback)
 
 ;; Install use-package support
 (elpaca elpaca-use-package

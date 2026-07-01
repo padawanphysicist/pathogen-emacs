@@ -54,13 +54,18 @@ Current version: %s"
 (require 'pathogen-core)
 
 (require 'pathogen-ui)
+(require 'pathogen-window-management)
 (require 'pathogen-completion)
+(require 'pathogen-versioning)
+(require 'pathogen-terminal)
+(require 'pathogen-writing)
+(require 'pathogen-editing)
 
-;;;; Programming
-;;(require 'pathogen-emacs-lisp)
+;;;; Markup & Programming
+(require 'pathogen-markup)
+(require 'pathogen-programming)
 
 ;;;; Load local custom configuration
-
 (if (file-exists-p custom-file)
     (load custom-file)
   (display-warning
