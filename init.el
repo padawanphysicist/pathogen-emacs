@@ -32,46 +32,55 @@
 
 ;;; Code:
 
+(defconst pathogen-min-emacs-version "27.1"
+  "Versão mínima do Emacs necessária para carregar as configurações.")
+
 ;; Ensure the early init file is always loaded
 (when (version< emacs-version "27.1")
   (load
    (expand-file-name "early-init.el" user-emacs-directory)))
 
-;; Check minimum version for proper loading of this config:
 (when (version< emacs-version pathogen-min-emacs-version)
   (display-warning
    'pathogen
-   (format "
-Minimum required version: %s
-Current version: %s"
-	   pathogen-min-emacs-version
-	   emacs-version)
-   :warning))
+   (format "Configuração abortada! Versão mínima: %s (Sua versão: %s)"
+           pathogen-min-emacs-version
+           emacs-version)
+   :warning)
+  ;; Cancela a avaliação do restante do arquivo init.el
+  (top-level))
 
-;;;; Core features
-(require 'pathogen-package-manager)
-(require 'pathogen-better-defaults)
-(require 'pathogen-core)
+;; =============================================================================
+;; A partir daqui entra toda a sua configuração customizada.
+;; Se a versão for < 27.1, o Emacs nunca chegará a ler as linhas abaixo.
+;; =============================================================================
 
-(require 'pathogen-ui)
-(require 'pathogen-window-management)
-(require 'pathogen-completion)
-(require 'pathogen-versioning)
-(require 'pathogen-terminal)
-(require 'pathogen-writing)
-(require 'pathogen-editing)
+;; Core features
+(require 'setup-package-manager)
+(require 'better-defaults)
 
-;;;; Markup & Programming
-(require 'pathogen-markup)
-(require 'pathogen-programming)
+;;;; Load Pathogen core packages
+(unless (equal (getenv "PATHOGEN_DISABLE") "1")
+  (require 'improve-user-experience)
+  (require 'setup-programming-and-markup))
 
 ;;;; Load local custom configuration
+(unless (equal (getenv "PATHOGEN_DISABLE") "1")
+  (if (file-exists-p pathogen-custom-file)
+       (load pathogen-custom-file)
+     ;; (display-warning
+     ;;  'pathogen
+     ;;  (format "File %s does not exist" pathogen-custom-file)
+     ;;  :warning)
+     ))
+
 (if (file-exists-p custom-file)
     (load custom-file)
-  (display-warning
-   'pathogen
-   (format "File %s does not exist" custom-file)
-   :warning))
+  ;; (display-warning
+  ;;  'pathogen
+  ;;  (format "File %s does not exist" custom-file)
+  ;;  :warning)
+  )
 
 (provide 'init)
 ;;; init.el ends here

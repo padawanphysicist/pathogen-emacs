@@ -1,4 +1,4 @@
-;;; pathogen-package.el --- Setup package manager system -*- lexical-binding: t; -*-
+;;; setup-package.el --- Set up package.el -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2026 Victor Santos
 
@@ -88,5 +88,5 @@
             (package-refresh-contents)
             (package-install package)))
 
-(provide 'pathogen-package)
-;;; pathogen-package.el ends here
+(provide 'setup-package)
+;;; setup-package.el ends here

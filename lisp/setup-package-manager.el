@@ -1,4 +1,4 @@
-;;; pathogen-versioning.el --- Version Control Configuration -*- lexical-binding: t; -*-
+;;; setup-package-manager.el --- Setup package manager system -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2026 Victor Santos
 
@@ -23,16 +23,16 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-;;; Code
+;;; Commentary:
+;;
+;; Configure package manager system.
 
-;; Transient: Required dependency for Magit to prevent version mismatches
-(use-package transient
-  :ensure t)
+;;; Code:
 
-;; Magit: A spectacular Git interface for Emacs
-(use-package magit
-  :ensure t
-  :bind ("C-x g" . magit-status))
+(if (version<= "27.1" emacs-version)
+    (require 'setup-elpaca)
+  (require 'setup-package))
 
-(provide 'pathogen-versioning)
-;;; pathogen-versioning.el ends here
+(provide 'setup-package-manager)
+;;; setup-package-manager.el ends here
+

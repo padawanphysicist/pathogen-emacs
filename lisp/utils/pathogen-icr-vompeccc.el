@@ -131,6 +131,7 @@
   :custom
   (prescient-history-length 150)
   (prescient-save-parsed-modes t)
+  (prescient-save-file (expand-file-name "var/prescient-save.el" pathogen-cache-directory))
   :config
   ;; Persist history across Emacs sessions
   (prescient-persist-mode 1))

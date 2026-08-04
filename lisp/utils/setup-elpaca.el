@@ -1,9 +1,14 @@
-;;; pathogen-elpaca.el --- Configure elpaca package manager  -*- lexical-binding: t; -*-
+;;; setup-elpaca.el --- Set up elpaca package manager  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2026 Victor Santos
 
-;; Author:  <vct@jarvis>
-;; Keywords: c
+;; Author: Victor Santos <victor_santos@fisica.ufc.br>
+;; Package-Requires: ((emacs "27.1"))
+;; Keywords: config
+;; SPDX-License-Identifier: GPL-3.0-or-later
+;; URL: https://codeberg.org/padawanphysicist/pathogen-emacs
+
+;; This file is not part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -83,5 +88,5 @@
   ;; Enable use-package :ensure support for Elpaca.
   (elpaca-use-package-mode))
 
-(provide 'pathogen-elpaca)
-;;; pathogen-elpaca.el ends here
+(provide 'setup-elpaca)
+;;; setup-elpaca.el ends here

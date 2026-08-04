@@ -1,4 +1,4 @@
-;;; pathogen-core.el --- Pathogen core configuration  -*- lexical-binding: t; -*-
+;;; better-defaults.el --- Better defaults for Emacs -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2026 Victor Santos
 
@@ -25,8 +25,11 @@
 
 ;;; Commentary:
 ;;
+;; A collection of sensible defaults to improve Emacs ergonomics.
+;; This module avoids external dependencies, focusing on core
+;; improvements.
 
-;;; Code
+;;; Code:
 
 ;;;; Built-in package configuration
 
@@ -291,13 +294,124 @@
   (show-paren-style 'mixed)
   (show-paren-context-when-offscreen t))
 
-(use-package pathogen-goto-line-numbers
-  :load-path "utils/"
+(use-package outline
+  :ensure nil
+  :custom
+  (outline-regexp ";;;\\*+\\|\\`")
+  :hook
+  (prog-mode . outline-minor-mode)
+  :custom
+  ;; 1. Change default prefix
+  (outline-minor-mode-prefix (kbd "C-c o"))
+  ;; 2. add visual markers
+  (outline-minor-mode-use-buttons 'in-margins)
+  (outline-minor-mode-cycle t)
+  ;; (define-key outline-minor-mode-map (kbd "TAB")
+  ;;             '(menu-item "" nil :filter (lambda (&optional_)
+  ;;                                          (when (outline-on-heading-p)
+  ;;                                            'outline-cycle))))
+  )
+
+(use-package autoinsert
+  :ensure nil 
+  :init
+  ;; Evita que o Emacs pergunte se você quer inserir o template toda vez
+  (setq auto-insert-query nil)
+  (setq auto-insert-directory (locate-user-emacs-file "templates/"))
+  (add-hook 'find-file-hook 'auto-insert)
+  (auto-insert-mode 1))
+
+;;; Standardizing defaults
+(use-package emacs
+  :ensure nil
+  :custom
+  ;; UI: Cleanup visual clutter
+  ;; (menu-bar-mode -1)
+  ;; (tool-bar-mode -1)
+  ;; (scroll-bar-mode -1)
+  ;;(column-number-mode t)
+
+    ;; --- Visuals & Cursor ---
+  (x-stretch-cursor nil)                      ; Do not stretch cursor to fit wide characters
+  ;; Set indicators for wrapped lines in the fringe margins
+  (visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
+  ;; --- Mouse & Keyboard Scrolling ---
+  ;; Ensure the mouse wheel scrolls the window directly underneath the pointer
+  (mouse-wheel-follow-mouse t)
+  ;; Scroll exactly 1 line at a time to prevent jarring page jumps
+  (mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+  ;; Horizontal scrolling increment
+  (mouse-wheel-scroll-amount-horizontal 2)
+  ;; Disable progressive speed (prevents acceleration based on scroll velocity)
+  (mouse-wheel-progressive-speed nil)
+  ;; Keyboard scrolling step increment (1 line at a time)
+  (scroll-step 1)
+  ;; Prevent sudden view recentering when the cursor moves past window edges
+  (scroll-conservatively 101)
+  (scroll-margin 0)
+  ;; Keep the cursor at the same screen position when page-scrolling
+  (scroll-preserve-screen-position t)
+
+  (project-list-file (expand-file-name "project" pathogen-cache-directory))
+
+  ;; --- Interface & Minibuffer ---
+  (column-number-mode t)                      ; Show column number in the mode-line
+  (use-short-answers t)                       ; Use short "y/n" answers instead of "yes/no"
+  (context-menu-mode t)                       ; Enable right-click context menu
+  (enable-recursive-minibuffers t)            ; Allow opening a minibuffer within another minibuffer
+  ;; Hide commands that do not work in the current major mode from `M-x'
+  (read-extended-command-predicate #'command-completion-default-include-p)
+  (use-dialog-box nil)                        ; Avoid graphical GUI dialog boxes
+  (echo-keystrokes 0.02)                      ; Show current key sequence in minibuffer immediately
+  (resize-mini-windows nil)                   ; Keep the echo/minibuffer area at a fixed height
+     ;; --- Backup & Auto-Save ---
+  ;; Activate standard auto-save safety mechanism
+  (auto-save-default t)
+
+  ;; Save the buffer directly upon 5 seconds of inactivity
+  (auto-save-visited-mode 1)
+  (auto-save-visited-interval 5)
+
+  ;; Centralize all auto-save (#file#) files into the custom cache directory
+  (auto-save-file-name-transforms `((".*" ,pathogen-cache-directory t)))
+
+  ;; Centralize all backup (file~) files into the custom cache directory
+  (backup-directory-alist `((".*" . ,pathogen-cache-directory)))
+
+  (bookmark-default-file (expand-file-name "bookmarks" pathogen-cache-directory))
+  (tramp-persistency-file-name (expand-file-name "tramp" pathogen-cache-directory))
+  (eshell-aliases-file (expand-file-name "alias" pathogen-cache-directory))
+  (eshell-history-file-name (expand-file-name "history" pathogen-cache-directory))
+  (eshell-last-dir-ring-file-name (expand-file-name "lastdir" pathogen-cache-directory))
+  (multisession-directory (expand-file-name "mulsisession/" pathogen-cache-directory))
+  (url-cookie-file (expand-file-name "url/cookie" pathogen-cache-directory))
   :config
-  (pathogen-goto-line-numbers-mode))
 
-(use-package pathogen-dired
-  :load-path "utils/")
+  ;; Editing: Modern habits
+  (setq-default indent-tabs-mode nil)
+  ;; (setq-default show-trailing-whitespace t)
+  (delete-selection-mode 1)
+  (show-paren-mode 1)
+  (fset 'yes-or-no-p #'y-or-n-p)
 
-(provide 'pathogen-core)
-;;; pathogen-core.el ends here
+  ;; Clipboard & System Integration
+  (setq select-enable-clipboard t
+        mouse-yank-at-point t)
+  
+  (with-eval-after-load 'grep
+    ;; 1. Prevent rgrep from diving into the .git folder
+    (add-to-list 'grep-find-ignored-directories ".git")
+    
+    ;; 2. Prevent rgrep from showing matches inside .gitignore files
+    (add-to-list 'grep-find-ignored-files ".gitignore"))
+
+  (global-auto-revert-mode t))
+
+;; (use-package pathogen-goto-line-numbers
+;;   :load-path "utils/"
+;;   :config
+;;   (pathogen-goto-line-numbers-mode))
+
+(provide 'better-defaults)
+;;; better-defaults.el ends here
