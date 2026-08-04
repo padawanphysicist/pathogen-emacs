@@ -1,5 +1,7 @@
 #+title: Pathogen Emacs
 
+[[./logo/pathogen-emacs.png]]
+
 * Introduction
 
 I use Emacs constantly since 2010 and I really like the idea of starter kits. I've used distributions like [[https://www.spacemacs.org/][Spacemacs]] and [[https://github.com/hlissner/doom-emacs][Doom Emacs]] until I conclude that they usually make a lot assumptions that are not fit for what I need.
