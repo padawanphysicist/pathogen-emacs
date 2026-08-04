@@ -1,10 +1,13 @@
 #+title: Pathogen Emacs
 
-#+begin_center
-#+ATTR_HTML: :alt Pathogen Emacs :width 150 :align center
 #+ATTR_ORG: :width 150
+#+BEGIN_export html
+<p align="center">
+#+END_export
 [[file:./logo/pathogen-emacs.png]]
-#+end_center
+#+BEGIN_export html
+</p>
+#+END_export
 
 * Introduction
 
