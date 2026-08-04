@@ -59,7 +59,7 @@ git pull
 | File          | Purpose                         |
 |---------------+---------------------------------|
 | [[./early-init.el][early-init.el]] | Pre-initialization              |
-| [[init.el]]       | Main entry point, loads modules |
+| [[./init.el][init.el]]       | Main entry point, loads modules |
 
 ** Pathogen Modules
 
