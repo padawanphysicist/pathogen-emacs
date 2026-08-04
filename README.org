@@ -2,7 +2,7 @@
 #+html: <p align="center"><img src="./logo/pathogen-emacs.png" align="center" width="150" alt="Pathogen Emacs"></p>
 #+html: <h1 align="center">Pathogen Emacs</h1>
 #+html: <p align="center">
-#+html: <em>A modular, well-documented Emacs configuration focused on stability, simplicity, and understandability</em>
+#+html: <em>A modular Emacs configuration focused on stability, simplicity, and understandability</em>
 #+html: </p>
 
 * Introduction
