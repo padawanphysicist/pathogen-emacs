@@ -1,6 +1,4 @@
-#+title: Pathogen Emacs
-
-#+options: toc:nil title:nil
+#+options: toc:nil
 #+html: <p align="center"><img src="./logo/pathogen-emacs.png" align="center" width="150" alt="Pathogen Emacs"></p>
 #+html: <h1 align="center">Pathogen Emacs</h1>
 #+html: <p align="center">
