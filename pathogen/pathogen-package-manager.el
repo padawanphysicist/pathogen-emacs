@@ -43,6 +43,8 @@
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3") ; Evita bugs de TLS antigos no Emacs 27
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+
 ;(setq package-archives
 ;      '(("melpa" . "https://melpa.org/archives")
 ;        ("gnu"   . "https://gnu.org")

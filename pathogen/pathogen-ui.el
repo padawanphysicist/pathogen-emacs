@@ -80,78 +80,207 @@
              rotate-frame-anticlockwise))
 
 ;;;; Completion system
-(if (version<= "29" emacs-version)
-    (require 'pathogen-icr-vompeccc)
-  (require 'pathogen-icr-builtin))
+;; (if (version<= "29" emacs-version)
+;;     (require 'pathogen-icr-vompeccc)
+;;   (require 'pathogen-icr-builtin))
 
-(require 'pathogen-avy)
+;; (require 'pathogen-avy)
+
+(use-package avy
+  :ensure t
+  :bind
+  (("M-j" . avy-goto-char-timer))
+  
+  ;; :init
+  ;; (defgroup pathogen-icr-avy nil
+  ;;   "ICR action extensions for Avy."
+  ;;   :group 'avy)
+
+  :config
+
+  ;; avy-goto-line no org-mode: fix para hints em todas as linhas visíveis
+  ;;
+  ;; Problema: o org-modern marca certas linhas com a propriedade 'invisible'
+  ;; usando o valor 'org-modern (em vez de nil ou org-link, que são os únicos
+  ;; valores que avy--line aceita por padrão). Com isso, avy pulava silenciosamente
+  ;; essas linhas ao executar avy-goto-line, deixando partes do buffer sem hint.
+  ;;
+  ;; Solução: reimplementar avy--line localmente adicionando 'org-modern à lista
+  ;; de valores permitidos para a propriedade 'invisible. O restante da lógica
+  ;; é idêntico ao avy--line original (avy 0.4.0+).
+  ;; (with-eval-after-load 'avy
+  ;;   (defun my/avy-goto-line-all-visible ()
+  ;;     (interactive)
+  ;;     (avy-with avy-goto-line
+  ;;       (let (candidates)
+  ;;         (avy-dowindows nil
+  ;;           (let ((ws (window-start)))
+  ;;             (save-excursion
+  ;;               (save-restriction
+  ;;                 (narrow-to-region ws (window-end (selected-window) t))
+  ;;                 (goto-char (point-min))
+  ;;                 (while (< (point) (point-max))
+  ;;                   (when (member (get-char-property
+  ;;                                  (max (1- (point)) ws) 'invisible)
+  ;;                                 '(nil org-link org-modern)) ;; <-- adicionado
+  ;;                     (push (cons
+  ;;                            (if (eq avy-style 'post)
+  ;;                                (line-end-position)
+  ;;                              (line-beginning-position))
+  ;;                            (selected-window))
+  ;;                           candidates))
+  ;;                   (forward-line 1))))))
+  ;;         (avy-process (nreverse candidates))))))
+
+  ;;;; pre-tip: coloca o hint ANTES do conteúdo, simulando margem
+  ;;(setq avy-style 'pre)
+  ;;(setq avy-styles-alist '((avy-goto-line . pre)))
+  ;;
+  ;;;; Cores que diferenciam hint do código
+  ;;(custom-set-faces
+  ;; '(avy-lead-face   ((t (:foreground "#ff6c6b" :background "#23272e" :bold t))))
+  ;; '(avy-lead-face-0 ((t (:foreground "#98be65" :background "#23272e" :bold t)))))
+  
+  ;; (setq avy-keys '(?q ?e ?r ?y ?u ?o ?p
+  ;;                     ?a ?s ?d ?f ?g ?h ?j
+  ;;                     ?k ?l ?' ?c ?v ?b
+  ;;                     ?n ?, ?/))
+
+  ;; --- Internal Helpers ---
+
+  (defun pathogen-icr-avy--kill-line-stay (pt)
+    "Kill the entire line at PT without moving the current cursor."
+    (save-excursion
+      (goto-char pt)
+      (let ((kill-whole-line t))
+        (forward-line 0)
+        (kill-line))))
+
+  ;; --- Pathogen ICR Avy Custom Actions ---
+
+  (defun pathogen-icr-avy-action-teleport (pt)
+    "Move (teleport) the s-expression at PT to the current cursor position."
+    (avy-action-kill-stay pt)
+    (save-excursion (yank))
+    t)
+
+  (defun pathogen-icr-avy-action-teleport-line (pt)
+    "Move (teleport) the entire line at PT to the current cursor position."
+    (pathogen-icr-avy--kill-line-stay pt)
+    (save-excursion (yank))
+    t)
+
+  (defun pathogen-icr-avy-action-copy-line (pt)
+    "Copy the entire line at PT without moving the current cursor."
+    (save-excursion
+      (goto-char pt)
+      (let ((beg (line-beginning-position))
+            (end (line-end-position)))
+        (kill-new (buffer-substring-no-properties beg end))))
+    t)
+
+  (defun pathogen-icr-avy-action-embark (pt)
+    "Trigger the Embark contextual actions menu at PT without losing current focus."
+    (unwind-protect
+        (save-excursion
+          (goto-char pt)
+          (when (fboundp 'embark-act)
+            (embark-act)))
+      (when (and (boundp 'avy-ring) (not (ring-empty-p avy-ring)))
+        (select-window (cdr (ring-ref avy-ring 0)))))
+    t)
+
+  ;; --- Mapping Verbs to the Avy Dispatch Alist ---
+  (setq avy-dispatch-alist
+        `((?x . avy-action-kill-stay)
+          (?X . ,#'pathogen-icr-avy--kill-line-stay)   ; Fixed line-kill helper
+          (?w . avy-action-copy)
+          (?W . pathogen-icr-avy-action-copy-line)     ; Added safe remote line copy
+          (?t . pathogen-icr-avy-action-teleport)
+          (?T . pathogen-icr-avy-action-teleport-line) ; Fixed line-teleport helper
+          (?. . pathogen-icr-avy-action-embark))) ; Run Embark on remote target
+
+  :bind
+  ("M-g M-g" . avy-goto-line)
+  ;;("M-g M-g" . my/avy-goto-line-all-visible)
+  )
 
 ;;;; Version control
+(when (version<= "28.1" emacs-version)
 
-;; Transient: Required dependency for Magit to prevent version mismatches
-(use-package transient
-  :ensure t
-  :custom
-  (transient-levels-file (expand-file-name "transient/levels.el" pathogen-cache-directory))
-  (transient-values-file (expand-file-name "transient/values.el" pathogen-cache-directory))
-  (transient-history-file (expand-file-name "transient/history.el" pathogen-cache-directory)))
+  ;; Transient: Required dependency for Magit to prevent version mismatches
+  ;; (setq package-pinned-packages
+  ;;       '((magit . "melpa-stable")
+  ;;         (magit-section . "melpa-stable")
+  ;;         (transient . "melpa-stable")
+  ;;         (with-editor . "melpa-stable")))
 
-;; Magit: A spectacular Git interface for Emacs
-(use-package magit
-  :ensure t
-  :bind ("C-x g" . magit-status))
+  (use-package transient
+    :ensure t
+    :custom
+    (transient-levels-file (expand-file-name "transient/levels.el" pathogen-cache-directory))
+    (transient-values-file (expand-file-name "transient/values.el" pathogen-cache-directory))
+    (transient-history-file (expand-file-name "transient/history.el" pathogen-cache-directory)))
 
-(use-package hl-todo
-  :after magit
-  :ensure t
-  :custom
-  (hl-todo-keyword-faces
-      '(("TODO"   . "#FF0000")
-        ("FIXME"  . "#FF0000")
-        ("DEBUG"  . "#A020F0")
-        ("GOTCHA" . "#FF4500")
-        ("STUB"   . "#1E90FF")))
-  :config
-  (with-eval-after-load 'magit
-  (add-hook 'magit-log-wash-summary-hook
-            #'hl-todo-search-and-highlight t)
-  (add-hook 'magit-revision-wash-message-hook
-            #'hl-todo-search-and-highlight t)))
+  ;; Magit: A spectacular Git interface for Emacs
+  (use-package magit
+    :ensure t
+    :bind ("C-x g" . magit-status))
 
-(use-package magit-todos
-  :after magit
-  :ensure t
-  :config (magit-todos-mode 1))
 
+  (use-package hl-todo
+    :after magit
+    :ensure t
+    :custom
+    (hl-todo-keyword-faces
+     '(("TODO"   . "#FF0000")
+       ("FIXME"  . "#FF0000")
+       ("DEBUG"  . "#A020F0")
+       ("GOTCHA" . "#FF4500")
+       ("STUB"   . "#1E90FF")))
+    :config
+    (with-eval-after-load 'magit
+      (add-hook 'magit-log-wash-summary-hook
+                #'hl-todo-search-and-highlight t)
+      (add-hook 'magit-revision-wash-message-hook
+                #'hl-todo-search-and-highlight t)))
+
+  (use-package magit-todos
+    :after magit
+    :ensure t
+    :config (magit-todos-mode 1))
+  )
 ;;;; Terminal
 
 ;; Eat and Eat powered Eshell, fast featureful terminal inside Emacs:
 ;; https://emacsconf.org/2023/talks/eat/
 ;; https://codeberg.org/akib/emacs-eat
+
+(when (version<= "28.1" emacs-version)
 (use-package eat
   :ensure t
   :after project
   :custom (eat-term-name "xterm-256color")
   :hook (eshell-load . eat-eshell-mode))
-
+)
 
 
 
 ;; https://howardism.org/Technical/Emacs/templates-tutorial.html
-(use-package yasnippet
-  :ensure t
-  :init
-  (yas-global-mode 1)
-  :config
-  (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets"))
+;; (use-package yasnippet
+;;   :ensure t
+;;   :init
+;;   (yas-global-mode 1)
+;;   :config
+;;   (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets"))
 
-    ;; Função auxiliar do tutorial para forçar o Yasnippet a expandir o arquivo injetado
-  (defun autoinsert-yas-expand ()
-    "Substitui o texto no template usando o yasnippet."
-    (yas-expand-snippet (buffer-string) (point-min) (point-max)))
+;;     ;; Função auxiliar do tutorial para forçar o Yasnippet a expandir o arquivo injetado
+;;   (defun autoinsert-yas-expand ()
+;;     "Substitui o texto no template usando o yasnippet."
+;;     (yas-expand-snippet (buffer-string) (point-min) (point-max)))
 
-  ;; Associa arquivos .el ao template criado e aplica a expansão do Yasnippet
-  (define-auto-insert "\\.el$" ["default-elisp.el" autoinsert-yas-expand]))
+;;   ;; Associa arquivos .el ao template criado e aplica a expansão do Yasnippet
+;;   (define-auto-insert "\\.el$" ["default-elisp.el" autoinsert-yas-expand]))
 
 ;;; Misc
 
@@ -183,16 +312,16 @@
   :config
   (require 'google-translate-smooth-ui))
 
-(use-package olivetti
-  :ensure t
-  :bind
-  ("C-M-z" . olivetti-mode)
-  :custom
-  (olivetti-body-width 80)
-  ;;:hook
-  ;; (org-agenda-mode . olivetti-mode)
-  ;; (text-mode olivetti-mode)
-  )
+;; (use-package olivetti
+;;   :ensure t
+;;   :bind
+;;   ("C-M-z" . olivetti-mode)
+;;   :custom
+;;   (olivetti-body-width 80)
+;;   ;;:hook
+;;   ;; (org-agenda-mode . olivetti-mode)
+;;   ;; (text-mode olivetti-mode)
+;;   )
 
 ;; Multiple cursors 
 ;;
@@ -257,6 +386,14 @@
   (add-to-list 'nerd-icons-extension-icon-alist
     `("ctx" nerd-icons-sucicon "nf-seti-tex" :face nerd-icons-lred)))
 
+
+(when (version<= "28.1" emacs-version)
+(use-package dired-preview
+  :ensure t
+  :hook
+  (dired-mode-hook . dired-preview-mode))
+)
+
 ;;; External API
 
 (use-package emacs
@@ -283,10 +420,6 @@
   :bind
   ("C-c t" . pathogen/shell-pop))
 
-(use-package dired-preview
-  :ensure t
-  :hook
-  (dired-mode-hook . dired-preview-mode))
 
 (provide 'pathogen-ui)
 ;;; pathogen-ui.el ends here

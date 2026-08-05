@@ -64,11 +64,11 @@
   (when (file-exists-p custom-file)
     (load custom-file))
 
+  (require 'pathogen-ui)
+
   (when (equal (getenv "PATHOGEN_DEV") "1")
     (message "[Pathogen] DEV mode active (stopping additional loading).")
     (throw 'init-done nil))
-
-  ;;(require 'pathogen-ui)
 
   ;; Load personal configuration file
   (let ((personal-config (expand-file-name "~/.pathogen.el")))
