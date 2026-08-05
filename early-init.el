@@ -50,12 +50,5 @@
 ;; automatically, we set `package-enable-at-startup' to nil:
 (setq package-enable-at-startup nil)
 
-;;;; Add custom directories to `load-path'
-(let ((default-directory (locate-user-emacs-file "pathogen/")))
-  (add-to-list 'load-path default-directory)
-  (normal-top-level-add-subdirs-to-load-path))
-
-(require 'environment)
-
 (provide 'early-init)
 ;;; early-init.el ends here

@@ -294,23 +294,23 @@
   (show-paren-style 'mixed)
   (show-paren-context-when-offscreen t))
 
-(use-package outline
-  :ensure nil
-  :custom
-  (outline-regexp ";;;\\*+\\|\\`")
-  :hook
-  (prog-mode . outline-minor-mode)
-  :custom
-  ;; 1. Change default prefix
-  (outline-minor-mode-prefix (kbd "C-c o"))
-  ;; 2. add visual markers
-  (outline-minor-mode-use-buttons 'in-margins)
-  (outline-minor-mode-cycle t)
-  ;; (define-key outline-minor-mode-map (kbd "TAB")
-  ;;             '(menu-item "" nil :filter (lambda (&optional_)
-  ;;                                          (when (outline-on-heading-p)
-  ;;                                            'outline-cycle))))
-  )
+;; (use-package outline
+;;   :ensure nil
+;;   :custom
+;;   (outline-regexp ";;;\\*+\\|\\`")
+;;   :hook
+;;   (prog-mode . outline-minor-mode)
+;;   :custom
+;;   ;; 1. Change default prefix
+;;   (outline-minor-mode-prefix (kbd "C-c o"))
+;;   ;; 2. add visual markers
+;;   (outline-minor-mode-use-buttons 'in-margins)
+;;   (outline-minor-mode-cycle t)
+;;   ;; (define-key outline-minor-mode-map (kbd "TAB")
+;;   ;;             '(menu-item "" nil :filter (lambda (&optional_)
+;;   ;;                                          (when (outline-on-heading-p)
+;;   ;;                                            'outline-cycle))))
+;;   )
 
 (use-package autoinsert
   :ensure nil 

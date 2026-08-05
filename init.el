@@ -3,7 +3,7 @@
 ;; Copyright (C) 2021-2026 Victor Santos
 
 ;; Author: Victor Santos <victor_santos@fisica.ufc.br>
-;; Package-Requires: ((emacs "27.1"))
+;; Package-Requires: ((emacs "27.2"))
 ;; Keywords: config
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://codeberg.org/padawanphysicist/pathogen-emacs
@@ -32,46 +32,48 @@
 
 ;;; Code:
 
-(defconst pathogen-min-emacs-version "27.1"
+;;;; Add custom directories to `load-path'
+(let ((default-directory (locate-user-emacs-file "pathogen/")))
+  (add-to-list 'load-path default-directory)
+  (normal-top-level-add-subdirs-to-load-path))
+
+(setq warning-minimum-level :emergency)
+
+(defconst pathogen-min-emacs-version "27.2"
   "Minimum Emacs version required to load configuration.")
 
-;; Ensure the early init file is always loaded
-(when (version< emacs-version pathogen-min-emacs-version)
-  (load
-   (expand-file-name "early-init.el" user-emacs-directory)))
+(catch 'init-done
+  ;; Abort config if emacs version < `pathogen-min-emacs-version'
+  (when (version< emacs-version pathogen-min-emacs-version)
+    (display-warning
+     'pathogen
+     (format "Configuration aborted! Minimum version: %s (Your version: %s)"
+	     pathogen-min-emacs-version
+	     emacs-version)
+     :warning)
+    (throw 'init-done nil))
 
-(when (version< emacs-version pathogen-min-emacs-version)
-  (display-warning
-   'pathogen
-   (format "Configuration aborted! Minimum version: %s (Your version: %s)"
-           pathogen-min-emacs-version
-           emacs-version)
-   :warning)
-  (top-level))
+  ;; Core features
+  (require 'pathogen-package-manager)
+  ;; (require 'better-defaults)
 
-;; =============================================================================
-;; From here all your customized configuration comes into play.  If
-;; the version is < 27.1, Emacs will never read the lines below.
-;; =============================================================================
-
-;; Core features
-(require 'pathogen-package-manager)
-(require 'pathogen-defaults)
-
-(if (file-exists-p custom-file)
+  ;; Setup and load custom file
+  (customize-set-variable
+   'custom-file
+   (locate-user-emacs-file "custom.el"))
+  (when (file-exists-p custom-file)
     (load custom-file))
 
-;; Optional: you can opt-out be setting the envvar PATHOGEN_DEV to 1
-(when (equal (getenv "PATHOGEN_DEV") "1")  
-  (message "[Pathogen] DEV mode active (stopping additional loading).")
-  (top-level))
+  (when (equal (getenv "PATHOGEN_DEV") "1")
+    (message "[Pathogen] DEV mode active (stopping additional loading).")
+    (throw 'init-done nil))
 
-(require 'pathogen-ui)
+  (require 'pathogen-ui)
 
-;; Load personal configuration file
-(let ((personal-config (expand-file-name "~/.pathogen.el")))
-  (when (file-exists-p personal-config)
-    (load personal-config 'noerror 'nomessage)))
+  ;; Load personal configuration file
+  (let ((personal-config (expand-file-name "~/.pathogen.el")))
+    (when (file-exists-p personal-config)
+      (load personal-config 'noerror 'nomessage))))
 
 (provide 'init)
 ;;; init.el ends here
