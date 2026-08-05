@@ -55,7 +55,7 @@
 
   ;; Core features
   (require 'pathogen-package-manager)
-  ;; (require 'better-defaults)
+  (require 'pathogen-defaults)
 
   ;; Setup and load custom file
   (customize-set-variable
@@ -68,7 +68,7 @@
     (message "[Pathogen] DEV mode active (stopping additional loading).")
     (throw 'init-done nil))
 
-  (require 'pathogen-ui)
+  ;;(require 'pathogen-ui)
 
   ;; Load personal configuration file
   (let ((personal-config (expand-file-name "~/.pathogen.el")))

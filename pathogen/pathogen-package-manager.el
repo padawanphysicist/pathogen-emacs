@@ -75,9 +75,10 @@
 ;; End of default installation suggested by Elpaca website
 
 (when (version< emacs-version "29.1")
+  
+  (elpaca use-package)
   (elpaca elpaca-use-package
     (elpaca-use-package-mode))
-  (elpaca use-package)
   (elpaca-wait))
 
 ;;; Auto-hiding the elpaca-log buffer
