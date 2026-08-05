@@ -51,7 +51,7 @@
 (setq package-enable-at-startup nil)
 
 ;;;; Add custom directories to `load-path'
-(let ((default-directory (locate-user-emacs-file "lisp/")))
+(let ((default-directory (locate-user-emacs-file "pathogen/")))
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
 

@@ -1,4 +1,4 @@
-;;; setup-package-manager.el --- Setup package manager system -*- lexical-binding: t; -*-
+;;; pathogen-package-manager.el --- Setup package manager system -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2026 Victor Santos
 
@@ -33,6 +33,6 @@
     (require 'setup-elpaca)
   (require 'setup-package))
 
-(provide 'setup-package-manager)
-;;; setup-package-manager.el ends here
+(provide 'pathogen-package-manager)
+;;; pathogen-package-manager.el ends here
 

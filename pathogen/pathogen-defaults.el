@@ -1,4 +1,4 @@
-;;; better-defaults.el --- Better defaults for Emacs -*- lexical-binding: t; -*-
+;;; pathogen-defaults.el --- Better defaults for Emacs -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2026 Victor Santos
 
@@ -413,5 +413,5 @@
 ;;   :config
 ;;   (pathogen-goto-line-numbers-mode))
 
-(provide 'better-defaults)
-;;; better-defaults.el ends here
+(provide 'pathogen-defaults)
+;;; pathogen-defaults.el ends here

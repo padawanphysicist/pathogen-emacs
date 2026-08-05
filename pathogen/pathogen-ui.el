@@ -1,4 +1,4 @@
-;;; improve-user-experience.el --- Improvements on user-experience -*- lexical-binding: t; -*-
+;;; pathogen-ui.el --- Improvements on user-experience -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2026 Victor Santos
 
@@ -288,5 +288,5 @@
   :hook
   (dired-mode-hook . dired-preview-mode))
 
-(provide 'improve-user-experience)
-;;; improve-user-experience.el ends here
+(provide 'pathogen-ui)
+;;; pathogen-ui.el ends here
