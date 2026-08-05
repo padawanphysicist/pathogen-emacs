@@ -99,7 +99,7 @@
   ;; (recentf-mode 1)
   :hook (after-init . recentf-mode)
   :bind
-  ("C-x C-r" . recentf-open-files)) ;; TODO: confirmar se funciona no emacs 30!
+  ("C-x C-r" . recentf-open-files))
 
 ;;;; Window Layout History & Undo/Redo (Winner Mode)
 ;;
