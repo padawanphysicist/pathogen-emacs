@@ -95,8 +95,9 @@
   (recentf-max-saved-items 50)
   ;; Automatic file cleaning after 10min inactivity
   (recentf-auto-cleanup 600)
-  :init
-  (recentf-mode 1)
+  ;; :init
+  ;; (recentf-mode 1)
+  :hook (after-init . recentf-mode)
   :bind
   ("C-x C-r" . recentf-open-files)) ;; TODO: confirmar se funciona no emacs 30!
 
@@ -113,8 +114,7 @@
 
 (use-package winner
   :ensure nil
-  :config
-  (winner-mode 1))
+  :hook (after-init . winner-mode))
 
 ;;;; project.el
 
@@ -126,8 +126,9 @@
   ;;:ensure nil
   :custom
   (save-place-file (expand-file-name "places" pathogen-cache-directory))
-  :init
-  (save-place-mode 1))
+  ;; :init
+  ;; (save-place-mode 1)
+  :hook (after-init . save-place-mode))
 
 
 (use-package ibuffer
@@ -136,8 +137,8 @@
 
 (use-package uniquify
   :ensure nil
-  :config
-  (setq uniquify-buffer-name-style 'forward))
+  :custom
+  (uniquify-buffer-name-style 'forward))
 
 ;;;; Which-key (Built-in on Emacs >=30.1)
 ;;
@@ -153,9 +154,18 @@
 ;; all possible key bindings that can follow your currently entered prefix.
 ;; It provides an excellent, contextual way to discover shortcuts globally.
 
+;; Instala via ELPA se for versão antiga e ainda não estiver presente
+(when (and (version< emacs-version "29.1")
+           (not (package-installed-p 'which-key)))
+  (package-install 'which-key))
+
 (use-package which-key
-  :if (version< emacs-version "29.1")
-  :ensure t
+  ;;:if (version< emacs-version "29.1")
+  
+  ;;:ensure ,(version< emacs-version "29.1")
+  :hook (after-init . which-key-mode)
+   ;; :init
+   ;; (which-key-mode 1)
   ;;:defer t
   ;; :hook
   ;; (after-init-hook . which-key-mode)
@@ -236,7 +246,7 @@
     "M-s h" "search-highlight"
     "M-s" "search-map")
 
-  (which-key-mode 1))
+  )
 
 ;;;; Dired (Directory Editor)
 ;;
@@ -297,9 +307,9 @@
 (use-package electric-pair
   :ensure nil
   :defer
-  ;;:hook (after-init-hook . electric-pair-mode)
-  :config
-  (electric-pair-mode 1)
+  :hook (after-init-hook . electric-pair-mode)
+  ;; :config
+  ;; (electric-pair-mode 1)
   )
 
 (use-package paren
@@ -309,8 +319,9 @@
   (show-paren-delay 0)
   (show-paren-style 'mixed)
   (show-paren-context-when-offscreen t)
-  :config
-  (show-paren-mode 1))
+  ;; :config
+  ;; (show-paren-mode 1)
+  :hook (after-init-hook . show-paren-mode))
 
 ;; ;; (use-package outline
 ;; ;;   :ensure nil
