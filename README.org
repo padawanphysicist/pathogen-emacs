@@ -63,9 +63,14 @@ git pull
 
 ** Pathogen Modules
 
-| File | Purpose | Dependencies |
-|------+---------+--------------|
-|      |         |              |
+| File                        | Purpose                                                                                                | Main Dependencies                                                  |
+|-----------------------------+--------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+|                             | <20>                                                                                                   |                                                                    |
+| [[./pathogen/pathogen-defaults.el][pathogen-defaults.el]]        | Defines default settings, core variables, and foundational options for the pathogen setup.             | cl-lib                                                             |
+| [[./pathogen/pathogen-package-manager.el][pathogen-package-manager.el]] | Handles package management.                                                                            | package.el, use-package                                            |
+| [[./pathogen/utils/pathogen-icr-vompeccc.el][pathogen-icr-vompeccc.el]]    | Integration utility for completion stack setup (Vertico, Orderless, Marginalia, Consult, Corfu, Cape). | vertico, orderless, marginalia, presciente, embark, corfu, consult |
+| [[./pathogen/utils/pathogen-icr-icomplete.el][pathogen-icr-icomplete.el]]   | Utility for configuring and enhancing Emacs' native icomplete completion system.                       | icomplete                                                          |
+| [[./pathogen/pathogen-ui.el][pathogen-ui.el]]              | Configures the visual interface for a consistent user experience.                                      |                                                                    |
 
 * Customization
 
