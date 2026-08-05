@@ -32,7 +32,7 @@
 ;;  Initialize package manager
 (require 'package)
 
-(when (version<= "29.1" emacs-version)
+(when (version<= emacs-version "29.1")
   ;; Disable GPG signature verification temporarily to avoid "Bad Signature"
   ;; errors caused by expired or missing keyring signatures.
   (setq package-check-signature nil)
