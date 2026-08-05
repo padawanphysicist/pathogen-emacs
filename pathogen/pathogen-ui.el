@@ -80,9 +80,9 @@
              rotate-frame-anticlockwise))
 
 ;;;; Completion system
-;; (if (version<= "29" emacs-version)
-;;     (require 'pathogen-icr-vompeccc)
-;;   (require 'pathogen-icr-builtin))
+(when (version<= "29.1" emacs-version)
+    (require 'pathogen-icr-vompeccc)
+  (require 'pathogen-icr-builtin))
 
 ;; (require 'pathogen-avy)
 
