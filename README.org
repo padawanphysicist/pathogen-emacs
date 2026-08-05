@@ -53,7 +53,7 @@ cd ~/.emacs.d
 git pull
 #+end_src   
 
-* TODO Configuration Structure   
+* Configuration Structure   
 ** Core Files
 
 | File          | Purpose                         |
