@@ -33,6 +33,16 @@
 
 ;;;; Built-in package configuration
 
+(defcustom pathogen-cache-directory
+  (locate-user-emacs-file "cache/")
+  "Base directory for Emacs cache files."
+  :type 'directory
+  :group 'pathogen
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (unless (file-directory-p value)
+           (make-directory value t)))) ; Automatic creation of directory
+
 ;;;; Minibuffer & Command History Persistence (Savehist)
 ;;
 ;; `savehist' is a built-in feature that provides Emacs with a long-term memory.
@@ -50,7 +60,7 @@
 (use-package savehist
   :ensure nil
   :custom
-  (savehist-file (expand-file-name "savehist" pathogen-cache-directory))
+  (savehist-file (expand-file-name "minibuffer-history" pathogen-cache-directory))
   (savehist-save-minibuffer-history t)
   ;; Automatically save at each 5min
   (savehist-autosave-interval 300)
@@ -88,7 +98,7 @@
   :init
   (recentf-mode 1)
   :bind
-  ("C-x C-r" . recentf))
+  ("C-x C-r" . recentf-open-files)) ;; TODO: confirmar se funciona no emacs 30!
 
 ;;;; Window Layout History & Undo/Redo (Winner Mode)
 ;;
@@ -109,11 +119,11 @@
 ;;;; project.el
 
 (use-package project
-  :ensure nil
+  ;;:ensure nil
   :demand t)
 
 (use-package saveplace
-  :ensure nil
+  ;;:ensure nil
   :custom
   (save-place-file (expand-file-name "places" pathogen-cache-directory))
   :init
@@ -121,7 +131,7 @@
 
 
 (use-package ibuffer
-  :ensure nil
+  ;;:ensure nil
   :bind ("C-x C-b" . ibuffer))
 
 (use-package uniquify
@@ -144,10 +154,11 @@
 ;; It provides an excellent, contextual way to discover shortcuts globally.
 
 (use-package which-key
-  :ensure
-  :defer t
-  :hook
-  (after-init-hook . which-key-mode)
+  :if (version< emacs-version "29.1")
+  :ensure t
+  ;;:defer t
+  ;; :hook
+  ;; (after-init-hook . which-key-mode)
   :custom
   (which-key-add-column-padding 2)
   (which-key-allow-multiple-replacements t)
@@ -223,7 +234,9 @@
     "C-x" "extra-commands"
     "M-g" "goto-map"
     "M-s h" "search-highlight"
-    "M-s" "search-map"))
+    "M-s" "search-map")
+
+  (which-key-mode 1))
 
 ;;;; Dired (Directory Editor)
 ;;
@@ -242,7 +255,7 @@
 
 (use-package dired
   :ensure nil
-  :defer t
+  ;;:defer t
   :custom
   ;; Behavior & Performance
   (dired-auto-revert-buffer t)
@@ -284,42 +297,47 @@
 (use-package electric-pair
   :ensure nil
   :defer
-  :hook (after-init-hook . electric-pair-mode))
+  ;;:hook (after-init-hook . electric-pair-mode)
+  :config
+  (electric-pair-mode 1)
+  )
 
 (use-package paren
   :ensure nil
-  :hook (after-init-hook . show-paren-mode)
+  ;;:hook (after-init-hook . show-paren-mode)
   :custom
   (show-paren-delay 0)
   (show-paren-style 'mixed)
-  (show-paren-context-when-offscreen t))
+  (show-paren-context-when-offscreen t)
+  :config
+  (show-paren-mode 1))
 
-;; (use-package outline
-;;   :ensure nil
-;;   :custom
-;;   (outline-regexp ";;;\\*+\\|\\`")
-;;   :hook
-;;   (prog-mode . outline-minor-mode)
-;;   :custom
-;;   ;; 1. Change default prefix
-;;   (outline-minor-mode-prefix (kbd "C-c o"))
-;;   ;; 2. add visual markers
-;;   (outline-minor-mode-use-buttons 'in-margins)
-;;   (outline-minor-mode-cycle t)
-;;   ;; (define-key outline-minor-mode-map (kbd "TAB")
-;;   ;;             '(menu-item "" nil :filter (lambda (&optional_)
-;;   ;;                                          (when (outline-on-heading-p)
-;;   ;;                                            'outline-cycle))))
-;;   )
+;; ;; (use-package outline
+;; ;;   :ensure nil
+;; ;;   :custom
+;; ;;   (outline-regexp ";;;\\*+\\|\\`")
+;; ;;   :hook
+;; ;;   (prog-mode . outline-minor-mode)
+;; ;;   :custom
+;; ;;   ;; 1. Change default prefix
+;; ;;   (outline-minor-mode-prefix (kbd "C-c o"))
+;; ;;   ;; 2. add visual markers
+;; ;;   (outline-minor-mode-use-buttons 'in-margins)
+;; ;;   (outline-minor-mode-cycle t)
+;; ;;   ;; (define-key outline-minor-mode-map (kbd "TAB")
+;; ;;   ;;             '(menu-item "" nil :filter (lambda (&optional_)
+;; ;;   ;;                                          (when (outline-on-heading-p)
+;; ;;   ;;                                            'outline-cycle))))
+;; ;;   )
 
-(use-package autoinsert
-  :ensure nil 
-  :init
-  ;; Evita que o Emacs pergunte se você quer inserir o template toda vez
-  (setq auto-insert-query nil)
-  (setq auto-insert-directory (locate-user-emacs-file "templates/"))
-  (add-hook 'find-file-hook 'auto-insert)
-  (auto-insert-mode 1))
+;; (use-package autoinsert
+;;   :ensure nil 
+;;   :init
+;;   ;; Evita que o Emacs pergunte se você quer inserir o template toda vez
+;;   (setq auto-insert-query nil)
+;;   (setq auto-insert-directory (locate-user-emacs-file "templates/"))
+;;   (add-hook 'find-file-hook 'auto-insert)
+;;   (auto-insert-mode 1))
 
 ;;; Standardizing defaults
 (use-package emacs
@@ -408,10 +426,10 @@
 
   (global-auto-revert-mode t))
 
-;; (use-package pathogen-goto-line-numbers
-;;   :load-path "utils/"
-;;   :config
-;;   (pathogen-goto-line-numbers-mode))
+;; ;; (use-package pathogen-goto-line-numbers
+;; ;;   :load-path "utils/"
+;; ;;   :config
+;; ;;   (pathogen-goto-line-numbers-mode))
 
 (provide 'pathogen-defaults)
 ;;; pathogen-defaults.el ends here
