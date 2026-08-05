@@ -160,15 +160,7 @@
   (package-install 'which-key))
 
 (use-package which-key
-  ;;:if (version< emacs-version "29.1")
-  
-  ;;:ensure ,(version< emacs-version "29.1")
   :hook (after-init . which-key-mode)
-   ;; :init
-   ;; (which-key-mode 1)
-  ;;:defer t
-  ;; :hook
-  ;; (after-init-hook . which-key-mode)
   :custom
   (which-key-add-column-padding 2)
   (which-key-allow-multiple-replacements t)
@@ -244,9 +236,7 @@
     "C-x" "extra-commands"
     "M-g" "goto-map"
     "M-s h" "search-highlight"
-    "M-s" "search-map")
-
-  )
+    "M-s" "search-map"))
 
 ;;;; Dired (Directory Editor)
 ;;
@@ -269,12 +259,12 @@
   :custom
   ;; Behavior & Performance
   (dired-auto-revert-buffer t)
-  (dired-dwim-target t)                                    ; Guess target directory if 2 dired buffers are open
-  (dired-kill-when-opening-new-dired-buffer t)             ; Keep buffer list clean (Emacs 28+)
+  (dired-dwim-target t "Guess target directory if 2 dired buffers are open")
+  (dired-kill-when-opening-new-dired-buffer t "Keep buffer list clean (Emacs 28+)")
 
   ;; Visuals & Sorting
   (dired-listing-switches "-alh --group-directories-first")
-  (dired-hide-details-hide-absolute-location t)            ; Clean header (Emacs 31+)
+  (dired-hide-details-hide-absolute-location t "Clean header (Emacs 31+)")
   (image-dired-dir pathogen-cache-directory)
 
   ;; Wdired (Writable Dired - integrated settings)
@@ -307,65 +297,27 @@
 (use-package electric-pair
   :ensure nil
   :defer
-  :hook (after-init-hook . electric-pair-mode)
-  ;; :config
-  ;; (electric-pair-mode 1)
-  )
+  :hook (after-init-hook . electric-pair-mode))
 
 (use-package paren
   :ensure nil
-  ;;:hook (after-init-hook . show-paren-mode)
   :custom
   (show-paren-delay 0)
   (show-paren-style 'mixed)
   (show-paren-context-when-offscreen t)
-  ;; :config
-  ;; (show-paren-mode 1)
   :hook (after-init-hook . show-paren-mode))
-
-;; ;; (use-package outline
-;; ;;   :ensure nil
-;; ;;   :custom
-;; ;;   (outline-regexp ";;;\\*+\\|\\`")
-;; ;;   :hook
-;; ;;   (prog-mode . outline-minor-mode)
-;; ;;   :custom
-;; ;;   ;; 1. Change default prefix
-;; ;;   (outline-minor-mode-prefix (kbd "C-c o"))
-;; ;;   ;; 2. add visual markers
-;; ;;   (outline-minor-mode-use-buttons 'in-margins)
-;; ;;   (outline-minor-mode-cycle t)
-;; ;;   ;; (define-key outline-minor-mode-map (kbd "TAB")
-;; ;;   ;;             '(menu-item "" nil :filter (lambda (&optional_)
-;; ;;   ;;                                          (when (outline-on-heading-p)
-;; ;;   ;;                                            'outline-cycle))))
-;; ;;   )
-
-;; (use-package autoinsert
-;;   :ensure nil 
-;;   :init
-;;   ;; Evita que o Emacs pergunte se você quer inserir o template toda vez
-;;   (setq auto-insert-query nil)
-;;   (setq auto-insert-directory (locate-user-emacs-file "templates/"))
-;;   (add-hook 'find-file-hook 'auto-insert)
-;;   (auto-insert-mode 1))
 
 ;;; Standardizing defaults
 (use-package emacs
   :ensure nil
   :custom
-  ;; UI: Cleanup visual clutter
-  ;; (menu-bar-mode -1)
-  ;; (tool-bar-mode -1)
-  ;; (scroll-bar-mode -1)
-  ;;(column-number-mode t)
 
-    ;; --- Visuals & Cursor ---
-  (x-stretch-cursor nil)                      ; Do not stretch cursor to fit wide characters
+  ;; Visuals & Cursor
+  (x-stretch-cursor nil "Do not stretch cursor to fit wide characters")                      
   ;; Set indicators for wrapped lines in the fringe margins
   (visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
-  ;; --- Mouse & Keyboard Scrolling ---
+  ;; Mouse & Keyboard Scrolling
   ;; Ensure the mouse wheel scrolls the window directly underneath the pointer
   (mouse-wheel-follow-mouse t)
   ;; Scroll exactly 1 line at a time to prevent jarring page jumps
@@ -384,7 +336,7 @@
 
   (project-list-file (expand-file-name "project" pathogen-cache-directory))
 
-  ;; --- Interface & Minibuffer ---
+  ;; Interface & Minibuffer
   (column-number-mode t)                      ; Show column number in the mode-line
   (use-short-answers t)                       ; Use short "y/n" answers instead of "yes/no"
   (context-menu-mode t)                       ; Enable right-click context menu
@@ -394,7 +346,7 @@
   (use-dialog-box nil)                        ; Avoid graphical GUI dialog boxes
   (echo-keystrokes 0.02)                      ; Show current key sequence in minibuffer immediately
   (resize-mini-windows nil)                   ; Keep the echo/minibuffer area at a fixed height
-     ;; --- Backup & Auto-Save ---
+  ;; Backup & Auto-Save
   ;; Activate standard auto-save safety mechanism
   (auto-save-default t)
 
@@ -419,7 +371,6 @@
 
   ;; Editing: Modern habits
   (setq-default indent-tabs-mode nil)
-  ;; (setq-default show-trailing-whitespace t)
   (delete-selection-mode 1)
   (show-paren-mode 1)
   (fset 'yes-or-no-p #'y-or-n-p)
@@ -436,11 +387,6 @@
     (add-to-list 'grep-find-ignored-files ".gitignore"))
 
   (global-auto-revert-mode t))
-
-;; ;; (use-package pathogen-goto-line-numbers
-;; ;;   :load-path "utils/"
-;; ;;   :config
-;; ;;   (pathogen-goto-line-numbers-mode))
 
 (provide 'pathogen-defaults)
 ;;; pathogen-defaults.el ends here

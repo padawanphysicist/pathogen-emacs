@@ -47,9 +47,9 @@
   (when (version< emacs-version pathogen-min-emacs-version)
     (display-warning
      'pathogen
-     (format "Configuration aborted! Minimum version: %s (Your version: %s)"
-	     pathogen-min-emacs-version
-	     emacs-version)
+     (format
+      "Configuration aborted! Minimum version: %s (Your version: %s)"
+      pathogen-min-emacs-version emacs-version)
      :warning)
     (throw 'init-done nil))
 
@@ -59,15 +59,15 @@
 
   ;; Setup and load custom file
   (customize-set-variable
-   'custom-file
-   (locate-user-emacs-file "custom.el"))
+   'custom-file (locate-user-emacs-file "custom.el"))
   (when (file-exists-p custom-file)
     (load custom-file))
 
   (require 'pathogen-ui)
 
   (when (equal (getenv "PATHOGEN_DEV") "1")
-    (message "[Pathogen] DEV mode active (stopping additional loading).")
+    (message
+     "[Pathogen] DEV mode active (stopping additional loading).")
     (throw 'init-done nil))
 
   ;; Load personal configuration file
