@@ -89,5 +89,7 @@ For personal tweaks without modifying the core repository, create a =~/.pathogen
 
 This file is loaded *after* all Pathogen modules, allowing you to easily override any default behavior.
 
-* TODO License
+* License
+
+This configuration is licensed under the [[LICENSE][GNU General Public License v3.0]].
 
