@@ -260,8 +260,8 @@
   :ensure t
   :custom
   (corfu-auto t "Trigger popup list automatically while typing")
-  (corfu-auto-delay 0.2 "Wait 200ms before drawing the popup window")
-  (corfu-auto-prefix 2 "Require at least 2 characters to start completing")
+  (corfu-auto-delay 0.3 "Wait 300ms before drawing the popup window")
+  (corfu-auto-prefix 3 "Require at least 3 characters to start completing")
   (corfu-cycle t)
   (corfu-quit-no-match 'separator)
   (corfu-preview-current nil)

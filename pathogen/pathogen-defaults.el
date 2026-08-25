@@ -386,7 +386,8 @@
     ;; 2. Prevent rgrep from showing matches inside .gitignore files
     (add-to-list 'grep-find-ignored-files ".gitignore"))
 
-  (global-auto-revert-mode t))
+  (global-auto-revert-mode t)
+  :hook (after-init-hook . window-divider-mode))
 
 (provide 'pathogen-defaults)
 ;;; pathogen-defaults.el ends here
