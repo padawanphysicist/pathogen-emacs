@@ -80,9 +80,7 @@
              rotate-frame-anticlockwise))
 
 ;;;; Completion system
-(if (version<= "29.1" emacs-version)
-    (require 'pathogen-icr-vompeccc)
-  (require 'pathogen-icr-icomplete))
+(require 'pathogen-completion)
 
 (use-package avy
   :ensure t
