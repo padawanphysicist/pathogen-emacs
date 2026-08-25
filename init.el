@@ -56,13 +56,6 @@
   ;; Core features
   (require 'pathogen-package-manager)
   (require 'pathogen-defaults)
-
-  ;; Setup and load custom file
-  (customize-set-variable
-   'custom-file (locate-user-emacs-file "custom.el"))
-  (when (file-exists-p custom-file)
-    (load custom-file))
-
   (require 'pathogen-ui)
 
   (when (equal (getenv "PATHOGEN_DEV") "1")
@@ -73,7 +66,13 @@
   ;; Load personal configuration file
   (let ((personal-config (expand-file-name "~/.pathogen.el")))
     (when (file-exists-p personal-config)
-      (load personal-config 'noerror 'nomessage))))
+      (load personal-config 'noerror 'nomessage)))
+
+  ;; Setup and load custom file
+  (customize-set-variable
+   'custom-file (locate-user-emacs-file "custom.el"))
+  (when (file-exists-p custom-file)
+    (load custom-file)))
 
 (provide 'init)
 ;;; init.el ends here
