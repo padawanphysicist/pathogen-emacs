@@ -92,6 +92,7 @@
 (when (version<= "28.1" emacs-version)
   (use-package transient
     :ensure t
+    :demand t
     :custom
     (transient-levels-file (expand-file-name "transient/levels.el" pathogen-cache-directory))
     (transient-values-file (expand-file-name "transient/values.el" pathogen-cache-directory))
@@ -100,6 +101,7 @@
   ;; Magit: A spectacular Git interface for Emacs
   (use-package magit
     :ensure t
+    :after transient
     :bind ("C-x g" . magit-status))
 
   (use-package hl-todo
@@ -230,8 +232,9 @@
 (when (version<= "28.1" emacs-version)
   (use-package dired-preview
     :ensure t
-    :hook
-    (dired-mode-hook . dired-preview-mode)))
+    ;; :hook
+    ;; (dired-mode-hook . dired-preview-mode)
+    ))
 
 ;;; External API
 
