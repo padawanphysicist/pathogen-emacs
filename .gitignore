@@ -17,4 +17,5 @@ places
 .org-id-locations
 bookmarks
 multisession/
-url/.eld
+url/
+*.eld
