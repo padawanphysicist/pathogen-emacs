@@ -128,8 +128,8 @@
       (use-package marginalia
         :ensure t
         :after vertico
-        :hook
-        (after-init . marginalia-mode))
+        :config
+        (marginalia-mode 1))
 
       ;; 4. PRESCIENT (The Frecency Optimization Layer)
       ;;
